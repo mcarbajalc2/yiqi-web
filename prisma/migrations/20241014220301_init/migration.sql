@@ -5,6 +5,9 @@ CREATE TYPE "Roles" AS ENUM ('USER', 'ADMIN', 'ANDINO_ADMIN', 'NEW_USER');
 CREATE TYPE "OrganizerRole" AS ENUM ('ADMIN', 'VIEWER');
 
 -- CreateEnum
+CREATE TYPE "MediaType" AS ENUM ('IMAGE', 'VIDEO', 'AUDIO', 'PDF', 'OTHER');
+
+-- CreateEnum
 CREATE TYPE "AttendeeStatus" AS ENUM ('PENDING', 'APPROVED', 'REJECTED');
 
 -- CreateEnum
@@ -14,7 +17,13 @@ CREATE TYPE "EventBotType" AS ENUM ('openAI');
 CREATE TYPE "MessageThreadType" AS ENUM ('whatsapp', 'email');
 
 -- CreateEnum
-CREATE TYPE "ReminderType" AS ENUM ('ONE_DAY_BEFORE', 'TWO_HOURS_BEFORE', 'MORNING_OF', 'PAYMENT_REQUIRED_REMINDER', 'FORM_SUBMISSION');
+CREATE TYPE "ReminderType" AS ENUM ('ORG_INVITE', 'RESERVATION_PAYMENT_REMINDER', 'RESERVATION_CONFIRMED', 'RESERVATION_REJECTED', 'RESERVATION_REMINDER');
+
+-- CreateEnum
+CREATE TYPE "JobStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED');
+
+-- CreateEnum
+CREATE TYPE "JobType" AS ENUM ('GENERATE_EVENT_OPEN_GRAPH', 'COLLECT_USER_DATA');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -24,8 +33,9 @@ CREATE TABLE "User" (
     "emailVerified" TIMESTAMP(3),
     "picture" TEXT,
     "phoneNumber" TEXT,
-    "role" "Roles" NOT NULL DEFAULT 'USER',
+    "role" "Roles" NOT NULL DEFAULT 'NEW_USER',
     "stopCommunication" BOOLEAN NOT NULL DEFAULT false,
+    "dataCollected" JSONB,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -68,10 +78,12 @@ CREATE TABLE "VerificationToken" (
 CREATE TABLE "Organization" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "colour" TEXT,
     "description" TEXT,
     "logo" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT,
 
     CONSTRAINT "Organization_pkey" PRIMARY KEY ("id")
 );
@@ -103,8 +115,21 @@ CREATE TABLE "Event" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "requiresApproval" BOOLEAN NOT NULL DEFAULT false,
+    "openGraphImage" TEXT,
 
     CONSTRAINT "Event_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "GeneratedMedia" (
+    "id" TEXT NOT NULL,
+    "eventId" TEXT,
+    "imageUrl" TEXT NOT NULL,
+    "type" "MediaType" NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "GeneratedMedia_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -165,6 +190,7 @@ CREATE TABLE "Message" (
     "content" TEXT NOT NULL,
     "attachement" TEXT,
     "externalId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Message_pkey" PRIMARY KEY ("id")
 );
@@ -185,7 +211,7 @@ CREATE TABLE "WhatsappIntegration" (
 -- CreateTable
 CREATE TABLE "Notification" (
     "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
+    "userId" TEXT,
     "eventId" TEXT,
     "senderUserId" TEXT,
     "organizationId" TEXT NOT NULL,
@@ -195,6 +221,7 @@ CREATE TABLE "Notification" (
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
     "formId" TEXT,
+    "extraData" JSONB,
 
     CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
 );
@@ -226,6 +253,28 @@ CREATE TABLE "FormSubmission" (
     CONSTRAINT "FormSubmission_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "QueueJob" (
+    "id" TEXT NOT NULL,
+    "type" "JobType" NOT NULL,
+    "status" "JobStatus" NOT NULL DEFAULT 'PENDING',
+    "data" JSONB NOT NULL,
+    "priority" INTEGER NOT NULL DEFAULT 0,
+    "attempts" INTEGER NOT NULL DEFAULT 0,
+    "maxAttempts" INTEGER NOT NULL DEFAULT 3,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "startedAt" TIMESTAMP(3),
+    "completedAt" TIMESTAMP(3),
+    "failedAt" TIMESTAMP(3),
+    "error" TEXT,
+    "organizationId" TEXT,
+    "eventId" TEXT,
+    "userId" TEXT,
+
+    CONSTRAINT "QueueJob_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -253,11 +302,20 @@ CREATE UNIQUE INDEX "WhatsappIntegration_integrationId_key" ON "WhatsappIntegrat
 -- CreateIndex
 CREATE UNIQUE INDEX "WhatsappIntegration_verifyToken_key" ON "WhatsappIntegration"("verifyToken");
 
+-- CreateIndex
+CREATE INDEX "QueueJob_status_type_priority_idx" ON "QueueJob"("status", "type", "priority");
+
+-- CreateIndex
+CREATE INDEX "QueueJob_createdAt_idx" ON "QueueJob"("createdAt");
+
 -- AddForeignKey
 ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Organization" ADD CONSTRAINT "Organization_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Organizer" ADD CONSTRAINT "Organizer_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -267,6 +325,9 @@ ALTER TABLE "Organizer" ADD CONSTRAINT "Organizer_organizationId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "Event" ADD CONSTRAINT "Event_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "GeneratedMedia" ADD CONSTRAINT "GeneratedMedia_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "EventRegistration" ADD CONSTRAINT "EventRegistration_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -299,7 +360,7 @@ ALTER TABLE "Message" ADD CONSTRAINT "Message_destinationUserId_fkey" FOREIGN KE
 ALTER TABLE "WhatsappIntegration" ADD CONSTRAINT "WhatsappIntegration_integrationId_fkey" FOREIGN KEY ("integrationId") REFERENCES "Integration"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
@@ -327,3 +388,12 @@ ALTER TABLE "FormSubmission" ADD CONSTRAINT "FormSubmission_userId_fkey" FOREIGN
 
 -- AddForeignKey
 ALTER TABLE "FormSubmission" ADD CONSTRAINT "FormSubmission_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "QueueJob" ADD CONSTRAINT "QueueJob_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "QueueJob" ADD CONSTRAINT "QueueJob_eventId_fkey" FOREIGN KEY ("eventId") REFERENCES "Event"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "QueueJob" ADD CONSTRAINT "QueueJob_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
