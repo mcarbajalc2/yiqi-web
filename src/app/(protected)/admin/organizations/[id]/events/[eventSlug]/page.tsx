@@ -23,7 +23,7 @@ export default async function EventDetailsPage({
 
   async function handleApproval(
     attendeeId: string,
-    status: "APPROVED" | "REJECTED",
+    status: "APPROVED" | "REJECTED"
   ) {
     "use server";
     await updateAttendeeStatus(attendeeId, status);
@@ -66,7 +66,7 @@ export default async function EventDetailsPage({
         ))}
       </ul>
       <Link
-        href={`/organizations/${params.id}/events`}
+        href={`/admin/organizations/${params.id}/events`}
         className="mt-4 inline-block text-blue-500 hover:underline"
       >
         Back to Events

@@ -32,19 +32,19 @@ export default async function Page({ params }: { params: { id: string } }) {
             </h1>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <Link
-                href={`/organizations/${params.id}/organizers`}
+                href={`/admin/organizations/${params.id}/organizers`}
                 className="p-4 bg-blue-100 rounded"
               >
                 Manage Organizers
               </Link>
               <Link
-                href={`/organizations/${params.id}/events`}
+                href={`/admin/organizations/${params.id}/events`}
                 className="p-4 bg-green-100 rounded"
               >
                 Manage Events
               </Link>
               <Link
-                href={`/organizations/${params.id}/contacts`}
+                href={`/admin/organizations/${params.id}/contacts`}
                 className="p-4 bg-yellow-100 rounded"
               >
                 Contact List

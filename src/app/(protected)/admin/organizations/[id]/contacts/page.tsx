@@ -23,7 +23,7 @@ export default async function ContactsPage({
         {contacts.map((contact) => (
           <li key={contact?.user?.id} className="border p-2 rounded">
             <Link
-              href={`/organizations/${params.id}/contacts/${contact?.user?.id}`}
+              href={`/admin/organizations/${params.id}/contacts/${contact?.user?.id}`}
               className="text-blue-500 hover:underline"
             >
               {contact?.user?.name} ({contact?.user?.email})
@@ -32,7 +32,7 @@ export default async function ContactsPage({
         ))}
       </ul>
       <Link
-        href={`/organizations/${params.id}`}
+        href={`/admin/organizations/${params.id}`}
         className="mt-4 inline-block text-blue-500 hover:underline"
       >
         Back to Organization Dashboard

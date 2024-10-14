@@ -41,22 +41,22 @@ export default function OrganizationLayout({
     {
       name: "Chat",
       icon: MessageSquare,
-      href: `/admin/org/${orgId}/chat`,
+      href: `/admin/organizations/${orgId}/chat`,
     },
     {
       name: "Eventos",
       icon: Calendar,
-      href: `/admin/org/${orgId}/events`,
+      href: `/admin/organizations/${orgId}/events`,
     },
     {
       name: "Personas",
       icon: BookUser,
-      href: `/admin/org/${orgId}/contacts`,
+      href: `/admin/organizations/${orgId}/contacts`,
     },
     {
       name: "Organizadores",
       icon: Users,
-      href: `/admin/org/${orgId}/organizers`,
+      href: `/admin/organizations/${orgId}/organizers`,
     },
   ];
 

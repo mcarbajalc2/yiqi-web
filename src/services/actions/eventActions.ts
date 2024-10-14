@@ -64,7 +64,7 @@ export async function createEvent(organizationId: string, eventData: unknown) {
     },
   });
 
-  revalidatePath(`/organizations/${organizationId}/events`);
+  revalidatePath(`/admin/organizations/${organizationId}/events`);
   return DbEventSchema.parse(event);
 }
 
@@ -87,7 +87,7 @@ export async function updateEvent(eventId: string, eventData: unknown) {
     data: validatedData,
   });
 
-  revalidatePath(`/organizations/${event.organizationId}/events`);
+  revalidatePath(`/admin/organizations/${event.organizationId}/events`);
   return DbEventSchema.parse(updatedEvent);
 }
 
@@ -105,7 +105,7 @@ export async function deleteEvent(eventId: string) {
 
   await prisma.event.delete({ where: { id: eventId } });
 
-  revalidatePath(`/organizations/${event.organizationId}/events`);
+  revalidatePath(`/admin/organizations/${event.organizationId}/events`);
 }
 
 export async function createRegistration(

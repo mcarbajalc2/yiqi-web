@@ -39,7 +39,7 @@ export default function CreateEventPage({
 
   const handleCustomFieldChange = (
     index: number,
-    field: Partial<z.infer<typeof CustomFieldSchema>>,
+    field: Partial<z.infer<typeof CustomFieldSchema>>
   ) => {
     const newFields = [...customFields];
     newFields[index] = { ...newFields[index], ...field };
@@ -65,7 +65,7 @@ export default function CreateEventPage({
       // Here you would typically call an API to create the event
       // For now, we'll just log the data and redirect
       await createEvent(params.id, eventData);
-      router.push(`/organizations/${params.id}/events`);
+      router.push(`/admin/organizations/${params.id}/events`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         setError(error.errors.map((e) => e.message).join(", "));

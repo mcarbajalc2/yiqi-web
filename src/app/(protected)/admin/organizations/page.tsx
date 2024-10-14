@@ -44,7 +44,9 @@ export default async function Page() {
                 key={org.id}
                 className="overflow-hidden"
                 style={{
-                  background: `linear-gradient(to bottom, ${colors({ hex: org.colour!, percent: 50 }) || "white"}, white)`,
+                  background: `linear-gradient(to bottom, ${
+                    colors({ hex: org.colour!, percent: 50 }) || "white"
+                  }, white)`,
                 }}
               >
                 <CardHeader className="p-4">
@@ -73,7 +75,7 @@ export default async function Page() {
                 </CardContent>
                 <CardFooter className="flex justify-center p-4">
                   <Button asChild>
-                    <Link href={`/admin/org/${org.id}`}>
+                    <Link href={`/admin/organizations/${org.id}`}>
                       Ir a la organización
                     </Link>
                   </Button>

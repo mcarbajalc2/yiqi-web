@@ -25,7 +25,7 @@ export default async function ContactDetailsPage({
         {contact.registeredEvents?.map((attendee) => (
           <li key={attendee.id} className="border p-2 rounded">
             <Link
-              href={`/organizations/${params.id}/events/${attendee.event.id}`}
+              href={`/admin/organizations/${params.id}/events/${attendee.event.id}`}
               className="text-blue-500 hover:underline"
             >
               {attendee.event.title}
@@ -35,7 +35,7 @@ export default async function ContactDetailsPage({
         ))}
       </ul>
       <Link
-        href={`/organizations/${params.id}/contacts`}
+        href={`/admin/organizations/${params.id}/contacts`}
         className="mt-4 inline-block text-blue-500 hover:underline"
       >
         Back to Contacts

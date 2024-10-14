@@ -26,7 +26,7 @@ interface AdminLayoutProps {
 
 export default function AdminLayout({ children, userProps }: AdminLayoutProps) {
   const navItems = [
-    { name: "Organizaciones", icon: Users, href: `/admin/org` },
+    { name: "Organizaciones", icon: Users, href: `/admin/organizations` },
     { name: "Settings", icon: Settings, href: "/admin/settings" },
   ];
 

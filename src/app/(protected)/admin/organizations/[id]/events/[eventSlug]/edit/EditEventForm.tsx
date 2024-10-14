@@ -16,7 +16,7 @@ export default function EditEventForm({
   organizationId,
 }: EditEventFormProps) {
   const [customFields, setCustomFields] = useState<CustomFieldInput[]>(
-    event.customFields,
+    event.customFields
   );
 
   const addCustomField = () => {
@@ -28,7 +28,7 @@ export default function EditEventForm({
 
   const updateCustomField = (
     index: number,
-    field: Partial<CustomFieldInput>,
+    field: Partial<CustomFieldInput>
   ) => {
     const newFields = [...customFields];
     newFields[index] = { ...newFields[index], ...field };
@@ -160,7 +160,7 @@ export default function EditEventForm({
           Update Event
         </button>
         <Link
-          href={`/organizations/${organizationId}/events`}
+          href={`/admin/organizations/${organizationId}/events`}
           className="ml-4 text-blue-500 hover:underline"
         >
           Cancel

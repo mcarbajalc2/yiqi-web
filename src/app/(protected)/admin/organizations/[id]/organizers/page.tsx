@@ -29,7 +29,7 @@ export default async function OrganizersPage({
       </ul>
       <AddOrganizerButton organizationId={params.id} />
       <Link
-        href={`/organizations/${params.id}`}
+        href={`/admin/organizations/${params.id}`}
         className="mt-4 inline-block text-blue-500 hover:underline"
       >
         Back to Organization Dashboard

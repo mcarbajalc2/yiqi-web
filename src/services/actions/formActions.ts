@@ -47,7 +47,7 @@ export async function createForm(
     },
   });
 
-  revalidatePath(`/organizations/${organizationId}/forms`);
+  revalidatePath(`/admin/organizations/${organizationId}/forms`);
   return form;
 }
 
@@ -69,7 +69,7 @@ export async function updateForm(formId: string, formData: unknown) {
     data: validatedData,
   });
 
-  revalidatePath(`/organizations/${form.organizationId}/forms`);
+  revalidatePath(`/admin/organizations/${form.organizationId}/forms`);
   return updatedForm;
 }
 
@@ -86,7 +86,7 @@ export async function deleteForm(formId: string) {
 
   await prisma.form.delete({ where: { id: formId } });
 
-  revalidatePath(`/organizations/${form.organizationId}/forms`);
+  revalidatePath(`/admin/organizations/${form.organizationId}/forms`);
 }
 
 export async function submitForm(formId: string, submissionData: unknown) {
