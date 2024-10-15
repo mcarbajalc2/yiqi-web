@@ -6,21 +6,13 @@ import {
   sendUserWhatsappMessageProps,
 } from "@/lib/whatsapp";
 import { getUser, isEventAdmin, isOrganizerAdmin } from "@/lib/auth/lucia";
+import { OrgMessageListItemSchema } from "@/schemas/messagesSchema";
 
-export async function getUserMessageThreads(
-  userId: string,
-  eventId?: string | undefined,
-  orgId?: string | undefined,
-) {
+export async function getUserMessageThreads(userId: string, orgId: string) {
   const currentUser = await getUser();
   if (!currentUser) throw new Error("Unauthorized");
 
-  let isAllowed = false;
-  if (eventId) {
-    isAllowed = await isEventAdmin(eventId, currentUser.id);
-  } else if (orgId) {
-    isAllowed = await isOrganizerAdmin(orgId, currentUser.id);
-  }
+  const isAllowed = await isOrganizerAdmin(orgId, currentUser.id);
   if (!isAllowed) {
     throw new Error("Unauthorized: no access to event or organization");
   }
@@ -28,11 +20,16 @@ export async function getUserMessageThreads(
   const messageThreads = await prisma.messageThread.findMany({
     where: {
       contextUserId: userId,
-      ...(eventId ? { eventId } : {}),
+    },
+    orderBy: {
+      updatedAt: "desc",
     },
     include: {
       messages: {
-        take: 100,
+        take: 30,
+        orderBy: {
+          createdAt: "desc",
+        },
       },
     },
   });
@@ -41,7 +38,7 @@ export async function getUserMessageThreads(
 }
 
 export async function sendUserWhatsappMessageAction(
-  props: sendUserWhatsappMessageProps & { eventId?: string | undefined },
+  props: sendUserWhatsappMessageProps & { eventId?: string | undefined }
 ) {
   const currentUser = await getUser();
   if (!currentUser) throw new Error("Unauthorized");
@@ -55,4 +52,36 @@ export async function sendUserWhatsappMessageAction(
   }
 
   return sendUserWhatsappMessage({ ...props, senderUserId: currentUser.id });
+}
+
+export async function getOrganizationMessageThreads(orgId: string) {
+  const currentUser = await getUser();
+  if (!currentUser) throw new Error("Unauthorized");
+
+  const isAllowed = await isOrganizerAdmin(orgId, currentUser.id);
+
+  if (!isAllowed) {
+    throw new Error("Unauthorized: no access to event or organization");
+  }
+
+  const messageThreads = await prisma.messageThread.findMany({
+    where: {
+      organizationId: orgId,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+    distinct: ["contextUserId"],
+    include: {
+      contextUser: true,
+      messages: {
+        orderBy: {
+          createdAt: "desc",
+        },
+        take: 1,
+      },
+    },
+  });
+
+  return messageThreads.map((thread) => OrgMessageListItemSchema.parse(thread));
 }

@@ -19,6 +19,7 @@ export default async function Page() {
   if (!user) {
     redirect("/auth");
   }
+
   if (user.role === Roles.NEW_USER) {
     return (
       <main className="flex flex-col items-center justify-center h-screen">
