@@ -4,6 +4,7 @@ import { Roles } from "@prisma/client";
 import AdminLayout from "@/components/chat/adminLayout";
 import ChatComponent from "@/components/chat/chat";
 import { getOrganizationMessageThreads } from "@/services/actions/messagesActions";
+import { BulkSendModal } from "@/components/chat/BulkSendModal";
 
 export default async function Page({ params }: { params: { id: string } }) {
   const user = await getUser();
@@ -24,6 +25,9 @@ export default async function Page({ params }: { params: { id: string } }) {
             name: user.name,
           }}
         >
+          <div className="w-full flex justify-end mb-4">
+            <BulkSendModal />
+          </div>
           <ChatComponent chats={chats} />
         </AdminLayout>
       </main>

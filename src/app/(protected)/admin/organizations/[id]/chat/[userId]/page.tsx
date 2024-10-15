@@ -8,6 +8,7 @@ import {
   getOrganizationMessageThreads,
   getUserMessageList,
 } from "@/services/actions/messagesActions";
+import { BulkSendModal } from "@/components/chat/BulkSendModal";
 
 export default async function Page({
   params,
@@ -33,6 +34,9 @@ export default async function Page({
             name: user.name,
           }}
         >
+          <div className="w-full flex justify-end mb-4">
+            <BulkSendModal />
+          </div>
           <ActiveChatComponent chats={chats} activeUserId={params.userId}>
             <ConnectedChat
               defaultMessages={messages}

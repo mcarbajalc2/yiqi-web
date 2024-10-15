@@ -17,7 +17,7 @@ CREATE TYPE "EventBotType" AS ENUM ('openAI');
 CREATE TYPE "MessageThreadType" AS ENUM ('whatsapp', 'email');
 
 -- CreateEnum
-CREATE TYPE "ReminderType" AS ENUM ('ORG_INVITE', 'RESERVATION_PAYMENT_REMINDER', 'RESERVATION_CONFIRMED', 'RESERVATION_REJECTED', 'RESERVATION_REMINDER');
+CREATE TYPE "NotificationType" AS ENUM ('ORG_INVITE', 'RESERVATION_PAYMENT_REMINDER', 'RESERVATION_CONFIRMED', 'RESERVATION_REJECTED', 'RESERVATION_REMINDER', 'BASE_NOTIFICATION');
 
 -- CreateEnum
 CREATE TYPE "JobStatus" AS ENUM ('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED');
@@ -177,6 +177,8 @@ CREATE TABLE "MessageThread" (
     "externalId" TEXT,
     "type" "MessageThreadType" NOT NULL,
     "contextUserId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "MessageThread_pkey" PRIMARY KEY ("id")
 );
@@ -215,7 +217,7 @@ CREATE TABLE "Notification" (
     "eventId" TEXT,
     "senderUserId" TEXT,
     "organizationId" TEXT NOT NULL,
-    "type" "ReminderType" NOT NULL,
+    "type" "NotificationType" NOT NULL,
     "sentAt" TIMESTAMP(3),
     "scheduledFor" TIMESTAMP(3) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,

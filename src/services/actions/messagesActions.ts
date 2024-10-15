@@ -9,12 +9,12 @@ import { getUser, isEventAdmin, isOrganizerAdmin } from "@/lib/auth/lucia";
 import {
   OrgMessageListItemSchema,
   MessageListSchema,
-  MessageThreadType,
-  MessageThreadTypeEnum,
-  MessageSchema,
 } from "@/schemas/messagesSchema";
-import { sendEmailToUser } from "@/lib/email/handlers/sendMessageToUser";
-import { MailTemplatesIds } from "@/lib/email/lib";
+import {
+  sendBaseMessageToUser,
+  SendBaseMessageToUserProps,
+} from "../notifications/sendBaseMessageToUser";
+import { NotificationType } from "@prisma/client";
 
 export async function getUserMessageList(userId: string, orgId: string) {
   const currentUser = await getUser();
@@ -109,12 +109,9 @@ export async function getOrganizationMessageThreads(orgId: string) {
   return messageThreads.map((thread) => OrgMessageListItemSchema.parse(thread));
 }
 
-export async function sendUserCommunication(props: {
-  destinationUserId: string;
-  content: string;
-  messageType: MessageThreadType;
-  orgId: string;
-}) {
+export async function sendUserCommunicationAction(
+  props: SendBaseMessageToUserProps
+) {
   const currentUser = await getUser();
   if (!currentUser) throw new Error("Unauthorized");
 
@@ -123,37 +120,78 @@ export async function sendUserCommunication(props: {
     throw new Error("Unauthorized: no access to event or organization");
   }
 
-  const thread = await prisma.messageThread.findFirst({
-    where: {
-      contextUserId: currentUser.id,
-      type: props.messageType,
-      organizationId: props.orgId,
+  return sendBaseMessageToUser({
+    destinationUserId: props.destinationUserId,
+    content: props.content,
+    messageType: props.messageType,
+    orgId: props.orgId,
+  });
+}
+
+// adds the notifications to the notifictions queue for the cron job to handle.
+// we do this because we don't want to block the request if the list is large
+// and we want to be able to send multiple messages in a row without waiting for the previous one to finish
+export async function sendBulkMessagesAction({
+  eventId,
+  ...props
+}: SendBaseMessageToUserProps & {
+  eventId?: string;
+}) {
+  const currentUser = await getUser();
+  if (!currentUser) throw new Error("Unauthorized");
+
+  const isAllowed = await isOrganizerAdmin(props.orgId, currentUser.id);
+  if (!isAllowed) {
+    throw new Error("Unauthorized: not allowed to see messages");
+  }
+
+  const events = await prisma.event.findMany({
+    where: eventId
+      ? {
+          id: eventId,
+        }
+      : {
+          organizationId: props.orgId,
+        },
+    include: {
+      registrations: {
+        include: {
+          user: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      },
     },
   });
 
-  if (!thread) {
-    throw new Error("Thread not found");
-  }
+  const notificationsToSend: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    extraData: any;
+    userId: string;
+    eventId: string;
+    organizationId: string;
+    type: NotificationType;
+    scheduledFor: Date;
+  }[] = [];
 
-  if (thread.type === MessageThreadTypeEnum.Enum.whatsapp) {
-    const result = await sendUserWhatsappMessage({
-      destinationUserId: props.destinationUserId,
-      content: props.content,
-      threadId: thread.id,
+  events.forEach((event) => {
+    event.registrations.forEach((registration) => {
+      notificationsToSend.push({
+        userId: registration.user.id,
+        eventId: event.id,
+        organizationId: event.organizationId,
+        type: NotificationType.BASE_NOTIFICATION,
+        extraData: props,
+        scheduledFor: new Date(),
+      });
     });
-    return MessageSchema.parse(result);
-  } else if (thread.type === MessageThreadTypeEnum.Enum.email) {
-    const result = await sendEmailToUser({
-      templateId: MailTemplatesIds.BASE_EMAIL_TEMPLATE,
-      dynamicTemplateData: {
-        content: props.content,
-      },
-      destinationUserId: props.destinationUserId,
-      threadId: thread.id,
-      subject: "Mensaje de la plataforma",
-    });
-    return MessageSchema.parse(result);
-  }
+  });
 
-  throw new Error("Invalid message type");
+  const notifications = await prisma.notification.createMany({
+    data: notificationsToSend,
+  });
+
+  return notifications;
 }

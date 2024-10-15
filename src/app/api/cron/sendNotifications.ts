@@ -1,6 +1,10 @@
 // pages/api/checkUnpaidUsers.ts
 
 import prisma from "@/lib/prisma";
+import {
+  sendBaseMessageToUser,
+  SendBaseMessageToUserPropsSchema,
+} from "@/services/notifications/sendBaseMessageToUser";
 import sendPaymentReminder from "@/services/notifications/sendPaymentReminder";
 import { NextApiRequest, NextApiResponse } from "next";
 
@@ -15,9 +19,6 @@ export default async function handler(
         lte: new Date(),
       },
       sentAt: null,
-      eventId: {
-        not: null,
-      },
       user: {
         stopCommunication: false,
       },
@@ -38,23 +39,22 @@ export default async function handler(
         if (!notification.user) {
           throw "user is missing";
         }
+        if (!notification.event) {
+          throw "event is missing";
+        }
+
         await sendPaymentReminder(
           notification.user,
           notification.event,
           notification.organization
         );
+      } else if (notification.type === "BASE_NOTIFICATION") {
+        const data = SendBaseMessageToUserPropsSchema.parse(
+          notification.extraData
+        );
+
+        await sendBaseMessageToUser(data);
       }
-      // else if (notification.type === "FORM_SUBMISSION" && notification.form) {
-      //   if (!notification.user) {
-      //     throw "user is missing";
-      //   }
-      //   await sendFormSubmissionNotification(
-      //     notification.user,
-      //     notification.event,
-      //     notification.organization,
-      //     notification.form
-      //   );
-      // }
     }
 
     // Mark the notification as sent

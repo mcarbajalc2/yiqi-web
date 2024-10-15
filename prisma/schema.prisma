@@ -278,7 +278,7 @@ model Notification {
   senderUserId   String?
   organization   Organization @relation(fields: [organizationId], references: [id])
   organizationId String
-  type           ReminderType
+  type           NotificationType
   sentAt         DateTime?
   scheduledFor   DateTime // When the reminder should be sent
   createdAt      DateTime     @default(now())
@@ -288,12 +288,13 @@ model Notification {
   extraData      Json?
 }
 
-enum ReminderType {
+enum NotificationType {
   ORG_INVITE
   RESERVATION_PAYMENT_REMINDER
   RESERVATION_CONFIRMED
   RESERVATION_REJECTED
   RESERVATION_REMINDER
+  BASE_NOTIFICATION
 }
 
 model Form {
