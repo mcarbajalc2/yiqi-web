@@ -21,6 +21,10 @@ import {
   ReservationReminder,
   ReservationReminderProps,
 } from "./templates/ReservationReminder";
+import {
+  BaseEmailTemplate,
+  BaseEmailTemplateProps,
+} from "./templates/BaseEmailTemplate";
 
 // Enum for template IDs
 export enum MailTemplatesIds {
@@ -29,6 +33,7 @@ export enum MailTemplatesIds {
   RESERVATION_CONFIRMED = "RESERVATION_CONFIRMED",
   RESERVATION_REJECTED = "RESERVATION_REJECTED",
   RESERVATION_REMINDER = "RESERVATION_REMINDER",
+  BASE_EMAIL_TEMPLATE = "BASE_EMAIL_TEMPLATE",
   // Add more templates as needed
 }
 
@@ -39,6 +44,7 @@ export interface TemplatePropsMap {
   [MailTemplatesIds.RESERVATION_CONFIRMED]: EventAttendanceConfirmedProps;
   [MailTemplatesIds.RESERVATION_REJECTED]: EventRegistrationRejectedProps;
   [MailTemplatesIds.RESERVATION_REMINDER]: ReservationReminderProps;
+  [MailTemplatesIds.BASE_EMAIL_TEMPLATE]: BaseEmailTemplateProps;
   // Add other template mappings as needed
 }
 
@@ -51,6 +57,7 @@ export const MailTemplateMap: {
   [MailTemplatesIds.RESERVATION_CONFIRMED]: EventAttendanceConfirmed,
   [MailTemplatesIds.RESERVATION_REJECTED]: EventRegistrationRejected,
   [MailTemplatesIds.RESERVATION_REMINDER]: ReservationReminder,
+  [MailTemplatesIds.BASE_EMAIL_TEMPLATE]: BaseEmailTemplate,
   // Add other templates as needed
 };
 

@@ -33,7 +33,7 @@ export default async function sendPaymentReminder(
         threadId: thread.id,
         // todo modify the type for the one u need.
         dynamicTemplateData: { event, user: realUser },
-        eventId: event.id,
+
         subject: "You can still get your tickets.",
         // TODO change this to something meaninfull like payment reminder
         templateId: MailTemplatesIds.RESERVATION_PAYMENT_REMINDER,

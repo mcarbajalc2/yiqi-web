@@ -13,7 +13,6 @@ export type SendEmailToUserType<T extends MailTemplatesIds> = {
   dynamicTemplateData: TemplatePropsMap[T];
   destinationUserId: string;
   threadId: string;
-  eventId: string;
   content?: string | undefined;
   attachement?: string;
   senderUserId?: string;

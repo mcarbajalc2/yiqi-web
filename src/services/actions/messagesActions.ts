@@ -9,8 +9,12 @@ import { getUser, isEventAdmin, isOrganizerAdmin } from "@/lib/auth/lucia";
 import {
   OrgMessageListItemSchema,
   MessageListSchema,
+  MessageThreadType,
   MessageThreadTypeEnum,
+  MessageSchema,
 } from "@/schemas/messagesSchema";
+import { sendEmailToUser } from "@/lib/email/handlers/sendMessageToUser";
+import { MailTemplatesIds } from "@/lib/email/lib";
 
 export async function getUserMessageList(userId: string, orgId: string) {
   const currentUser = await getUser();
@@ -105,41 +109,46 @@ export async function getOrganizationMessageThreads(orgId: string) {
   return messageThreads.map((thread) => OrgMessageListItemSchema.parse(thread));
 }
 
-export async function getUserMessageThreadsIds(userId: string, orgId: string) {
+export async function sendUserCommunication(props: {
+  destinationUserId: string;
+  content: string;
+  messageType: MessageThreadType;
+  orgId: string;
+}) {
   const currentUser = await getUser();
   if (!currentUser) throw new Error("Unauthorized");
 
-  const isAllowed = await isOrganizerAdmin(orgId, currentUser.id);
+  const thread = await prisma.messageThread.findFirst({
+    where: {
+      contextUserId: currentUser.id,
+      type: props.messageType,
+      organizationId: props.orgId,
+    },
+  });
 
-  if (!isAllowed) {
-    throw new Error("Unauthorized: no access to event or organization");
+  if (!thread) {
+    throw new Error("Thread not found");
   }
 
-  const [whatsappThread, emailThread] = await Promise.all([
-    prisma.messageThread.findFirstOrThrow({
-      select: {
-        id: true,
+  if (thread.type === MessageThreadTypeEnum.Enum.whatsapp) {
+    const result = await sendUserWhatsappMessage({
+      destinationUserId: props.destinationUserId,
+      content: props.content,
+      threadId: thread.id,
+    });
+    return MessageSchema.parse(result);
+  } else if (thread.type === MessageThreadTypeEnum.Enum.email) {
+    const result = await sendEmailToUser({
+      templateId: MailTemplatesIds.BASE_EMAIL_TEMPLATE,
+      dynamicTemplateData: {
+        content: props.content,
       },
-      where: {
-        contextUserId: userId,
-        organizationId: orgId,
-        type: MessageThreadTypeEnum.Enum.whatsapp,
-      },
-    }),
-    prisma.messageThread.findFirstOrThrow({
-      select: {
-        id: true,
-      },
-      where: {
-        contextUserId: userId,
-        organizationId: orgId,
-        type: MessageThreadTypeEnum.Enum.email,
-      },
-    }),
-  ]);
+      destinationUserId: props.destinationUserId,
+      threadId: thread.id,
+      subject: "Mensaje de la plataforma",
+    });
+    return MessageSchema.parse(result);
+  }
 
-  return {
-    [MessageThreadTypeEnum.Enum.whatsapp]: whatsappThread.id,
-    [MessageThreadTypeEnum.Enum.email]: emailThread.id,
-  };
+  throw new Error("Invalid message type");
 }

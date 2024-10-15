@@ -7,7 +7,6 @@ import ConnectedChat from "@/components/chat/connectedChat";
 import {
   getOrganizationMessageThreads,
   getUserMessageList,
-  getUserMessageThreadsIds,
 } from "@/services/actions/messagesActions";
 
 export default async function Page({
@@ -23,7 +22,6 @@ export default async function Page({
 
   const chats = await getOrganizationMessageThreads(params.id);
   const messages = await getUserMessageList(user.id, params.id);
-  const threadIds = await getUserMessageThreadsIds(user.id, params.id);
   console.log(messages);
 
   // a couple of assumptions must be made here.
@@ -43,7 +41,7 @@ export default async function Page({
             <ConnectedChat
               defaultMessages={messages}
               userId={params.userId}
-              threadIds={threadIds}
+              orgId={params.id}
             />
           </ActiveChatComponent>
         </AdminLayout>

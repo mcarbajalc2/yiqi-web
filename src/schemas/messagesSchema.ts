@@ -7,10 +7,11 @@ const UserInfoSchema = z.object({
 });
 
 export const MessageThreadTypeEnum = z.enum(["whatsapp", "email"]);
-
+export type MessageThreadType = z.infer<typeof MessageThreadTypeEnum>;
 export const MessageSchema = z.object({
   id: z.string(),
   content: z.string(),
+  attachement: z.string().nullable(),
   createdAt: z.date(),
   senderUserId: z.string(),
   destinationUserId: z.string().nullable(),
