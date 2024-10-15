@@ -9,12 +9,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Users } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { OrgMessageListItemSchemaType } from "@/schemas/messagesSchema";
+import { cn } from "@/lib/utils";
 
 function Chats({
   contextUserName: name,
   userId,
   lastMessage,
-}: OrgMessageListItemSchemaType) {
+  isActive,
+}: OrgMessageListItemSchemaType & { isActive: boolean }) {
   function getFirst5Words(str: string): string {
     const words = str.split(" ");
     const first5Words = words.slice(0, 5);
@@ -23,7 +25,7 @@ function Chats({
 
   return (
     <Link prefetch={true} href={`/chat/${userId}`}>
-      <div className="border-b last:border-b-0">
+      <div className={cn("border-b last:border-b-0", isActive && "bg-accent")}>
         <div className="flex flex-row items-start gap-3 p-3 hover:bg-accent">
           <Avatar>
             <AvatarFallback>
@@ -45,9 +47,11 @@ function Chats({
 export default function ActiveChatComponent({
   chats,
   children,
+  activeUserId,
 }: {
   chats: OrgMessageListItemSchemaType[];
   children: React.ReactNode;
+  activeUserId: string;
 }) {
   return (
     <Card className="h-[80vh]">
@@ -61,7 +65,11 @@ export default function ActiveChatComponent({
               <ScrollArea className="flex-1">
                 <div className="pr-4">
                   {chats.map((chat, index) => (
-                    <Chats key={index} {...chat} />
+                    <Chats
+                      key={index}
+                      {...chat}
+                      isActive={chat.userId === activeUserId}
+                    />
                   ))}
                 </div>
               </ScrollArea>

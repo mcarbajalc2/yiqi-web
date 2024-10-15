@@ -118,6 +118,11 @@ export async function sendUserCommunication(props: {
   const currentUser = await getUser();
   if (!currentUser) throw new Error("Unauthorized");
 
+  const isAllowed = await isOrganizerAdmin(props.orgId, currentUser.id);
+  if (!isAllowed) {
+    throw new Error("Unauthorized: no access to event or organization");
+  }
+
   const thread = await prisma.messageThread.findFirst({
     where: {
       contextUserId: currentUser.id,

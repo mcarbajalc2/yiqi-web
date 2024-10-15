@@ -21,12 +21,8 @@ export default async function Page({
   }
 
   const chats = await getOrganizationMessageThreads(params.id);
-  const messages = await getUserMessageList(user.id, params.id);
-  console.log(messages);
+  const messages = await getUserMessageList(params.userId, params.id);
 
-  // a couple of assumptions must be made here.
-  // the sender can be anyone from the org
-  // if no destination or user then something went wrong
   if (user.role === Roles.USER) {
     return (
       <main className="flex flex-col items-center justify-center">
@@ -37,7 +33,7 @@ export default async function Page({
             name: user.name,
           }}
         >
-          <ActiveChatComponent chats={chats}>
+          <ActiveChatComponent chats={chats} activeUserId={params.userId}>
             <ConnectedChat
               defaultMessages={messages}
               userId={params.userId}
