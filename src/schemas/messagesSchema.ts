@@ -1,11 +1,37 @@
 import { z } from "zod";
 
+const UserInfoSchema = z.object({
+  id: z.string(),
+  name: z.string().nullable(),
+  picture: z.string().nullable(),
+});
+
+export const MessageThreadTypeEnum = z.enum(["whatsapp", "email"]);
+
+export const MessageSchema = z.object({
+  id: z.string(),
+  content: z.string(),
+  createdAt: z.date(),
+  senderUserId: z.string(),
+  destinationUserId: z.string().nullable(),
+  senderUser: UserInfoSchema.nullable(),
+  destinationUser: UserInfoSchema.nullable(),
+  messageThread: z.object({
+    type: MessageThreadTypeEnum,
+  }),
+});
+
+export const MessageListSchema = z.array(MessageSchema);
+
+export type Message = z.infer<typeof MessageSchema>;
+export type MessageList = z.infer<typeof MessageListSchema>;
+
 export const OrgMessageListItemSchema = z.object({
   id: z.string(),
   type: z.string(),
   organizationId: z.string(),
   contextUserId: z.string(),
-  userId: z.string(), // Add this line
+  userId: z.string(),
   contextUserName: z.string().nullable(),
   contextUserEmail: z.string().nullable(),
   contextUserPicture: z.string().nullable(),
@@ -16,3 +42,7 @@ export const OrgMessageListItemSchema = z.object({
     senderUserId: z.string(),
   }),
 });
+
+export type OrgMessageListItemSchemaType = z.infer<
+  typeof OrgMessageListItemSchema
+>;

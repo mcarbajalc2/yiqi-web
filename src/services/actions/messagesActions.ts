@@ -6,9 +6,12 @@ import {
   sendUserWhatsappMessageProps,
 } from "@/lib/whatsapp";
 import { getUser, isEventAdmin, isOrganizerAdmin } from "@/lib/auth/lucia";
-import { OrgMessageListItemSchema } from "@/schemas/messagesSchema";
+import {
+  OrgMessageListItemSchema,
+  MessageListSchema,
+} from "@/schemas/messagesSchema";
 
-export async function getUserMessageThreads(userId: string, orgId: string) {
+export async function getUserMessageList(userId: string, orgId: string) {
   const currentUser = await getUser();
   if (!currentUser) throw new Error("Unauthorized");
 
@@ -17,24 +20,37 @@ export async function getUserMessageThreads(userId: string, orgId: string) {
     throw new Error("Unauthorized: no access to event or organization");
   }
 
-  const messageThreads = await prisma.messageThread.findMany({
+  const messageList = await prisma.message.findMany({
     where: {
-      contextUserId: userId,
+      OR: [
+        {
+          senderUserId: userId,
+        },
+        {
+          destinationUserId: userId,
+        },
+      ],
     },
+    take: 40,
     orderBy: {
-      updatedAt: "desc",
+      createdAt: "desc",
     },
     include: {
-      messages: {
-        take: 30,
-        orderBy: {
-          createdAt: "desc",
+      senderUser: {
+        select: { id: true, name: true, picture: true },
+      },
+      destinationUser: {
+        select: { id: true, name: true, picture: true },
+      },
+      messageThread: {
+        select: {
+          type: true,
         },
       },
     },
   });
 
-  return messageThreads;
+  return MessageListSchema.parse(messageList);
 }
 
 export async function sendUserWhatsappMessageAction(
@@ -71,6 +87,7 @@ export async function getOrganizationMessageThreads(orgId: string) {
     orderBy: {
       updatedAt: "desc",
     },
+    take: 100,
     distinct: ["contextUserId"],
     include: {
       contextUser: true,

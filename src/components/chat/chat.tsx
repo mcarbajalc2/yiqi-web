@@ -8,10 +8,13 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { MessagesSquare, Users } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { OrgMessageListItemSchemaType } from "@/schemas/messagesSchema";
 
-type ChatProps = { name: string; message: string; messageSlug: string };
-
-function Chats({ name, message, messageSlug }: ChatProps) {
+function Chats({
+  contextUserName,
+  lastMessage,
+  userId,
+}: OrgMessageListItemSchemaType) {
   function getFirst5Words(str: string): string {
     const words = str.split(" ");
     const first5Words = words.slice(0, 5);
@@ -19,7 +22,7 @@ function Chats({ name, message, messageSlug }: ChatProps) {
   }
 
   return (
-    <Link prefetch={true} href={`/chat/${messageSlug}`}>
+    <Link prefetch={true} href={`/chat/${userId}`}>
       <div className="border-b last:border-b-0">
         <div className="flex flex-row items-start gap-3 p-3 hover:bg-accent">
           <Avatar>
@@ -28,9 +31,9 @@ function Chats({ name, message, messageSlug }: ChatProps) {
             </AvatarFallback>
           </Avatar>
           <div className="flex flex-col items-start gap-1">
-            <p className="font-bold">{name}</p>
+            <p className="font-bold">{contextUserName}</p>
             <p className="text-muted-foreground text-sm">
-              {getFirst5Words(message)}
+              {getFirst5Words(lastMessage.content)}
             </p>
           </div>
         </div>
@@ -39,7 +42,11 @@ function Chats({ name, message, messageSlug }: ChatProps) {
   );
 }
 
-export default function ChatComponent({ chats }: { chats: ChatProps[] }) {
+export default function ChatComponent({
+  chats,
+}: {
+  chats: OrgMessageListItemSchemaType[];
+}) {
   return (
     <Card className="h-[80vh]">
       <CardContent className="p-0 h-full">
@@ -52,12 +59,7 @@ export default function ChatComponent({ chats }: { chats: ChatProps[] }) {
               <ScrollArea className="flex-1">
                 <div className="pr-4">
                   {chats.map((chat, index) => (
-                    <Chats
-                      key={index}
-                      name={chat.name}
-                      message={chat.message}
-                      messageSlug={chat.messageSlug}
-                    />
+                    <Chats key={index} {...chat} />
                   ))}
                 </div>
               </ScrollArea>
