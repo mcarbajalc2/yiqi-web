@@ -4,48 +4,26 @@ import { Roles } from "@prisma/client";
 import AdminLayout from "@/components/chat/adminLayout";
 import ActiveChatComponent from "@/components/chat/activeChat";
 import ConnectedChat from "@/components/chat/connectedChat";
-import { getUserMessageList } from "@/services/actions/messagesActions";
+import {
+  getOrganizationMessageThreads,
+  getUserMessageList,
+  getUserMessageThreadsIds,
+} from "@/services/actions/messagesActions";
 
-export default async function Page({ params }: { params: { id: string } }) {
+export default async function Page({
+  params,
+}: {
+  params: { id: string; userId: string };
+}) {
   const user = await getUser();
 
   if (!user) {
     redirect("/auth");
   }
 
-  const fakeChats = [
-    {
-      name: "John Doe",
-      message:
-        "Hey, how are you doing today? I wanted to discuss something important.",
-      messageSlug: "chat-1",
-    },
-    {
-      name: "Jane Smith",
-      message:
-        "Don't forget about the meeting at 10 AM. We need to cover the project timeline.",
-      messageSlug: "chat-2",
-    },
-    {
-      name: "Alice Johnson",
-      message: "Can you review the code changes I pushed to the repository?",
-      messageSlug: "chat-3",
-    },
-    {
-      name: "Bob Williams",
-      message:
-        "Let’s grab coffee tomorrow. It’s been a while since we caught up!",
-      messageSlug: "chat-4",
-    },
-    {
-      name: "Eve Brown",
-      message:
-        "I’ve been thinking about some new ideas for the marketing strategy.",
-      messageSlug: "chat-5",
-    },
-  ];
-
+  const chats = await getOrganizationMessageThreads(params.id);
   const messages = await getUserMessageList(user.id, params.id);
+  const threadIds = await getUserMessageThreadsIds(user.id, params.id);
   console.log(messages);
 
   // a couple of assumptions must be made here.
@@ -61,8 +39,12 @@ export default async function Page({ params }: { params: { id: string } }) {
             name: user.name,
           }}
         >
-          <ActiveChatComponent chats={fakeChats}>
-            <ConnectedChat />
+          <ActiveChatComponent chats={chats}>
+            <ConnectedChat
+              defaultMessages={messages}
+              userId={params.userId}
+              threadIds={threadIds}
+            />
           </ActiveChatComponent>
         </AdminLayout>
       </main>

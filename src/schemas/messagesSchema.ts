@@ -18,6 +18,7 @@ export const MessageSchema = z.object({
   destinationUser: UserInfoSchema.nullable(),
   messageThread: z.object({
     type: MessageThreadTypeEnum,
+    id: z.string(),
   }),
 });
 

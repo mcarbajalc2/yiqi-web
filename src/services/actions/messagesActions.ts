@@ -9,6 +9,7 @@ import { getUser, isEventAdmin, isOrganizerAdmin } from "@/lib/auth/lucia";
 import {
   OrgMessageListItemSchema,
   MessageListSchema,
+  MessageThreadTypeEnum,
 } from "@/schemas/messagesSchema";
 
 export async function getUserMessageList(userId: string, orgId: string) {
@@ -45,6 +46,7 @@ export async function getUserMessageList(userId: string, orgId: string) {
       messageThread: {
         select: {
           type: true,
+          id: true,
         },
       },
     },
@@ -101,4 +103,43 @@ export async function getOrganizationMessageThreads(orgId: string) {
   });
 
   return messageThreads.map((thread) => OrgMessageListItemSchema.parse(thread));
+}
+
+export async function getUserMessageThreadsIds(userId: string, orgId: string) {
+  const currentUser = await getUser();
+  if (!currentUser) throw new Error("Unauthorized");
+
+  const isAllowed = await isOrganizerAdmin(orgId, currentUser.id);
+
+  if (!isAllowed) {
+    throw new Error("Unauthorized: no access to event or organization");
+  }
+
+  const [whatsappThread, emailThread] = await Promise.all([
+    prisma.messageThread.findFirstOrThrow({
+      select: {
+        id: true,
+      },
+      where: {
+        contextUserId: userId,
+        organizationId: orgId,
+        type: MessageThreadTypeEnum.Enum.whatsapp,
+      },
+    }),
+    prisma.messageThread.findFirstOrThrow({
+      select: {
+        id: true,
+      },
+      where: {
+        contextUserId: userId,
+        organizationId: orgId,
+        type: MessageThreadTypeEnum.Enum.email,
+      },
+    }),
+  ]);
+
+  return {
+    [MessageThreadTypeEnum.Enum.whatsapp]: whatsappThread.id,
+    [MessageThreadTypeEnum.Enum.email]: emailThread.id,
+  };
 }
