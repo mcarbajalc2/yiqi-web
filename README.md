@@ -73,7 +73,6 @@ Copy the contents of `.env.example` to a new file named `.env` and fill in the v
 - `CALLBACK`: OAuth callback URL
 - `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`: Google OAuth credentials
 - `DIRECT_URL` and `DATABASE_URL`: PostgreSQL database URLs
-- `UPLOADTHING_TOKEN`: UploadThing API token
 - `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`, `AWS_S3_BUCKET_NAME`: AWS S3 credentials for file uploads
 - Add any other required environment variables
 
@@ -85,7 +84,7 @@ Copy the contents of `.env.example` to a new file named `.env` and fill in the v
 - **Authentication**: NextAuth.js
 - **API**: tRPC for type-safe API calls from native apps
 - **Validation**: Zod for schema validation
-- **File Storage**: AWS S3 via UploadThing
+- **File Storage**: AWS S3
 - **Email**: AWS SES
 - **Payments**: Mercado Pago
 
