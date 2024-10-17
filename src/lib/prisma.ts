@@ -18,7 +18,7 @@ function prismaClientSingleton() {
       } else if (params.action === "createMany") {
         const messageThreadIds = params.args.data.map(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (message: any) => message.messageThreadId
+          (message: any) => message.messageThreadId,
         );
         await prisma.messageThread.updateMany({
           where: { id: { in: messageThreadIds } },

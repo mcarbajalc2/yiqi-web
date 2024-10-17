@@ -25,7 +25,7 @@ export async function handleGenerateEventOpenGraph({
     `${event.id}/openGraphImage.png`,
     {
       type: "image/png",
-    }
+    },
   );
   const openGraphImageUrl = await UploadToS3(posterFile);
   await prisma.event.update({
