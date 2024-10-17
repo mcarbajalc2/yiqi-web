@@ -11,57 +11,58 @@ import { Container, Main, Section } from "./mainLayout";
 // fake data
 
 // video background and navbar
-const cta = "List"
-const videoUrl = "/video.mp4"
-const  navItems = [
+const cta = "List";
+const videoUrl = "/video.mp4";
+const navItems = [
   {
     href: "#",
-    label: "new list item"
-  }
-]
+    label: "new list item",
+  },
+];
 
 // header
-const headerCta = 'submit'
-const headerDescription = 'this is Adino labs Grill tech meet up event '
-const headerTitle = 'The Best tech Grill meeting in Peru'
-const headerTitleSecondary = 'Meet with the best'
+const headerCta = "submit";
+const headerDescription = "this is Adino labs Grill tech meet up event ";
+const headerTitle = "The Best tech Grill meeting in Peru";
+const headerTitleSecondary = "Meet with the best";
 
 // event
 
-const motionHeader = '¿Qué es el TECH GRILL?'
-const videoSrc = "/2.mp4"
-const videoText = "Tu navegador no soporta el elemento de video."
+const motionHeader = "¿Qué es el TECH GRILL?";
+const videoSrc = "/2.mp4";
+const videoText = "Tu navegador no soporta el elemento de video.";
 const balanceText = `
   ¡Descubre TECH GRILL! Este evento único combina aprendizaje,
   diversión y networking en un ambiente relajado. Disfruta de una
   deliciosa parrillada y vino mientras interactúas con personas
   influyentes y aprendes de expertos en innovación y tecnologías
   emergentes. ¡Una experiencia imperdible!
-`
-const paymentText = "Comprar Entrada"
+`;
+const paymentText = "Comprar Entrada";
 
 // features
-const featMotion1 = "¿Qué encontrarás en el TECH GRILL?"
-const featMotion2 = "Una experiencia única que combina tecnología, networking y diversión"
-const featCta = "Reserva tu lugar"
+const featMotion1 = "¿Qué encontrarás en el TECH GRILL?";
+const featMotion2 =
+  "Una experiencia única que combina tecnología, networking y diversión";
+const featCta = "Reserva tu lugar";
 
 // pricing
 
-const title = "Tech Grill: Edición Halloween"
-const priceDescription = "S/. 65"
-const dateTime = "Sábado 2 de Noviembre, 7:00 PM - 10:00 PM"
-const location = "Los Laureles 104, Santiago de Surco 15023"
-const text1 =  "Acceso exclusivo al evento y charlas" 
-const text2 =  "Networking con líderes e innovadores de la industria tech" 
-const text3 =  "Dinamicas de networking efectivo y divertido"
-const text4 =  "Parrillada y bebidas incluidas durante todo el evento" 
-const priceCta = "Comprar Entrada" 
-const priceVideoSrc = "/output.mp4"
-const priceVideoText = "Tu navegador no soporta el elemento de video."
+const title = "Tech Grill: Edición Halloween";
+const priceDescription = "S/. 65";
+const dateTime = "Sábado 2 de Noviembre, 7:00 PM - 10:00 PM";
+const location = "Los Laureles 104, Santiago de Surco 15023";
+const text1 = "Acceso exclusivo al evento y charlas";
+const text2 = "Networking con líderes e innovadores de la industria tech";
+const text3 = "Dinamicas de networking efectivo y divertido";
+const text4 = "Parrillada y bebidas incluidas durante todo el evento";
+const priceCta = "Comprar Entrada";
+const priceVideoSrc = "/output.mp4";
+const priceVideoText = "Tu navegador no soporta el elemento de video.";
 
 // Gallery props
 
-const galleryHeader = "Así lo pasamos en nuestros eventos"
+const galleryHeader = "Así lo pasamos en nuestros eventos";
 
 export default function Home() {
   return (
@@ -71,25 +72,25 @@ export default function Home() {
       <Main>
         <Container>
           <Section>
-            <Header 
-              cta={headerCta} 
-              headerDescription={headerDescription} 
-              headerTitle={headerTitle} 
-              headerTitleSecondary={headerTitleSecondary} 
+            <Header
+              cta={headerCta}
+              headerDescription={headerDescription}
+              headerTitle={headerTitle}
+              headerTitleSecondary={headerTitleSecondary}
             />
-            <Evento 
-              motionHeader={motionHeader} 
+            <Evento
+              motionHeader={motionHeader}
               balanceText={balanceText}
-              paymentText={paymentText} 
-              videoSrc={videoSrc} 
-              videoText={videoText} 
+              paymentText={paymentText}
+              videoSrc={videoSrc}
+              videoText={videoText}
             />
             <Feature
               featCta={featCta}
               featMotion1={featMotion1}
               featMotion2={featMotion2}
             />
-            <PrecioEvento 
+            <PrecioEvento
               cta={priceCta}
               description={priceDescription}
               dateTime={dateTime}
@@ -103,9 +104,7 @@ export default function Home() {
               text3={text3}
               text4={text4}
             />
-            <ImageGallery
-              header1={galleryHeader}
-            />
+            <ImageGallery header1={galleryHeader} />
             <Footer />
           </Section>
         </Container>
