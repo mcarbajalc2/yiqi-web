@@ -29,6 +29,11 @@ export const getUser = async () => {
     return null;
   }
   const { session, user } = await lucia.validateSession(sessionId);
+
+  if (!user || !session) {
+    return null;
+  }
+
   try {
     if (session && session.fresh) {
       // refreshing their session cookie
@@ -50,7 +55,6 @@ export const getUser = async () => {
   } catch (error) {
     console.error(error);
   }
-
   const dbUser = await prisma.user.findUnique({
     where: {
       id: user?.id,
