@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,7 +17,7 @@ import {
 
 export function BulkSendModal() {
   const [messageType, setMessageType] = useState<MessageThreadType>(
-    MessageThreadTypeEnum.Enum.whatsapp,
+    MessageThreadTypeEnum.Enum.whatsapp
   );
 
   const handleBulkSend = async (values: { message: string }) => {
