@@ -179,3 +179,9 @@ export async function getUserRegistrationStatus(
   });
   return attendee ? true : false;
 }
+
+export async function getEventDetails(eventId: string) {
+  const event = await getEvent(eventId);
+
+  return DbEventSchema.parse(event);
+}
