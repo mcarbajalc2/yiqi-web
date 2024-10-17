@@ -1,3 +1,4 @@
+"use server";
 import prisma from "@/lib/prisma";
 import { GenerateSpeakersEventPoster } from "../media-generator/GenerateSpeakersEventPoster";
 import { UploadToS3 } from "@/lib/uploadToS3";

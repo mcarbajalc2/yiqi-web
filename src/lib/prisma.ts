@@ -1,35 +1,57 @@
 import { PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 function prismaClientSingleton() {
-  const prisma = new PrismaClient();
+  const prisma = new PrismaClient().$extends({
+    query: {
+      message: {
+        create: async ({ args, query }) => {
+          const result = await query(args);
 
-  prisma.$use(async (params, next) => {
-    const result = await next(params);
+          const messageThreadId = args.data.messageThreadId ?? undefined;
 
-    if (
-      params.model === "Message" &&
-      (params.action === "create" || params.action === "createMany")
-    ) {
-      if (params.action === "create") {
-        await prisma.messageThread.update({
-          where: { id: params.args.data.messageThreadId },
-          data: { updatedAt: new Date() },
-        });
-      } else if (params.action === "createMany") {
-        const messageThreadIds = params.args.data.map(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (message: any) => message.messageThreadId,
-        );
-        await prisma.messageThread.updateMany({
-          where: { id: { in: messageThreadIds } },
-          data: { updatedAt: new Date() },
-        });
-      }
-    }
+          if (messageThreadId) {
+            await prisma.messageThread.update({
+              where: { id: messageThreadId },
+              data: { updatedAt: new Date() },
+            });
+          }
 
-    return result;
+          return result;
+        },
+        createMany: async ({ args, query }) => {
+          const result = await query(args);
+          if (Array.isArray(args.data)) {
+            const messageThreadIds = args.data
+              .map(
+                (message: Prisma.MessageCreateManyInput) =>
+                  message.messageThreadId,
+              )
+              .filter(
+                (id: string | null | undefined): id is string =>
+                  id !== null && id !== undefined,
+              );
+
+            if (messageThreadIds.length > 0) {
+              await prisma.messageThread.updateMany({
+                where: { id: { in: messageThreadIds } },
+                data: { updatedAt: new Date() },
+              });
+            }
+          } else {
+            const messageThreadId = args.data.messageThreadId ?? undefined;
+            if (messageThreadId) {
+              await prisma.messageThread.update({
+                where: { id: messageThreadId },
+                data: { updatedAt: new Date() },
+              });
+            }
+          }
+          return result;
+        },
+      },
+    },
   });
-
   return prisma;
 }
 
