@@ -30,7 +30,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { createEvent } from "@/services/actions/eventActions";
+
 const EventSchema = z.object({
   title: z.string().min(1, "Title is required"),
   description: z.string().optional(),
@@ -143,7 +143,7 @@ function CreateEventForm() {
                       role="combobox"
                       className={cn(
                         "w-[200px] justify-between",
-                        !field.value && "text-muted-foreground",
+                        !field.value && "text-muted-foreground"
                       )}
                     >
                       {field.value ? (
