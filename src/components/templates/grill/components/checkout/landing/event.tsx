@@ -7,16 +7,15 @@ import { ChevronRight, PlayCircle } from "lucide-react";
 import Balancer from "react-wrap-balancer";
 import Link from "next/link";
 
-export interface EventProps {
+export interface GrillEventProps {
   motionHeader: string;
   videoSrc: string;
   videoText: string;
   balanceText: string;
   paymentText: string;
-
 }
 
-export default function Evento(props: EventProps) {
+export default function Evento(props: GrillEventProps) {
   const [isPlaying, setIsPlaying] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
 
@@ -97,9 +96,7 @@ export default function Evento(props: EventProps) {
           className="mt-4 flex flex-col items-center justify-center"
         >
           <p className="mt-2 text-orange-300 text-base md:text-lg lg:text-xl max-w-2xl mx-auto p-2">
-            <Balancer>
-              {props.balanceText}
-            </Balancer>
+            <Balancer>{props.balanceText}</Balancer>
           </p>
         </motion.div>
         <motion.div variants={itemVariants} className="flex justify-center">
