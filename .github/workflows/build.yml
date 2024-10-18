@@ -10,8 +10,24 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: ankane/pgvector
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: andino
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     env:
-      FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+      FROM_EMAIL: fake@example.com
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/andino
 
     steps:
       - uses: actions/checkout@v3
@@ -24,13 +40,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
+      - name: Generate Prisma Client
+        run: npm run generate
+
+      - name: Run Prisma Migrations
+        run: npm run migrate
+
+      - name: Build and Lint
         run: npm run build && npm run lint
-        env:
-          FROM_EMAIL: fake@example.com
 
     # Optionally, add a test step if you have tests
     # - name: Run tests
     #   run: npm test
     #   env:
     #     FROM_EMAIL: ${{ secrets.FROM_EMAIL }}
+    #     DATABASE_URL: postgresql://postgres:postgres@localhost:5432/andino
