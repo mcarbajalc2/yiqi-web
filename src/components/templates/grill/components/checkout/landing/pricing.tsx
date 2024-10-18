@@ -120,7 +120,7 @@ export default function PrecioEvento(props: GrillPricingProps) {
               variants={itemVariants}
               className="flex flex-col items-center justify-center text-white text-left space-y-4 mb-8"
             >
-              {props.texts.map((item: any, index: any) => (
+              {props.texts.map((item: string, index: number) => (
                 <motion.li
                   key={index}
                   className="flex items-start text-sm sm:text-base"

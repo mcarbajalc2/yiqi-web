@@ -1,18 +1,16 @@
-import { OrgMessageListItemSchema } from "@/schemas/messagesSchema";
-import { Twitter, Instagram, Linkedin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 export interface SocialLink {
-  url: string,
-  label: string,
-  icon: React.ElementType
+  url: string;
+  label: string;
+  icon: React.ElementType;
 }
 
-interface MinimalisticFooterProps{
-  imageSrc: string,
-  socials: SocialLink[],
+interface MinimalisticFooterProps {
+  imageSrc: string;
+  socials: SocialLink[];
 }
 
 export default function MinimalisticFooter(props: MinimalisticFooterProps) {
@@ -34,10 +32,7 @@ export default function MinimalisticFooter(props: MinimalisticFooterProps) {
             <SocialLink key={index} href={items.url} aria-label={items.label}>
               <items.icon className="w-5 h-5" />
             </SocialLink>
-
           ))}
-          
-          
         </div>
       </div>
     </footer>

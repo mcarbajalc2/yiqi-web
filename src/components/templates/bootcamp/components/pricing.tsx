@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-export interface PriceGrid{
+export interface PriceGrid {
   price: string;
   title: string;
   subtitle?: string;
@@ -9,9 +9,9 @@ export interface PriceGrid{
 }
 
 interface pricingProps {
-  imageSrc: string,
-  title: string,
-  priceDetails: PriceGrid[]
+  imageSrc: string;
+  title: string;
+  priceDetails: PriceGrid[];
 }
 
 export default function Pricing(props: pricingProps) {
@@ -20,7 +20,7 @@ export default function Pricing(props: pricingProps) {
       <div className="relative overflow-hidden rounded-3xl">
         <div className="relative -z-50">
           <Image
-            src={props.imageSrc || '/AndinoLabs.svg'}
+            src={props.imageSrc || "/AndinoLabs.svg"}
             alt="Earth from space"
             width={1200}
             height={400}
@@ -32,8 +32,7 @@ export default function Pricing(props: pricingProps) {
           {props.title}
         </h2>
         <div className="flex flex-col sm:flex-row gap-6 justify-center -mt-16 sm:-mt-24 px-4 sm:px-8">
-          {props.priceDetails.map((items, index) =>(
-
+          {props.priceDetails.map((items, index) => (
             <PriceCard
               key={index}
               price={items.price}
@@ -41,7 +40,6 @@ export default function Pricing(props: pricingProps) {
               features={items.features}
             />
           ))}
-           
         </div>
       </div>
     </div>

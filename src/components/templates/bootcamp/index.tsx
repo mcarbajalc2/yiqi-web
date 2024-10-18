@@ -1,4 +1,4 @@
-import Faq, { FeatDisplayer } from "./components/boot/faq";
+import Faq from "./components/boot/faq";
 import ContactSection from "./components/contactsection";
 import { Curricula } from "./components/curricula/curricula";
 import MinimalisticFooter, { SocialLink } from "./components/footer";
@@ -8,85 +8,80 @@ import Pricing, { PriceGrid } from "./components/pricing";
 import TrustedByCarousel from "./components/trusted/trusted";
 import { Twitter, Instagram, Linkedin } from "lucide-react";
 
-
-
 // nav bar
 
-const imagesrc =  "/logoandino.svg"
 const url = [
   {
     link: "#curricula",
-    text:"Curricula",
+    text: "Curricula",
   },
   {
     link: "#precio",
-    text:"Curricula",
+    text: "Curricula",
   },
   {
     link: "https://youtu.be/es-E_6TAQrQ?si=x95Uck-wIdEvUzL1",
-    text:"Nosotros",
+    text: "Nosotros",
   },
-  
-]
+];
 
-const cta ={
-    link: "#contacto",
-    text: "Registrate"
-}
-
-
+const cta = {
+  link: "#contacto",
+  text: "Registrate",
+};
 
 // ResponsiveVideoHero props
 
 const videoProps = {
-
-  videoSrc : "/e.mp4",
-  videoText : "Your browser does not support the video tag.",
-  title : "Impulsa tu carrera en inteligencia artificial",
-  description : "Unete al futuro de la industria tecnologica con este bootcamp hecho por expertos de la industria",
-  ctaUrl1 : "#contacto",
-  cta1 : "Quiero empezar!",
-  ctaUrl2 : "#curricula",
-  cta2 : "Quiero saber más",
-}
-
+  videoSrc: "/e.mp4",
+  videoText: "Your browser does not support the video tag.",
+  title: "Impulsa tu carrera en inteligencia artificial",
+  description:
+    "Unete al futuro de la industria tecnologica con este bootcamp hecho por expertos de la industria",
+  ctaUrl1: "#contacto",
+  cta1: "Quiero empezar!",
+  ctaUrl2: "#curricula",
+  cta2: "Quiero saber más",
+};
 
 // trusted by carousel
 
-const TrustedTitle = "Hemos capacitado a equipos de:"
+const TrustedTitle = "Hemos capacitado a equipos de:";
 
 // FAQ
 
-const header1 = "¿Qué encontrarás en"
-const header2 = " nuestro Bootcamp?"
+const header1 = "¿Qué encontrarás en";
+const header2 = " nuestro Bootcamp?";
 const feat1 = {
   title: "Sesiones en vivo",
-  subtitle: "Cada semana tendremos una sesión de capacitación con un experto en el tema con amplia experiencia"
-
-}
+  subtitle:
+    "Cada semana tendremos una sesión de capacitación con un experto en el tema con amplia experiencia",
+};
 
 const feat2 = {
   title: "Proyectos",
-  subtitle: "Nuestro programa se enfoca en un 80% de práctica, con ejercicios, tareas y sesiones en vivo de programación, complementado por un 20% de teoría para consolidar los conceptos clave."
-}
+  subtitle:
+    "Nuestro programa se enfoca en un 80% de práctica, con ejercicios, tareas y sesiones en vivo de programación, complementado por un 20% de teoría para consolidar los conceptos clave.",
+};
 
 const feat3 = {
   title: "Recompensas",
-  subtitle: "Premios y recompensas sorpresa para bonificar la participación e innovación de los participantes."
-}
+  subtitle:
+    "Premios y recompensas sorpresa para bonificar la participación e innovación de los participantes.",
+};
 
 const feat4 = {
   title: "Mentorías",
-  subtitle: "Te asignaremos mentores para que puedas resolver todas tus dudas en una sesión privada fuera de clases."
-}
-
+  subtitle:
+    "Te asignaremos mentores para que puedas resolver todas tus dudas en una sesión privada fuera de clases.",
+};
 
 // curricular
-const curriculaTitle = "¿Cuál será el plan de estudios?"
+const curriculaTitle = "¿Cuál será el plan de estudios?";
 const curriculaLink = {
   link: "/course",
-  text: "Ver curricula completa"
-}
+  text: "Ver curricula completa",
+};
 const dummyContent = [
   {
     title: "Fundamentos de inteligencia artificial generativa",
@@ -150,8 +145,8 @@ const dummyContent = [
 
 // pricing props
 
-const priceImg = "/spacex.jpg"
-const priceTitle = "Nuestros precios"
+const priceImg = "/spacex.jpg";
+const priceTitle = "Nuestros precios";
 
 const priceDetails: PriceGrid[] = [
   {
@@ -162,7 +157,7 @@ const priceDetails: PriceGrid[] = [
       "Material educativo",
       "Tutorías online",
       "Evento presencial networking",
-    ]
+    ],
   },
   {
     price: "100",
@@ -173,24 +168,22 @@ const priceDetails: PriceGrid[] = [
       "Material educativo",
       "Tutorías online",
       "Evento presencial networking",
-    ]
+    ],
   },
-]
+];
 
 // contact
-const contactVid = "/c.mp4"
-const contactText = "Your browser does not support the video tag."
+const contactVid = "/c.mp4";
+const contactText = "Your browser does not support the video tag.";
 const contactHeader = [
   {
     header1: "Postula a nuestro ",
-    header2: "bootcamp"
-
-  }
-]
-
+    header2: "bootcamp",
+  },
+];
 
 // minimalistic footer
-const footerImg = "/logoandino.svg"
+const footerImg = "/logoandino.svg";
 
 const socials: SocialLink[] = [
   {
@@ -208,22 +201,15 @@ const socials: SocialLink[] = [
     label: "LinkedIn",
     icon: Linkedin,
   },
-]
-
+];
 
 export default async function BootcampTemplate1() {
   return (
     <main className="absolute flex flex-col max-w-screen items-center justify-center w-full md:px-16 p-7">
-      <Navbar 
-        imgSrc=""
-        url={url}
-        cta={cta}
-      />
-      <ResponsiveVideoHero
-        videoProps={videoProps}
-      />
+      <Navbar imgSrc="" url={url} cta={cta} />
+      <ResponsiveVideoHero videoProps={videoProps} />
       <TrustedByCarousel title={TrustedTitle} />
-      <Faq 
+      <Faq
         feat1={feat1}
         feat2={feat2}
         feat3={feat3}
@@ -246,10 +232,7 @@ export default async function BootcampTemplate1() {
         videoSrc={contactVid}
         videoText={contactText}
       />
-      <MinimalisticFooter
-        imageSrc={footerImg}
-        socials={socials}
-      />
+      <MinimalisticFooter imageSrc={footerImg} socials={socials} />
     </main>
   );
 }

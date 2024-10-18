@@ -14,9 +14,8 @@ interface ResponsiveVideoHero {
   ctaUrl2: string;
   cta2: string;
 }
-export interface ResponsiveVideoHeroProps{
-  videoProps: ResponsiveVideoHero
-
+export interface ResponsiveVideoHeroProps {
+  videoProps: ResponsiveVideoHero;
 }
 export default function ResponsiveVideoHero(props: ResponsiveVideoHeroProps) {
   const [isClient, setIsClient] = useState(false);

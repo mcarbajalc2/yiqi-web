@@ -3,13 +3,13 @@
 import { useState, useEffect } from "react";
 import { ContactForm } from "./contact-form";
 interface header {
-  header1: string,
-  header2: string,
+  header1: string;
+  header2: string;
 }
-export interface ContactProps{
-  videoSrc: string,
-  videoText: string,
-  header: header[]
+export interface ContactProps {
+  videoSrc: string;
+  videoText: string;
+  header: header[];
 }
 
 export default function ContactSection(props: ContactProps) {
@@ -40,13 +40,12 @@ export default function ContactSection(props: ContactProps) {
 
       {/* Content Overlay */}
       <div className="absolute inset-0 bg-black bg-opacity-40 flex md:flex-row flex-col gap-12 items-center justify-center text-white p-4">
-          {/* {props.header.header1} <br /> {props.header.header2} */}
-          {props.header.map((items, index) =>(
-            <h1 key={index}>
-              {items.header1} <br /> {items.header2}
-
-            </h1>
-          ))}
+        {/* {props.header.header1} <br /> {props.header.header2} */}
+        {props.header.map((items, index) => (
+          <h1 key={index}>
+            {items.header1} <br /> {items.header2}
+          </h1>
+        ))}
         <ContactForm />
       </div>
     </div>

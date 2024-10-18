@@ -15,19 +15,18 @@ import Link from "next/link";
 import { TracingBeam } from "../tb";
 import { Urlprop } from "../navbar/navbar";
 
-interface DummyContent{
-  title: string,
-  description: React.JSX.Element,
-  badge: string,
-  image: string,
+interface DummyContent {
+  title: string;
+  description: React.JSX.Element;
+  badge: string;
+  image: string;
 }
 
 interface CurriculaProps {
-  title: string,
-  dummyContent: DummyContent[],
-  url:Urlprop,
+  title: string;
+  dummyContent: DummyContent[];
+  url: Urlprop;
 }
-
 
 export function Curricula(props: CurriculaProps) {
   return (
@@ -35,9 +34,7 @@ export function Curricula(props: CurriculaProps) {
       id="curricula"
       className="max-w-screen flex flex-col items-center justify-center px-4 py-12"
     >
-      <h1 className="text-4xl font-bold mb-8 text-center">
-        {props.title}
-      </h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">{props.title}</h1>
       <TracingBeam className=" md:block hidden w-full max-w-screen">
         <div className="max-w-2xl mx-auto antialiased pt-4 relative">
           {props.dummyContent.map((item, index) => (

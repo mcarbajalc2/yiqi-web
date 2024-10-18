@@ -82,8 +82,7 @@ export default function Navbar(props: NavBarProps) {
           ${isMenuOpen ? "h-full justify-center" : ""}
         `}
         >
-          {props.url.map((item, index) =>(
-
+          {props.url.map((item, index) => (
             <Link
               key={index}
               href={item.link}
@@ -93,24 +92,7 @@ export default function Navbar(props: NavBarProps) {
               {item.text}
             </Link>
           ))}
-          
-          
 
-            <Link
-              href={props.cta.link}
-              className="md:hidden mt-4 w-full max-w-xs"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              <div className="relative flex flex-row gap-2 items-center justify-center text-lg font-semibold group hover:bg-black hover:text-white text-black border border-black p-2 px-4 rounded-full transition-colors duration-300">
-                {props.cta.text}
-                <ArrowRightIcon className="w-4 h-4 group-hover:-rotate-45 transition-all" />
-              </div>
-            </Link>
-        
-          
-        </div>
-
-        
           <Link
             href={props.cta.link}
             className="md:hidden mt-4 w-full max-w-xs"
@@ -121,7 +103,18 @@ export default function Navbar(props: NavBarProps) {
               <ArrowRightIcon className="w-4 h-4 group-hover:-rotate-45 transition-all" />
             </div>
           </Link>
-         
+        </div>
+
+        <Link
+          href={props.cta.link}
+          className="md:hidden mt-4 w-full max-w-xs"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          <div className="relative flex flex-row gap-2 items-center justify-center text-lg font-semibold group hover:bg-black hover:text-white text-black border border-black p-2 px-4 rounded-full transition-colors duration-300">
+            {props.cta.text}
+            <ArrowRightIcon className="w-4 h-4 group-hover:-rotate-45 transition-all" />
+          </div>
+        </Link>
       </div>
       {isMenuOpen && (
         <div
