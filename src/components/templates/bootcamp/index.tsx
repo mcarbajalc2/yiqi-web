@@ -7,6 +7,12 @@ import Navbar from "./components/navbar/navbar";
 import Pricing from "./components/pricing";
 import TrustedByCarousel from "./components/trusted/trusted";
 
+
+// nav bar
+
+const imagesrc =  "/logoandino.svg"
+
+
 // ResponsiveVideoHero props
 const videoSrc = "/e.mp4"
 const videoText = "Your browser does not support the video tag."
@@ -50,7 +56,10 @@ const feat4 = {
 export default async function BootcampTemplate1() {
   return (
     <main className="absolute flex flex-col max-w-screen items-center justify-center w-full md:px-16 p-7">
-      <Navbar />
+      <Navbar 
+        imgSrc=""
+        url={}
+      />
       <ResponsiveVideoHero
         videoText={videoText}
         cta1={cta1}

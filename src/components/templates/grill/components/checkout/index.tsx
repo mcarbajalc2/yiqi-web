@@ -52,10 +52,13 @@ const title = "Tech Grill: Edición Halloween";
 const priceDescription = "S/. 65";
 const dateTime = "Sábado 2 de Noviembre, 7:00 PM - 10:00 PM";
 const location = "Los Laureles 104, Santiago de Surco 15023";
-const text1 = "Acceso exclusivo al evento y charlas";
-const text2 = "Networking con líderes e innovadores de la industria tech";
-const text3 = "Dinamicas de networking efectivo y divertido";
-const text4 = "Parrillada y bebidas incluidas durante todo el evento";
+const texts = [
+  "Acceso exclusivo al evento y charlas",
+  "Networking con líderes e innovadores de la industria tech",
+  "Dinamicas de networking efectivo y divertido",
+  "Parrillada y bebidas incluidas durante todo el evento"
+]
+
 const priceCta = "Comprar Entrada";
 const priceVideoSrc = "/output.mp4";
 const priceVideoText = "Tu navegador no soporta el elemento de video.";
@@ -89,6 +92,7 @@ export default function Home() {
               featCta={featCta}
               featMotion1={featMotion1}
               featMotion2={featMotion2}
+              featureText={}
             />
             <PrecioEvento
               cta={priceCta}
@@ -99,12 +103,12 @@ export default function Home() {
               title={title}
               videoSrc={priceVideoSrc}
               videoText={priceVideoText}
-              text1={text1}
-              text2={text2}
-              text3={text3}
-              text4={text4}
+              texts={texts}
             />
-            <ImageGallery header1={galleryHeader} />
+            <ImageGallery 
+              header1={galleryHeader}
+              images={}
+            />
             <Footer />
           </Section>
         </Container>

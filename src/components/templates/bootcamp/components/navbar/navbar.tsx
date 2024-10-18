@@ -11,7 +11,17 @@ import {
 } from "@radix-ui/react-icons";
 import { useState, useEffect } from "react";
 
-export default function Navbar() {
+interface Urlprop {
+  link: string;
+  text: string;
+}
+
+export interface NavBarProps {
+  imgSrc: string;
+  url: Urlprop[];
+}
+
+export default function Navbar(props: NavBarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -45,7 +55,7 @@ export default function Navbar() {
             <Image
               height={50}
               width={75}
-              src="/logoandino.svg"
+              src={props.imgSrc}
               alt="Logo"
               className="text-black"
               style={{ filter: "invert(1)" }}
