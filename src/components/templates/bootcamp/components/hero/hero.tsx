@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-export interface ResponsiveVideoHeroProps{
+export interface ResponsiveVideoHeroProps {
   videoSrc: string;
   videoText: string;
   title: string;
@@ -13,7 +13,6 @@ export interface ResponsiveVideoHeroProps{
   cta1: string;
   ctaUrl2: string;
   cta2: string;
-
 }
 export default function ResponsiveVideoHero(props: ResponsiveVideoHeroProps) {
   const [isClient, setIsClient] = useState(false);

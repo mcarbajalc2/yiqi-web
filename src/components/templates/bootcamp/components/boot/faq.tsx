@@ -33,10 +33,10 @@ export interface FeatDisplayer {
 export interface FAQProps {
   header1: string;
   header2: string;
-  feat1: FeatDisplayer
-  feat2: FeatDisplayer
-  feat3: FeatDisplayer
-  feat4: FeatDisplayer
+  feat1: FeatDisplayer;
+  feat2: FeatDisplayer;
+  feat3: FeatDisplayer;
+  feat4: FeatDisplayer;
 }
 
 export default function Faq(props: FAQProps) {
@@ -46,7 +46,7 @@ export default function Faq(props: FAQProps) {
       className="max-w-screen flex flex-col items-center justify-center min-h-screen w-full px-4 py-12 sm:px-6 lg:px-8"
     >
       <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-8 text-center">
-        {props.header1} {" "}<br className="hidden sm:inline" /> {props.header2}
+        {props.header1} <br className="hidden sm:inline" /> {props.header2}
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-7xl">
         <FeatDisplayer

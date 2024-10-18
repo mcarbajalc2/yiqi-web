@@ -16,7 +16,7 @@ const logos = [
   "/forbis.png",
 ];
 
-export interface TrustedByCarouselProps{
+export interface TrustedByCarouselProps {
   title: string;
 }
 

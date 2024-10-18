@@ -5,7 +5,9 @@ import ImageGallery from "./components/checkout/landing/gallery";
 import Header from "./components/checkout/landing/header";
 import VideoBackground from "./components/checkout/landing/herobg";
 import Navbar from "./components/checkout/landing/navbar";
-import PrecioEvento, { GrillPricingProps } from "./components/checkout/landing/pricing";
+import PrecioEvento, {
+  GrillPricingProps,
+} from "./components/checkout/landing/pricing";
 import { Container, Main, Section } from "./components/checkout/mainLayout";
 import { GrillHeaderProps } from "./components/checkout/landing/header";
 import { GrillNavbarProps } from "./components/checkout/landing/navbar";
