@@ -22,40 +22,12 @@ const itemVariants = {
   visible: { opacity: 1, scale: 1 },
 };
 
-const images = [
-  "/fotos/1701239260065.jpg",
-  "/fotos/1707745815195.jpg",
-  "/fotos/1707745820545.jpg",
-  "/fotos/1708979881903.jpg",
-  "/fotos/1708979896325.jpg",
-  "/fotos/1708979896795.jpg",
-  "/fotos/1713030447411.jpg",
-  "/fotos/1713030448746.jpg",
-  "/fotos/1713030449380.jpg",
-  "/fotos/1716477639767.jpg",
-  "/fotos/1716477639866.jpg",
-];
-
-interface Image {
-  image1: string;
-  image2: string;
-  image3: string;
-  image4: string;
-  image5: string;
-  image6: string;
-  image7: string;
-  image8: string;
-  image9: string;
-  image10: string;
-  image11: string;
-}
-export interface GalleryProps {
+export interface GrillGalleryProps {
   header1: string;
-  images?: Image[]
-
+  images: string[];
 }
 
-export default function ImageGallery(props: GalleryProps) {
+export default function ImageGallery(props: GrillGalleryProps) {
   return (
     <Section className="flex z-10 flex-col items-center justify-center py-16">
       <motion.div
@@ -73,7 +45,7 @@ export default function ImageGallery(props: GalleryProps) {
           </motion.h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {/* static generated image src mapping */}
-            {images.map((src, index) => (
+            {props.images.map((src, index) => (
               <motion.div
                 key={src}
                 variants={itemVariants}
@@ -88,7 +60,6 @@ export default function ImageGallery(props: GalleryProps) {
                 />
               </motion.div>
             ))}
-
           </div>
         </Container>
       </motion.div>

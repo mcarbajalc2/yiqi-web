@@ -15,7 +15,7 @@ import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
 // main prop interface
-export interface PricingProps{
+export interface GrillPricingProps {
   title: string;
   dateTime: string;
   location: string;
@@ -23,14 +23,11 @@ export interface PricingProps{
   videoSrc: string;
   videoText: string;
   description: string;
-  text1: string;
-  text2: string;
-  text3: string;
-  text4: string;
-  balanceText: string
+  texts: string[];
+  balanceText: string;
 }
 
-export default function PrecioEvento(props: PricingProps) {
+export default function PrecioEvento(props: GrillPricingProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -123,12 +120,7 @@ export default function PrecioEvento(props: PricingProps) {
               variants={itemVariants}
               className="flex flex-col items-center justify-center text-white text-left space-y-4 mb-8"
             >
-              {[
-                `${props.text1}`,
-                `${props.text2}`,
-                `${props.text3}`,
-                `${props.text4}`,
-              ].map((item, index) => (
+              {props.texts.map((item: any, index: any) => (
                 <motion.li
                   key={index}
                   className="flex items-start text-sm sm:text-base"
@@ -199,9 +191,7 @@ export default function PrecioEvento(props: PricingProps) {
           className="p-6 md:p-8 flex flex-col items-center justify-center"
         >
           <p className="text-orange-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
-            <Balancer>
-             {props.balanceText}
-            </Balancer>
+            <Balancer>{props.balanceText}</Balancer>
           </p>
         </motion.div>
       </motion.div>
