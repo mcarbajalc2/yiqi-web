@@ -36,7 +36,26 @@ const images = [
   "/fotos/1716477639866.jpg",
 ];
 
-export default function ImageGallery() {
+interface Image {
+  image1: string;
+  image2: string;
+  image3: string;
+  image4: string;
+  image5: string;
+  image6: string;
+  image7: string;
+  image8: string;
+  image9: string;
+  image10: string;
+  image11: string;
+}
+export interface GalleryProps {
+  header1: string;
+  images?: Image[]
+
+}
+
+export default function ImageGallery(props: GalleryProps) {
   return (
     <Section className="flex z-10 flex-col items-center justify-center py-16">
       <motion.div
@@ -50,9 +69,10 @@ export default function ImageGallery() {
             variants={itemVariants}
             className="text-4xl md:text-5xl font-bold text-orange-500 mb-8 text-center"
           >
-            Así lo pasamos en nuestros eventos
+            {props.header1}
           </motion.h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {/* static generated image src mapping */}
             {images.map((src, index) => (
               <motion.div
                 key={src}
@@ -68,6 +88,7 @@ export default function ImageGallery() {
                 />
               </motion.div>
             ))}
+
           </div>
         </Container>
       </motion.div>

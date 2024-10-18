@@ -14,7 +14,23 @@ import {
 import Link from "next/link";
 import Balancer from "react-wrap-balancer";
 
-export default function PrecioEvento() {
+// main prop interface
+export interface PricingProps{
+  title: string;
+  dateTime: string;
+  location: string;
+  cta: string;
+  videoSrc: string;
+  videoText: string;
+  description: string;
+  text1: string;
+  text2: string;
+  text3: string;
+  text4: string;
+  balanceText: string
+}
+
+export default function PrecioEvento(props: PricingProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -79,14 +95,14 @@ export default function PrecioEvento() {
               variants={itemVariants}
               className="text-orange-500 text-3xl sm:text-4xl md:text-5xl font-bold mb-6"
             >
-              Tech Grill: Edición Halloween
+              {props.title}
             </motion.h2>
 
             <motion.div
               variants={itemVariants}
               className="text-5xl sm:text-6xl font-bold text-white mb-6"
             >
-              S/. 65
+              {props.description}
             </motion.div>
 
             <motion.div
@@ -95,11 +111,11 @@ export default function PrecioEvento() {
             >
               <div className="flex items-center text-orange-300 text-sm sm:text-base">
                 <Clock className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-orange-500" />
-                <span>Sábado 2 de Noviembre, 7:00 PM - 10:00 PM</span>
+                <span>{props.dateTime}</span>
               </div>
               <div className="flex items-center text-orange-300 text-sm sm:text-base">
                 <MapPin className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-orange-500" />
-                <span>Los Laureles 104, Santiago de Surco 15023</span>
+                <span>{props.location}</span>
               </div>
             </motion.div>
 
@@ -108,10 +124,10 @@ export default function PrecioEvento() {
               className="flex flex-col items-center justify-center text-white text-left space-y-4 mb-8"
             >
               {[
-                "Acceso exclusivo al evento y charlas",
-                "Networking con líderes e innovadores de la industria tech",
-                "Dinamicas de networking efectivo y divertido",
-                "Parrillada y bebidas incluidas durante todo el evento",
+                `${props.text1}`,
+                `${props.text2}`,
+                `${props.text3}`,
+                `${props.text4}`,
               ].map((item, index) => (
                 <motion.li
                   key={index}
@@ -138,7 +154,7 @@ export default function PrecioEvento() {
                   onHoverStart={() => setIsHovered(true)}
                   onHoverEnd={() => setIsHovered(false)}
                 >
-                  Comprar Entrada
+                  {props.cta}
                   <motion.div
                     className="ml-2"
                     animate={{ x: isHovered ? 5 : 0 }}
@@ -160,8 +176,8 @@ export default function PrecioEvento() {
               playsInline
               preload="metadata"
             >
-              <source src="/output.mp4" type="video/mp4" />
-              Tu navegador no soporta el elemento de video.
+              <source src={props.videoSrc} type="video/mp4" />
+              {props.videoText}
             </video>
             <AnimatePresence>
               {(!isPlaying || !hasInteracted) && (
@@ -184,11 +200,7 @@ export default function PrecioEvento() {
         >
           <p className="text-orange-300 text-sm sm:text-base md:text-lg max-w-2xl mx-auto">
             <Balancer>
-              ¡Descubre TECH GRILL! Este evento único combina aprendizaje,
-              diversión y networking en un ambiente relajado. Disfruta de una
-              deliciosa parrillada y vino mientras interactúas con personas
-              influyentes y aprendes de expertos en innovación y tecnologías
-              emergentes. ¡Una experiencia imperdible!
+             {props.balanceText}
             </Balancer>
           </p>
         </motion.div>

@@ -12,6 +12,7 @@ import {
   ArrowRight,
   ChevronRight,
 } from "lucide-react";
+import { string } from "zod";
 
 type FeatureText = {
   icon: JSX.Element;
@@ -63,7 +64,14 @@ const itemVariants = {
   visible: { opacity: 1, y: 0 },
 };
 
-const Feature = () => {
+export interface FeatureProps{
+  featMotion1: string;
+  featMotion2: string;
+  featCta: string;
+
+}
+
+const Feature = (props: FeatureProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -81,14 +89,14 @@ const Feature = () => {
           variants={itemVariants}
           className="text-orange-500 text-4xl md:text-5xl font-bold mb-6"
         >
-          <Balancer>¿Qué encontrarás en el TECH GRILL?</Balancer>
+          <Balancer>{props.featMotion1}</Balancer>
         </motion.h1>
         <motion.h3
           variants={itemVariants}
           className="text-2xl font-light text-orange-300 mb-8"
         >
           <Balancer>
-            Una experiencia única que combina tecnología, networking y diversión
+            {props.featMotion2}
           </Balancer>
         </motion.h3>
 
@@ -131,7 +139,7 @@ const Feature = () => {
               onHoverStart={() => setIsHovered(true)}
               onHoverEnd={() => setIsHovered(false)}
             >
-              Reserva tu lugar
+              {props.featCta}
               <motion.div
                 className="ml-2"
                 animate={{ x: isHovered ? 5 : 0 }}
