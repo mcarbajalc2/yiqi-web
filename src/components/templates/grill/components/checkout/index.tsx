@@ -1,5 +1,6 @@
+import { Radio } from "lucide-react";
 import Evento from "./landing/event";
-import Feature from "./landing/feats";
+import Feature, { FeatureText } from "./landing/feats";
 import Footer from "./landing/footer";
 import ImageGallery from "./landing/gallery";
 import Header from "./landing/header";
@@ -7,6 +8,13 @@ import VideoBackground from "./landing/herobg";
 import Navbar, { GrillNavbarProps } from "./landing/navbar";
 import PrecioEvento from "./landing/pricing";
 import { Container, Main, Section } from "./mainLayout";
+import {
+  Network,
+  MessageSquare,
+  Utensils,
+  ArrowRight,
+  ChevronRight,
+} from "lucide-react";
 
 // fake data
 
@@ -46,6 +54,30 @@ const featMotion2 =
   "Una experiencia única que combina tecnología, networking y diversión";
 const featCta = "Reserva tu lugar";
 
+const featureText: FeatureText[] = [
+  {
+    icon: <Network className="h-8 w-8 text-orange-500" />,
+    title: "Conexiones Clave",
+    description:
+      "Accede a una red de desarrolladores, fundadores de startups y líderes en innovación.",
+    href: "#",
+  },
+  {
+    icon: <MessageSquare className="h-8 w-8 text-orange-500" />,
+    title: "Charlas Interactivas",
+    description:
+      "Aprende de expertos de la industria en sesiones prácticas y dinámicas.",
+    href: "#",
+  },
+  {
+    icon: <Utensils className="h-8 w-8 text-orange-500" />,
+    title: "Networking con Sabor",
+    description:
+      "Disfruta de una parrillada y bebidas mientras te conectas con otros asistentes.",
+    href: "#",
+  },
+];
+
 // pricing
 
 const title = "Tech Grill: Edición Halloween";
@@ -66,6 +98,19 @@ const priceVideoText = "Tu navegador no soporta el elemento de video.";
 // Gallery props
 
 const galleryHeader = "Así lo pasamos en nuestros eventos";
+const galleryImages = [
+  "/fotos/1701239260065.jpg",
+  "/fotos/1707745815195.jpg",
+  "/fotos/1707745820545.jpg",
+  "/fotos/1708979881903.jpg",
+  "/fotos/1708979896325.jpg",
+  "/fotos/1708979896795.jpg",
+  "/fotos/1713030447411.jpg",
+  "/fotos/1713030448746.jpg",
+  "/fotos/1713030449380.jpg",
+  "/fotos/1716477639767.jpg",
+  "/fotos/1716477639866.jpg",
+];
 
 export default function Home() {
   return (
@@ -92,7 +137,7 @@ export default function Home() {
               featCta={featCta}
               featMotion1={featMotion1}
               featMotion2={featMotion2}
-              featureText={}
+              featureText={featureText}
             />
             <PrecioEvento
               cta={priceCta}
@@ -107,7 +152,7 @@ export default function Home() {
             />
             <ImageGallery 
               header1={galleryHeader}
-              images={}
+              images={galleryImages}
             />
             <Footer />
           </Section>
