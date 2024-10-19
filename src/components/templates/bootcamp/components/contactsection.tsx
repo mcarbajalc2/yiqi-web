@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useState, useEffect } from "react";
 import { ContactForm } from "./contact-form";
@@ -14,10 +14,9 @@ export interface ContactProps {
 
 export default function ContactSection(props: ContactProps) {
   const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true)
+  }, [])
 
   return (
     <div
@@ -49,5 +48,5 @@ export default function ContactSection(props: ContactProps) {
         <ContactForm />
       </div>
     </div>
-  );
+  )
 }

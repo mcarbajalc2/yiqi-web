@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
@@ -18,11 +18,11 @@ export interface ResponsiveVideoHeroProps {
   videoProps: ResponsiveVideoHero;
 }
 export default function ResponsiveVideoHero(props: ResponsiveVideoHeroProps) {
-  const [isClient, setIsClient] = useState(false);
+  const [isClient, setIsClient] = useState(false)
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setIsClient(true)
+  }, [])
 
   return (
     <div className="relative w-full h-[80vh] overflow-hidden rounded-[22px] mt-14">
@@ -70,5 +70,5 @@ export default function ResponsiveVideoHero(props: ResponsiveVideoHeroProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

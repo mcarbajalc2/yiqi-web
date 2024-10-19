@@ -53,5 +53,5 @@ export default async function BootcampTemplate1(props: BootcampTemplateProp) {
         socials={props.FooterProps.socials}
       />
     </main>
-  );
+  )
 }

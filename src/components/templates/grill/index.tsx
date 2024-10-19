@@ -15,13 +15,13 @@ import { GrillFeatureProps } from "./components/checkout/landing/feats";
 import { GrillGalleryProps } from "./components/checkout/landing/gallery";
 
 interface GrillTemplateTypes {
-  videoBGurl: string;
-  navProps: GrillNavbarProps;
-  headerProps: GrillHeaderProps;
-  eventProps: GrillEventProps;
-  featureProps: GrillFeatureProps;
-  pricingProps: GrillPricingProps;
-  galleryProps: GrillGalleryProps;
+  videoBGurl: string
+  navProps: GrillNavbarProps
+  headerProps: GrillHeaderProps
+  eventProps: GrillEventProps
+  featureProps: GrillFeatureProps
+  pricingProps: GrillPricingProps
+  galleryProps: GrillGalleryProps
 }
 
 export default function GrillTemplate(props: GrillTemplateTypes) {
@@ -71,5 +71,5 @@ export default function GrillTemplate(props: GrillTemplateTypes) {
         </Container>
       </Main>
     </>
-  );
+  )
 }

@@ -43,14 +43,14 @@ export default function Pricing(props: pricingProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function PriceCard(props: {
-  price: string;
-  title: string;
-  subtitle?: string;
-  features: string[];
+  price: string
+  title: string
+  subtitle?: string
+  features: string[]
 }) {
   return (
     <div className="bg-white p-6 sm:p-8 rounded-lg shadow-lg mb-5 sm:mb-0">
@@ -91,5 +91,5 @@ function PriceCard(props: {
         </Button>
       </Link>
     </div>
-  );
+  )
 }

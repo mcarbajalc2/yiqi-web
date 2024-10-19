@@ -1,8 +1,8 @@
-"use client";
+'use client'
 
-import React from "react";
-import Image from "next/image";
-import { ArrowRight } from "lucide-react";
+import React from 'react'
+import Image from 'next/image'
+import { ArrowRight } from 'lucide-react'
 import {
   Card,
   CardContent,
@@ -94,5 +94,5 @@ export function Curricula(props: CurriculaProps) {
         </div>
       </Link>
     </section>
-  );
+  )
 }

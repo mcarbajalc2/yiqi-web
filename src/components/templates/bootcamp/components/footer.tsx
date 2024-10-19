@@ -24,7 +24,7 @@ export default function MinimalisticFooter(props: MinimalisticFooterProps) {
             src={props.imageSrc || "/logoandino.svg"}
             alt="Logo"
             className="text-black"
-            style={{ filter: "invert(1)" }}
+            style={{ filter: 'invert(1)' }}
           />
         </div>
         <div className="flex space-x-4 justify-center">
@@ -36,7 +36,7 @@ export default function MinimalisticFooter(props: MinimalisticFooterProps) {
         </div>
       </div>
     </footer>
-  );
+  )
 }
 
 function SocialLink({
@@ -54,5 +54,5 @@ function SocialLink({
     >
       {children}
     </Link>
-  );
+  )
 }
