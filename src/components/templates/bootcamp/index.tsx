@@ -1,28 +1,37 @@
 import Faq, { FAQProps } from "./components/boot/faq";
 import ContactSection, { ContactProps } from "./components/contactsection";
 import { Curricula, CurriculaProps } from "./components/curricula/curricula";
-import MinimalisticFooter, { MinimalisticFooterProps, SocialLink } from "./components/footer";
-import ResponsiveVideoHero, { ResponsiveVideoHeroProps } from "./components/hero/hero";
+import MinimalisticFooter, {
+  MinimalisticFooterProps,
+} from "./components/footer";
+import ResponsiveVideoHero, {
+  ResponsiveVideoHeroProps,
+} from "./components/hero/hero";
 import Navbar, { NavBarProps } from "./components/navbar/navbar";
-import Pricing, { PriceGrid, pricingProps } from "./components/pricing";
-import TrustedByCarousel, { TrustedByCarouselProps } from "./components/trusted/trusted";
-import { Twitter, Instagram, Linkedin } from "lucide-react";
+import Pricing, { pricingProps } from "./components/pricing";
+import TrustedByCarousel, {
+  TrustedByCarouselProps,
+} from "./components/trusted/trusted";
 
-interface BootcampTemplateProp{
-  Navprop: NavBarProps
-  ResponsiveProp: ResponsiveVideoHeroProps
-  TrustedByprop: TrustedByCarouselProps
-  FaqProp: FAQProps
-  CurriculaProps: CurriculaProps
-  pricingProp: pricingProps
-  ContactProp: ContactProps
-  FooterProps: MinimalisticFooterProps
+interface BootcampTemplateProp {
+  Navprop: NavBarProps;
+  ResponsiveProp: ResponsiveVideoHeroProps;
+  TrustedByprop: TrustedByCarouselProps;
+  FaqProp: FAQProps;
+  CurriculaProps: CurriculaProps;
+  pricingProp: pricingProps;
+  ContactProp: ContactProps;
+  FooterProps: MinimalisticFooterProps;
 }
 
 export default async function BootcampTemplate1(props: BootcampTemplateProp) {
   return (
     <main className="absolute flex flex-col max-w-screen items-center justify-center w-full md:px-16 p-7">
-      <Navbar imgSrc={props.Navprop.imgSrc} url={props.Navprop.url} cta={props.Navprop.cta} />
+      <Navbar
+        imgSrc={props.Navprop.imgSrc}
+        url={props.Navprop.url}
+        cta={props.Navprop.cta}
+      />
       <ResponsiveVideoHero videoProps={props.ResponsiveProp.videoProps} />
       <TrustedByCarousel title={props.TrustedByprop.title} />
       <Faq
@@ -48,8 +57,8 @@ export default async function BootcampTemplate1(props: BootcampTemplateProp) {
         videoSrc={props.ContactProp.videoSrc}
         videoText={props.ContactProp.videoText}
       />
-      <MinimalisticFooter 
-        imageSrc={props.FooterProps.imageSrc} 
+      <MinimalisticFooter
+        imageSrc={props.FooterProps.imageSrc}
         socials={props.FooterProps.socials}
       />
     </main>
