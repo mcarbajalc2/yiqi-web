@@ -8,7 +8,7 @@ export interface SocialLink {
   icon: React.ElementType;
 }
 
-interface MinimalisticFooterProps {
+export interface MinimalisticFooterProps {
   imageSrc: string;
   socials: SocialLink[];
 }

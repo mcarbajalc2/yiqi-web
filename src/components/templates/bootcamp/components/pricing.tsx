@@ -8,7 +8,7 @@ export interface PriceGrid {
   features: string[];
 }
 
-interface pricingProps {
+export interface pricingProps {
   imageSrc: string;
   title: string;
   priceDetails: PriceGrid[];

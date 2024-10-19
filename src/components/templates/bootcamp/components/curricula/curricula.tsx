@@ -22,7 +22,7 @@ interface DummyContent {
   image: string;
 }
 
-interface CurriculaProps {
+export interface CurriculaProps {
   title: string;
   dummyContent: DummyContent[];
   url: Urlprop;
