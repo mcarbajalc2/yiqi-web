@@ -11,7 +11,8 @@
     "migrate": "npm run generate && prisma migrate dev",
     "generate": "prisma generate",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "build:client-types": "tsup --config yiqi-client/tsup.config.ts"
+    "build:client-types": "tsup --config yiqi-client/tsup.config.ts",
+    "run-crons": "chmod +x run-crons.sh && ./run-crons.sh"
   },
   "dependencies": {
     "@algora/xtrpc": "^0.1.1",
