@@ -1,21 +1,16 @@
-import { NextApiRequest, NextApiResponse } from 'next'
 import { releaseLock, tryToGetLock } from '@/lib/cronLock'
 import { dataCollectorsCron } from '@/lib/cron/dataCollectorsCron'
+import { NextResponse } from 'next/server'
 
 const JOB_NAME = 'dataCollectors'
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export async function POST() {
   try {
     await tryToGetLock(JOB_NAME)
 
-    const results = await dataCollectorsCron()
-    res
-      .status(200)
-      .json({ message: 'User data collection jobs processed', results })
+    await dataCollectorsCron()
+    NextResponse.json({ message: 'dataCollectors job completed' })
   } catch (error) {
-    res.status(500).json({ message: (error as Error).message })
+    NextResponse.json({ message: (error as Error).message }, { status: 500 })
   } finally {
     await releaseLock(JOB_NAME)
   }

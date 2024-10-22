@@ -15,7 +15,7 @@ export async function POST() {
     // Your existing job logic here
     // ...
 
-    return NextResponse.json({ message: 'Community engagement job completed' })
+    NextResponse.json({ message: 'Community engagement job completed' })
   } catch (error) {
     console.error('Error in community engagement job:', error)
     return NextResponse.json({ message: 'Job failed' }, { status: 500 })
