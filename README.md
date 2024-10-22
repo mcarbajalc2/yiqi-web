@@ -1,4 +1,4 @@
-# Andino: Open Source Community Engagement Platform
+# Yiqi: Open Source Community Engagement Platform
 
 Andino is an open-source community engagement platform built for community builders, by community builders. Our vision is to be the only tool that community leaders need to manage and engage with their communities effectively.
 
