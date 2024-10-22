@@ -124,3 +124,24 @@ For more information or to get involved, feel free to reach out through any of t
 ---
 
 Thank you for your interest in Andino! Together, we can build the ultimate tool for community engagement.
+
+## Running Cron Jobs Locally
+
+To simulate cron jobs locally, you can use the provided shell script. This script will call the cron routes every 2 minutes.
+
+1. Make sure your local development server is running:
+
+   ```
+   npm run dev
+   ```
+
+2. Open a new terminal window and navigate to the project root.
+
+3. Run the script:
+   ```
+   npm run run-crons
+   ```
+
+The script will continue running and calling the cron routes every 2 minutes until you stop it (use Ctrl+C to stop the script).
+
+Note: Ensure that your local development server is running on `http://localhost:3000`. If you're using a different port or URL, update the `BASE_URL` in the `run-crons.sh` script accordingly.
