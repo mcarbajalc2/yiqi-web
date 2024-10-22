@@ -4,7 +4,7 @@ import prisma from '@/lib/prisma'
 import {
   sendUserWhatsappMessage,
   sendUserWhatsappMessageProps
-} from '@/lib/whatsapp'
+} from '@/lib/whatsapp/sendUserWhatsappMessage'
 import { getUser, isEventAdmin, isOrganizerAdmin } from '@/lib/auth/lucia'
 import {
   OrgMessageListItemSchema,
