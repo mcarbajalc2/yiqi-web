@@ -4,6 +4,11 @@
 // we use that information to read thru the different posts they have collectively made
 // and then we send them messages based on the intensity of the community engagement
 
-// we use ai to craft thr right message and just keep to a conversational tone
+import { NextApiRequest, NextApiResponse } from 'next'
 
-//  we will probably have to create an agent per topic.
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  res.status(200).json({ message: 'not yet implemented' })
+}
