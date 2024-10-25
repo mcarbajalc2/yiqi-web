@@ -44,6 +44,7 @@
     "@trpc/react-query": "^11.0.0-rc.569",
     "@trpc/server": "^11.0.0-rc.569",
     "@types/mailparser": "^3.4.5",
+    "andino-web": "file:",
     "arctic": "^1.9.2",
     "axios": "^1.7.7",
     "canvas": "^2.11.2",
