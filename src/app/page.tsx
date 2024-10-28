@@ -2,6 +2,7 @@ import CommunityHighlights from '@/components/CommunityHighlights'
 import Features from '@/components/Features'
 import Hero from '@/components/hero'
 import UpcomingEvents from '@/components/UpcomingEvents'
+import { eventListItem } from '@/data/events'
 
 export default function Home() {
   return (
@@ -14,7 +15,7 @@ export default function Home() {
         {/* Community Highlights */}
         <CommunityHighlights />
         {/* Upcoming Events Section */}
-        <UpcomingEvents />
+        <UpcomingEvents events={eventListItem} />
       </div>
     </>
   )

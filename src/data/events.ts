@@ -7,104 +7,124 @@ import {
   HeartHandshakeIcon
 } from 'lucide-react'
  
+
+type Organization = {
+  name: string;
+  logo: string;
+};
+
+export type EventListItem = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  startDate: string;
+  location: string;
+  organization: Organization;
+};
+
+
+
+
 // False data based on the prism shema
-export const eventListItem = [
+export const eventListItem:EventListItem[] = [
   {
-  id: '1', // ID del evento
+  id: '8', // ID del evento
   title: 'Tech Conference 2023', // Título
   description: 'Únete a la mayor conferencia tecnológica del año.', // Descripción
   image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c', // Imagen
-  time: '2023-09-15T09:00:00Z', // Fecha y hora del evento
-  place: 'San Francisco, CA', // Ubicación del evento
-  organizer: {
-    name: 'Marcial Igme', // Nombre del organizador
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg', // Foto del organizador
+  startDate: '2023-09-15T09:00:00Z', // Fecha y hora del evento
+  location: 'San Francisco, CA', // Ubicación del evento
+  organization: {
+    name: 'IgmeDAO', // Nombre del COMUNIDAD organizador
+    logo: 'https://images.unsplash.com/photo-1542744095-291d1f67b221', // LOGO DE LA COMUNIDAD
   },
 },
  {
-    id: '2',
-    title: 'Cumbre de Innovación 2024',
-    description: 'Explora las últimas tendencias en innovación y tecnología.',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-    time: '2024-01-25T10:00:00Z',
-    place: 'New York, NY',
-    organizer: {
-      name: 'Ana González',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
+    id: '1',
+    title: 'Tech Conference 2023',
+    description: 'Únete a la mayor conferencia tecnológica del año.',
+    image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c',
+    startDate: '2023-09-15T09:00:00Z',
+    location: 'San Francisco, CA',
+    organization: {
+      name: 'IgmeDAO',
+      logo: 'https://images.unsplash.com/photo-1542744095-291d1f67b221',
     },
   },
-{
+  {
+    id: '2',
+    title: 'Healthcare Innovation Summit',
+    description: 'Descubre los avances más recientes en tecnología de salud.',
+    image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308',
+    startDate: '2023-10-10T10:00:00Z',
+    location: 'New York, NY',
+    organization: {
+      name: 'HealthTech Hub',
+      logo: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97',
+    },
+  },
+  {
     id: '3',
-    title: 'Feria de Startups',
-    description: 'Conoce las startups emergentes más prometedoras del año.',
-    image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786',
-    time: '2024-03-05T12:30:00Z',
-    place: 'Austin, TX',
-    organizer: {
-      name: 'Carlos Pérez',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    title: 'Green Energy Expo',
+    description: 'Conoce el futuro de la energía renovable.',
+    image: 'https://images.unsplash.com/photo-1552058544-f2b08422138a',
+    startDate: '2023-11-05T08:30:00Z',
+    location: 'Los Angeles, CA',
+    organization: {
+      name: 'EcoWorld',
+      logo: 'https://images.unsplash.com/photo-1503023345310-bd7c1de61c7d',
     },
   },
   {
     id: '4',
-    title: 'Foro de Inteligencia Artificial',
-    description: 'Debate sobre el futuro de la IA con expertos del sector.',
-    image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d',
-    time: '2024-05-12T15:00:00Z',
-    place: 'Barcelona, España',
-    organizer: {
-      name: 'Lucía Martínez',
-      avatar: 'https://randomuser.me/api/portraits/women/50.jpg',
-    },
-  },
-   {
-  id: '5', // ID del evento
-  title: 'Tech Conference 2023', // Título
-  description: 'Únete a la mayor conferencia tecnológica del año.', // Descripción
-  image: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c', // Imagen
-  time: '2023-09-15T09:00:00Z', // Fecha y hora del evento
-  place: 'San Francisco, CA', // Ubicación del evento
-  organizer: {
-    name: 'Marcial Igme', // Nombre del organizador
-    avatar: 'https://randomuser.me/api/portraits/men/32.jpg', // Foto del organizador
-  },
-},
- {
-    id: '6',
-    title: 'Cumbre de Innovación 2024',
-    description: 'Explora las últimas tendencias en innovación y tecnología.',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
-    time: '2024-01-25T10:00:00Z',
-    place: 'New York, NY',
-    organizer: {
-      name: 'Ana González',
-      avatar: 'https://randomuser.me/api/portraits/women/44.jpg',
-    },
-  },
-{
-    id: '7',
-    title: 'Feria de Startups',
-    description: 'Conoce las startups emergentes más prometedoras del año.',
-    image: 'https://images.unsplash.com/photo-1556761175-4b46a572b786',
-    time: '2024-03-05T12:30:00Z',
-    place: 'Austin, TX',
-    organizer: {
-      name: 'Carlos Pérez',
-      avatar: 'https://randomuser.me/api/portraits/men/32.jpg',
+    title: 'AI & Robotics Symposium',
+    description: 'Explora el impacto de la IA y robótica en el mundo moderno.',
+    image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',
+    startDate: '2023-12-02T12:00:00Z',
+    location: 'Boston, MA',
+    organization: {
+      name: 'RoboTech Association',
+      logo: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085',
     },
   },
   {
-    id: '8',
-    title: 'Foro de Inteligencia Artificial',
-    description: 'Debate sobre el futuro de la IA con expertos del sector.',
+    id: '5',
+    title: 'Finance & Blockchain Summit',
+    description: 'Aprende sobre las últimas innovaciones en blockchain y finanzas.',
     image: 'https://images.unsplash.com/photo-1504384308090-c894fdcc538d',
-    time: '2024-05-12T15:00:00Z',
-    place: 'Barcelona, España',
-    organizer: {
-      name: 'Lucía Martínez',
-      avatar: 'https://randomuser.me/api/portraits/women/50.jpg',
+    startDate: '2024-01-15T09:00:00Z',
+    location: 'Chicago, IL',
+    organization: {
+      name: 'CryptoNet',
+      logo: 'https://images.unsplash.com/photo-1527689368864-3a821dbccc34',
     },
   },
+  {
+    id: '6',
+    title: 'Educational Technology Forum',
+    description: 'Transformando la educación a través de la tecnología.',
+    image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9',
+    startDate: '2024-02-20T11:00:00Z',
+    location: 'Seattle, WA',
+    organization: {
+      name: 'EdTech Innovators',
+      logo: 'https://images.unsplash.com/photo-1506765515384-028b60a970df',
+    },
+  },
+  {
+    id: '7',
+    title: 'Art & Design Expo',
+    description: 'Una celebración de arte y diseño en todas sus formas.',
+    image: 'https://images.unsplash.com/photo-1543269865-cbf427effbad',
+    startDate: '2024-03-18T14:00:00Z',
+    location: 'Miami, FL',
+    organization: {
+      name: 'Creative Minds',
+      logo: 'https://images.unsplash.com/photo-1499336315816-097655dcfbda',
+    },
+  },
+ 
 ]
   
 export const communityHighlights = [

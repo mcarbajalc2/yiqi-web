@@ -9,16 +9,19 @@ export default async function Header() {
   return (
     <header className=" top-0 z-10 bg-white/50 px-6 py-5 dark:border-white/10 dark:bg-black backdrop-blur-xl lg:z-10 lg:flex lg:h-20 lg:items-center lg:px-8 lg:py-0">
       <div className="mx-auto flex w-full items-center justify-between md:max-w-7xl">
-        <div
-          className="flex items-center space-x-3 text-xl font-extrabold text-transparent bg-clip-text"
-          style={{
-            backgroundImage:
-              'linear-gradient(90deg, #6de4e8, rgba(0, 178, 218, 0.6) 95.83%)'
-          }}
-        >
-          <span className="rounded-full bg-cyan-500 p-2 text-white">🚀</span>
-          <span>Tiqi</span>
-        </div>
+        <Link href={'/'}>
+          <div
+            className="flex items-center space-x-3 text-xl font-extrabold text-transparent bg-clip-text"
+            style={{
+              backgroundImage:
+                'linear-gradient(90deg, #6de4e8, rgba(0, 178, 218, 0.6) 95.83%)'
+            }}
+          >
+            <span className="rounded-full bg-cyan-500 p-2 text-white">🚀</span>
+            <span>Tiqi</span>
+          </div>
+        </Link>
+
         <nav className="flex items-center gap-3">
           <Link href="/events">
             <Button
