@@ -40,13 +40,14 @@ export default function Hero() {
               Connect, celebrate, and create memories. Our platform makes it
               easy to discover and organize events that bring people together.
             </p>
-            <Link href={'/admin/organizations'}></Link>
-            <Button
-              size="lg"
-              className="font-bold  bg-gradient-to-r from-[#04F1FF] to-[#6de4e8] text-black hover:opacity-90 transition-opacity w-full sm:w-auto"
-            >
-              Create your first event
-            </Button>
+            <Link href={'/admin/organizations'} className="block">
+              <Button
+                size="lg"
+                className="font-bold  bg-gradient-to-r from-[#04F1FF] to-[#6de4e8] text-black hover:opacity-90 transition-opacity w-full sm:w-auto"
+              >
+                Create your first event
+              </Button>
+            </Link>
           </motion.div>
 
           {/* Right Column - Feature Cards */}

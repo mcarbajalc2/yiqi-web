@@ -1,5 +1,7 @@
 import { Card, CardContent } from '@/components/ui/card'
 import { features } from '@/data/events'
+import { GitHubLogoIcon } from '@radix-ui/react-icons'
+import Link from 'next/link'
 
 export default function Features() {
   return (
@@ -52,7 +54,13 @@ export default function Features() {
             Open source and built for community builders
           </p>
           <div className="inline-flex items-center justify-center rounded-lg border border-gray-800 bg-gray-900 px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-800 hover:text-white transition-colors">
-            View on GitHub
+            <Link
+              href={'https://github.com/Andino-Labs/yiqi-mobile'}
+              className="flex gap-2 items-center justify-center"
+            >
+              <GitHubLogoIcon />
+              View on GitHub
+            </Link>
           </div>
         </div>
       </div>

@@ -18,7 +18,7 @@ export default async function Header() {
             }}
           >
             <span className="rounded-full bg-cyan-500 p-2 text-white">🚀</span>
-            <span>Tiqi</span>
+            <span>Yiqi</span>
           </div>
         </Link>
 

@@ -3,12 +3,12 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer className="bg-black text-white py-4">
+    <footer className=" text-white py-4">
       {/* Contenedor principal, centrado y con márgenes responsivos */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
         {/* Izquierda: Logo y Links */}
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-center">
-          <span className="font-bold text-lg">Tiki</span>
+          <span className="font-bold text-lg">Yiki</span>
           <Link href="#" className="hover:underline">
             Whats New
           </Link>
