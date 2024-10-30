@@ -5,11 +5,15 @@ import { sendUserWhatsappMessage } from '@/lib/whatsapp/sendUserWhatsappMessage'
 import { Event, Organization } from '@prisma/client'
 import { User } from 'lucia'
 
-export default async function sendPaymentReminder(
-  user: User,
-  event: Event,
+export default async function sendPaymentReminder({
+  event,
+  org,
+  user
+}: {
+  user: User
+  event: Event
   org: Organization
-) {
+}) {
   const realUser = await prisma.user.findFirstOrThrow({
     where: { id: user.id }
   })

@@ -150,6 +150,7 @@ export async function createRegistration(
     eventStartDate: event.startDate,
     orgId: event.organizationId
   })
+
   return registration
 }
 

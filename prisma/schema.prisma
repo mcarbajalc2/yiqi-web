@@ -286,6 +286,7 @@ model Notification {
   formId         String? // Add this line
   form           Form?        @relation(fields: [formId], references: [id]) // Add this line
   extraData      Json?
+  tries          Int          @default(0)
 }
 
 enum NotificationType {
