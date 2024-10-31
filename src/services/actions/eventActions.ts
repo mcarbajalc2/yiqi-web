@@ -3,8 +3,7 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import {
-  EventSchema,
-  EventInput,
+  EventInputSchema,
   createAttendeeSchema,
   DbEventSchema,
   EventRegistrationSchema
@@ -44,7 +43,7 @@ export async function createEvent(organizationId: string, eventData: unknown) {
     throw new Error('Unauthorized')
   }
 
-  const validatedData = EventSchema.parse(eventData) as EventInput
+  const validatedData = EventInputSchema.parse(eventData)
 
   const event = await prisma.event.create({
     data: {
@@ -81,7 +80,7 @@ export async function updateEvent(eventId: string, eventData: unknown) {
     throw new Error('Unauthorized')
   }
 
-  const validatedData = EventSchema.parse(eventData) as EventInput
+  const validatedData = EventInputSchema.parse(eventData)
 
   const updatedEvent = await prisma.event.update({
     where: { id: eventId },
@@ -201,10 +200,21 @@ export async function getEventRegistrations(eventId: string) {
   )
 }
 
-export async function checkInUserToEvent(
-  eventId: string,
-  registrationId: string
-) {
+export async function getEventRegistrationsByUserId(userId: string) {
+  const registrations = await prisma.eventRegistration.findMany({
+    where: { userId },
+    include: {
+      event: true,
+      user: true
+    }
+  })
+
+  return registrations.map(registration =>
+    EventRegistrationSchema.parse(registration)
+  )
+}
+
+export async function checkInUserToEvent(eventId: string, ticketId: string) {
   const event = await getEvent(eventId)
   if (!event) throw new Error('Event not found')
 
@@ -216,8 +226,8 @@ export async function checkInUserToEvent(
     throw new Error('Unauthorized')
   }
 
-  const updatedRegistration = await prisma.eventRegistration.update({
-    where: { id: registrationId },
+  const updatedRegistration = await prisma.ticket.update({
+    where: { id: ticketId },
     data: {
       checkedInByUserId: currentUser.id,
       checkedInDate: new Date()

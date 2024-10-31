@@ -11,7 +11,7 @@ export const CustomFieldSchema = z.object({
     .describe('Comma-separated list of options for select fields')
 })
 
-export const EventSchema = z.object({
+export const EventInputSchema = z.object({
   title: z.string().min(1, 'Title is required'),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
@@ -19,6 +19,17 @@ export const EventSchema = z.object({
   location: z.string().nullable().optional().default(''),
   customFields: z.array(CustomFieldSchema),
   requiresApproval: z.boolean().optional().default(false)
+})
+export const EventSchema = EventInputSchema.extend({
+  id: z.string()
+})
+
+export const TicketSchema = z.object({
+  id: z.string(),
+  eventId: z.string(),
+  user: userSchema.nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date()
 })
 
 export const EventRegistrationSchema = z.object({
@@ -31,10 +42,12 @@ export const EventRegistrationSchema = z.object({
   updatedAt: z.date(),
   paid: z.boolean(),
   paymentId: z.string().nullable(),
-  user: userSchema
+  user: userSchema,
+  event: EventInputSchema.nullable(),
+  tickets: z.array(TicketSchema)
 })
 
-export const createCustomFieldSchema = (field: CustomFieldInput) => {
+export const createCustomFieldSchema = (field: CustomFieldInputType) => {
   switch (field.type) {
     case 'text':
       return z.string()
@@ -51,7 +64,7 @@ export const createCustomFieldSchema = (field: CustomFieldInput) => {
   }
 }
 
-export const createAttendeeSchema = (customFields: CustomFieldInput[]) => {
+export const createAttendeeSchema = (customFields: CustomFieldInputType[]) => {
   const baseSchema = z.object({
     email: z.string().email('Invalid email address').optional()
   })
@@ -71,7 +84,7 @@ export const createAttendeeSchema = (customFields: CustomFieldInput[]) => {
   return baseSchema.merge(customFieldsSchema)
 }
 
-export const DbEventSchema = EventSchema.extend({
+export const DbEventSchema = EventInputSchema.extend({
   id: z.string(),
   organizationId: z.string(),
   createdAt: z.date(),
@@ -83,9 +96,11 @@ export const DbEventSchema = EventSchema.extend({
     .transform(val => val ?? [])
 })
 
-export type EventInput = z.infer<typeof EventSchema>
-export type CustomFieldInput = z.infer<typeof CustomFieldSchema>
-export type EditEventInput = z.infer<typeof DbEventSchema>
+export type EventInputType = z.infer<typeof EventInputSchema>
+export type EventType = z.infer<typeof EventSchema>
+
+export type CustomFieldInputType = z.infer<typeof CustomFieldSchema>
+export type EditEventInputType = z.infer<typeof DbEventSchema>
 export type EventRegistrationSchemaType = z.infer<
   typeof EventRegistrationSchema
 >

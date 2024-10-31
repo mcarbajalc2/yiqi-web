@@ -1,7 +1,7 @@
 import { getOrganization } from '@/services/actions/organizationActions'
 import { getEvent, updateEvent } from '@/services/actions/eventActions'
 import { redirect } from 'next/navigation'
-import { CustomFieldInput, DbEventSchema } from '@/schemas/eventSchema'
+import { CustomFieldInputType, DbEventSchema } from '@/schemas/eventSchema'
 import EditEventForm from './EditEventForm' // We'll create this component
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
 
@@ -52,7 +52,7 @@ export default async function EditEventPage({
     const description = formData.get('description') as string
     const customFields = JSON.parse(
       formData.get('customFields') as string
-    ) as CustomFieldInput[]
+    ) as CustomFieldInputType[]
 
     await updateEvent(params.eventId, {
       title,

@@ -42,7 +42,9 @@ model User {
 
   registeredEvents EventRegistration[] @relation("registrationUser")
 
-  checkedInEvents EventRegistration[] @relation("checkedInByUser")
+  ticketsCheckedIn Ticket[] @relation("checkedInByUser")
+
+  tickets Ticket[] @relation("ticketOwner")
 }
 
 enum Roles {
@@ -192,10 +194,19 @@ model EventRegistration {
   updatedAt DateTime @updatedAt
   paid      Boolean  @default(false)
   paymentId String?
+  @@unique([eventId, userId]) // Add this line
+  Ticket Ticket[]
+}
+
+model Ticket {
+  id String @id @default(cuid())
+  registration EventRegistration @relation(fields: [registrationId], references: [id])
+  registrationId String
+  user         User           @relation("ticketOwner", fields: [userId], references: [id])
+  userId       String
   checkedInDate DateTime?
   checkedInBy User? @relation("checkedInByUser", fields: [checkedInByUserId], references: [id])
   checkedInByUserId String?
-  @@unique([eventId, userId]) // Add this line
 }
 
 enum AttendeeStatus {

@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { CustomFieldInput, EditEventInput } from '@/schemas/eventSchema'
+import { CustomFieldInputType, EditEventInputType } from '@/schemas/eventSchema'
 
 interface EditEventFormProps {
-  event: EditEventInput
+  event: EditEventInputType
   handleSubmit: (formData: FormData) => Promise<void>
   organizationId: string
 }
@@ -15,7 +15,7 @@ export default function EditEventForm({
   handleSubmit,
   organizationId
 }: EditEventFormProps) {
-  const [customFields, setCustomFields] = useState<CustomFieldInput[]>(
+  const [customFields, setCustomFields] = useState<CustomFieldInputType[]>(
     event.customFields
   )
 
@@ -28,7 +28,7 @@ export default function EditEventForm({
 
   const updateCustomField = (
     index: number,
-    field: Partial<CustomFieldInput>
+    field: Partial<CustomFieldInputType>
   ) => {
     const newFields = [...customFields]
     newFields[index] = { ...newFields[index], ...field }
