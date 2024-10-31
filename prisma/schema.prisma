@@ -21,7 +21,6 @@ model User {
   session           Session[]
   ownerOf           Organization[]
   role              Roles               @default(NEW_USER)
-  registeredEvents  EventRegistration[]
   stopCommunication Boolean             @default(false) // Add this line
   messageThread     MessageThread[]
 
@@ -40,6 +39,10 @@ model User {
   QueueJob QueueJob[]
 
   dataCollected Json?
+
+  registeredEvents EventRegistration[] @relation("registrationUser")
+
+  checkedInEvents EventRegistration[] @relation("checkedInByUser")
 }
 
 enum Roles {
@@ -178,7 +181,7 @@ model GeneratedMedia {
 
 model EventRegistration {
   id           String         @id @default(cuid())
-  user         User           @relation(fields: [userId], references: [id])
+  user         User           @relation("registrationUser", fields: [userId], references: [id])
   userId       String
   event        Event          @relation(fields: [eventId], references: [id])
   eventId      String
@@ -189,7 +192,9 @@ model EventRegistration {
   updatedAt DateTime @updatedAt
   paid      Boolean  @default(false)
   paymentId String?
-
+  checkedInDate DateTime?
+  checkedInBy User? @relation("checkedInByUser", fields: [checkedInByUserId], references: [id])
+  checkedInByUserId String?
   @@unique([eventId, userId]) // Add this line
 }
 
