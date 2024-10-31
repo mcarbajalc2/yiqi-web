@@ -1,4 +1,5 @@
 import { EventPage } from '@/components/lumalike/template1'
+import { DragDropZone } from '@/components/upload/upload'
 const event = {
   title: 'Tech Grill',
   subtitle: 'El Gran Cierre de Lima Tech Week 2024',
@@ -39,5 +40,9 @@ export default async function Page({
   params: { eventSlug: string }
 }) {
   console.log(params.eventSlug)
-  return <EventPage event={event} />
+  return (
+    <>
+      <EventPage event={event} />
+    </>
+  )
 }
