@@ -20,13 +20,13 @@ export default async function ContactsPage({
         Contacts for {organization.name}
       </h1>
       <ul className="space-y-2">
-        {contacts.map(contact => (
-          <li key={contact?.user?.id} className="border p-2 rounded">
+        {contacts.map(user => (
+          <li key={user?.id} className="border p-2 rounded">
             <Link
-              href={`/admin/organizations/${params.id}/contacts/${contact?.user?.id}`}
+              href={`/admin/organizations/${params.id}/contacts/${user?.id}`}
               className="text-blue-500 hover:underline"
             >
-              {contact?.user?.name} ({contact?.user?.email})
+              {user?.name} ({user?.email})
             </Link>
           </li>
         ))}

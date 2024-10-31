@@ -34,31 +34,31 @@ export interface Event {
   heroImage: string
 }
 
-function Navbar() {
-  return (
-    <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-opacity-80 bg-primary"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-    >
-      <div className="container mx-auto flex items-center justify-between p-4">
-        <Link href="/" className="text-2xl font-bold text-primary-foreground">
-          yiqi
-        </Link>
-        <div className="flex items-center gap-6">
-          <Link
-            href="/explore"
-            className="text-primary-foreground hover:text-secondary transition-colors"
-          >
-            Explore Events
-          </Link>
-          <Button variant="secondary">Sign In</Button>
-        </div>
-      </div>
-    </motion.nav>
-  )
-}
+// function Navbar() {
+//   return (
+//     <motion.nav
+//       className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-opacity-80 bg-primary"
+//       initial={{ opacity: 0, y: -20 }}
+//       animate={{ opacity: 1, y: 0 }}
+//       transition={{ duration: 0.5 }}
+//     >
+//       <div className="container mx-auto flex items-center justify-between p-4">
+//         <Link href="/" className="text-2xl font-bold text-primary-foreground">
+//           yiqi
+//         </Link>
+//         <div className="flex items-center gap-6">
+//           <Link
+//             href="/explore"
+//             className="text-primary-foreground hover:text-secondary transition-colors"
+//           >
+//             Explore Events
+//           </Link>
+//           <Button variant="secondary">Sign In</Button>
+//         </div>
+//       </div>
+//     </motion.nav>
+//   )
+// }
 
 interface HeroImageProps {
   src: string
@@ -239,21 +239,27 @@ function EventDescription({ description }: EventDescriptionProps) {
           <div className="prose prose-sm dark:prose-invert text-white max-w-none">
             <Markdown
               components={{
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 h1: ({ node, ...props }) => (
                   <h1 style={{ color: 'white' }} {...props} />
                 ),
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 h2: ({ node, ...props }) => (
                   <h2 style={{ color: 'white' }} {...props} />
                 ),
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 h3: ({ node, ...props }) => (
                   <h3 style={{ color: 'white' }} {...props} />
                 ),
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 h4: ({ node, ...props }) => (
                   <h4 style={{ color: 'white' }} {...props} />
                 ),
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 h5: ({ node, ...props }) => (
                   <h5 style={{ color: 'white' }} {...props} />
                 ),
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 h6: ({ node, ...props }) => (
                   <h6 style={{ color: 'white' }} {...props} />
                 )

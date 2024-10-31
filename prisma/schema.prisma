@@ -45,6 +45,8 @@ model User {
   ticketsCheckedIn Ticket[] @relation("checkedInByUser")
 
   tickets Ticket[] @relation("ticketOwner")
+
+  OrganizationContact OrganizationContact[]
 }
 
 enum Roles {
@@ -110,6 +112,16 @@ model Organization {
   Form   Form[]
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
+
+  OrganizationContact OrganizationContact[]
+}
+
+model OrganizationContact {
+  id String @id @default(cuid())
+  organizationId String
+  organization Organization @relation(fields: [organizationId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Organizer {
