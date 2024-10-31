@@ -5,7 +5,7 @@ import { getEventData } from '@/lib/event/getEventData'
 export default async function CheckinPage({
   params
 }: {
-  params: { id: string; eventId: string }
+  params: { id: string; eventId: string; ticketId: string }
 }) {
   const { organization, event, isAdmin, notFound } = await getEventData(
     params.id,
@@ -34,6 +34,7 @@ export default async function CheckinPage({
         <EventRegistrationTable
           eventId={event.id}
           registrations={registrations}
+          ticketId={params.ticketId}
         />
       </div>
     </div>

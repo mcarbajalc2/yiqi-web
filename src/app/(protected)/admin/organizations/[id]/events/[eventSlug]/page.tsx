@@ -9,12 +9,12 @@ import { getEventDetails } from '@/services/actions/eventActions'
 export default async function EventDetailsPage({
   params
 }: {
-  params: { id: string; eventSlug: string }
+  params: { id: string; eventId: string }
 }) {
   const organization = await getOrganization(params.id)
 
-  const event = await getEventDetails(params.eventSlug)
-  const attendees = await getEventAttendees(params.eventSlug)
+  const event = await getEventDetails(params.eventId)
+  const attendees = await getEventAttendees(params.eventId)
 
   if (!organization || !event) {
     return <div>Event or Organization not found</div>

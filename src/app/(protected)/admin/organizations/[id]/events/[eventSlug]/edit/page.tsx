@@ -1,26 +1,8 @@
-import { getOrganization } from '@/services/actions/organizationActions'
-import { getEvent, updateEvent } from '@/services/actions/eventActions'
+import { updateEvent } from '@/services/actions/eventActions'
 import { redirect } from 'next/navigation'
-import { CustomFieldInputType, DbEventSchema } from '@/schemas/eventSchema'
+import { CustomFieldInputType } from '@/schemas/eventSchema'
 import EditEventForm from './EditEventForm' // We'll create this component
-import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
-
-async function getEventData(organizationId: string, eventId: string) {
-  const [organization, event, currentUser] = await Promise.all([
-    getOrganization(organizationId),
-    getEvent(eventId),
-    getUser()
-  ])
-
-  if (!event) {
-    return { notFound: true }
-  }
-
-  const isAdmin =
-    currentUser && (await isOrganizerAdmin(organizationId, currentUser.id))
-
-  return { organization, event: DbEventSchema.parse(event), isAdmin }
-}
+import { getEventData } from '@/lib/event/getEventData'
 
 export default async function EditEventPage({
   params

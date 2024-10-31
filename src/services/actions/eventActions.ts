@@ -12,7 +12,7 @@ import { z } from 'zod'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
 import { GenerateEventOpenGraphJobSchema } from '@/schemas/mediaJobs'
-
+import { AttendeeStatus } from '@prisma/client'
 type DbEvent = z.infer<typeof DbEventSchema>
 
 export async function getOrganizationEvents(
@@ -143,6 +143,16 @@ export async function createRegistration(
       customFields: validatedData
     }
   })
+
+  if (registration.status === AttendeeStatus.APPROVED) {
+    // maybe support multiple tickets per registration in the future
+    await prisma.ticket.create({
+      data: {
+        registrationId: registration.id,
+        userId: user.id
+      }
+    })
+  }
 
   await setupInitialEventNotifications({
     userId: user.id,

@@ -28,6 +28,7 @@ export const TicketSchema = z.object({
   id: z.string(),
   eventId: z.string(),
   user: userSchema.nullable(),
+  checkedInDate: z.date().nullable(),
   createdAt: z.date(),
   updatedAt: z.date()
 })
