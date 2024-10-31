@@ -6,7 +6,8 @@ import {
   EventSchema,
   EventInput,
   createAttendeeSchema,
-  DbEventSchema
+  DbEventSchema,
+  EventRegistrationSchema
 } from '@/schemas/eventSchema'
 import { z } from 'zod'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
@@ -185,4 +186,46 @@ export async function getEventDetails(eventId: string) {
   const event = await getEvent(eventId)
 
   return DbEventSchema.parse(event)
+}
+
+export async function getEventRegistrations(eventId: string) {
+  const registrations = await prisma.eventRegistration.findMany({
+    where: { eventId },
+    include: {
+      user: true
+    }
+  })
+
+  return registrations.map(registration =>
+    EventRegistrationSchema.parse(registration)
+  )
+}
+
+export async function checkInUserToEvent(
+  eventId: string,
+  registrationId: string
+) {
+  const event = await getEvent(eventId)
+  if (!event) throw new Error('Event not found')
+
+  const currentUser = await getUser()
+  if (
+    !currentUser ||
+    !(await isOrganizerAdmin(event.organizationId, currentUser.id))
+  ) {
+    throw new Error('Unauthorized')
+  }
+
+  const updatedRegistration = await prisma.eventRegistration.update({
+    where: { id: registrationId },
+    data: {
+      checkedInByUserId: currentUser.id,
+      checkedInDate: new Date()
+    },
+    include: {
+      user: true
+    }
+  })
+
+  return EventRegistrationSchema.parse(updatedRegistration)
 }

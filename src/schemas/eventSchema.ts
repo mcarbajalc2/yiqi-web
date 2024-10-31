@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { userSchema } from './userSchema'
 
 export const CustomFieldSchema = z.object({
   name: z.string().min(1, 'Field name is required'),
@@ -18,6 +19,19 @@ export const EventSchema = z.object({
   location: z.string().nullable().optional().default(''),
   customFields: z.array(CustomFieldSchema),
   requiresApproval: z.boolean().optional().default(false)
+})
+
+export const EventRegistrationSchema = z.object({
+  id: z.string(),
+  eventId: z.string(),
+  userId: z.string(),
+  status: z.enum(['PENDING', 'APPROVED', 'REJECTED']),
+  customFields: z.record(z.any()),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  paid: z.boolean(),
+  paymentId: z.string().nullable(),
+  user: userSchema
 })
 
 export const createCustomFieldSchema = (field: CustomFieldInput) => {
@@ -72,3 +86,6 @@ export const DbEventSchema = EventSchema.extend({
 export type EventInput = z.infer<typeof EventSchema>
 export type CustomFieldInput = z.infer<typeof CustomFieldSchema>
 export type EditEventInput = z.infer<typeof DbEventSchema>
+export type EventRegistrationSchemaType = z.infer<
+  typeof EventRegistrationSchema
+>
