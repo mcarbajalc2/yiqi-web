@@ -1,12 +1,15 @@
-import CommunityHighlights from '@/components/CommunityHighlights'
-import Features from '@/components/Features'
-import Hero from '@/components/hero'
-import UpcomingEvents from '@/components/UpcomingEvents'
+import CommunityHighlights from '@/components/mainLanding/CommunityHighlights'
+import Features from '@/components/mainLanding/Features'
+import Footer from '@/components/mainLanding/Footer'
+import Header from '@/components/mainLanding/header'
+import Hero from '@/components/mainLanding/hero'
+import UpcomingEvents from '@/components/mainLanding/UpcomingEvents'
 import { eventListItem } from '@/data/events'
 
 export default function Home() {
   return (
-    <>
+    <main className="bg-black">
+      <Header />
       {/* Hero Section */}
       <Hero />
       {/* Features Section */}
@@ -17,6 +20,7 @@ export default function Home() {
         {/* Upcoming Events Section */}
         <UpcomingEvents events={eventListItem} />
       </div>
-    </>
+      <Footer />
+    </main>
   )
 }

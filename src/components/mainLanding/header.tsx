@@ -1,8 +1,8 @@
 import { MoveUpRight } from 'lucide-react'
-import { Button } from './ui/button'
+import { Button } from '../ui/button'
 import Link from 'next/link'
 import { getUser } from '@/lib/auth/lucia'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 
 export default async function Header() {
   const user = await getUser()
