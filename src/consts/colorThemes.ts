@@ -1,4 +1,4 @@
-export const colorPage = {
+export const colorTheme = {
   transparent: 'rgba(0, 0, 0, 0)',
   darkGray: 'rgb(51, 51, 51)',
   darkBlue: 'rgb(31, 69, 115)',
