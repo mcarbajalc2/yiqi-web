@@ -31,7 +31,7 @@ const EventHeader = ({ location }: { location: string }) => (
 // Main UpcomingEvents Component
 const UpcomingEvents = ({ events }: { events: EventListItem[] }) => {
   return (
-    <section className="w-full bg-black min-h-screen relative">
+    <section id="events" className="w-full bg-black min-h-screen relative">
       <div className="relative w-full py-16">
         <div className="max-w-7xl mx-auto">
           <EventHeader location="San Francisco, CA" />

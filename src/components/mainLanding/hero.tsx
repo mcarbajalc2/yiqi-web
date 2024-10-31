@@ -7,7 +7,7 @@ import Link from 'next/link'
 
 export default function Hero() {
   return (
-    <div className=" bg-black relative overflow-hidden">
+    <div className="bg-black relative overflow-hidden mt-10">
       {/* Gradient Orbs */}
       {/* <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-[#04F1FF] rounded-full filter blur-[128px] opacity-20 -translate-x-1/2 -translate-y-1/2" />
       <div className="absolute top-1/2 right-0 w-[400px] h-[400px] bg-[#6de4e8] rounded-full filter blur-[128px] opacity-20 translate-x-1/2" /> */}

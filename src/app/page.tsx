@@ -1,15 +1,18 @@
 import CommunityHighlights from '@/components/mainLanding/CommunityHighlights'
 import Features from '@/components/mainLanding/Features'
 import Footer from '@/components/mainLanding/Footer'
-import Header from '@/components/mainLanding/header'
 import Hero from '@/components/mainLanding/hero'
+import MainLandingNav from '@/components/mainLanding/mainNav'
 import UpcomingEvents from '@/components/mainLanding/UpcomingEvents'
 import { eventListItem } from '@/data/events'
+import { getUser } from '@/lib/auth/lucia'
 
-export default function Home() {
+export default async function Home() {
+  const user = await getUser()
   return (
-    <main className="bg-black">
-      <Header />
+    <>
+      <div className="fixed inset-0 h-screen w-screen -z-10 bg-black"></div>
+      <MainLandingNav user={{ name: user?.name, picture: user?.picture! }} />
       {/* Hero Section */}
       <Hero />
       {/* Features Section */}
@@ -21,6 +24,6 @@ export default function Home() {
         <UpcomingEvents events={eventListItem} />
       </div>
       <Footer />
-    </main>
+    </>
   )
 }
