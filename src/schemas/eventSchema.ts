@@ -17,20 +17,35 @@ export const EventInputSchema = z.object({
   endDate: z.coerce.date(),
   description: z.string().optional(),
   location: z.string().nullable().optional().default(''),
+  virtualLink: z.string().nullable().optional().default(''),
   customFields: z.array(CustomFieldSchema),
-  requiresApproval: z.boolean().optional().default(false)
+  requiresApproval: z.boolean().optional().default(false),
+  maxAttendees: z.number().optional().nullable()
 })
+
 export const EventSchema = EventInputSchema.extend({
   id: z.string()
 })
+export const TicketCategorySchema = z.enum(['GENERAL', 'VIP', 'BACKSTAGE'])
 
+export const EventTicketInputSchema = z.object({
+  name: z.string().min(1, 'Ticket name is required'),
+  description: z.string().optional().nullable(),
+  price: z.number().min(0, 'Price must be greater than 0'),
+  limit: z.number().optional().nullable(),
+  ticketsPerPurchase: z.number().optional().nullable(),
+  category: TicketCategorySchema
+})
+
+// this is the ticket the user has
 export const TicketSchema = z.object({
   id: z.string(),
   eventId: z.string(),
   user: userSchema.nullable(),
   checkedInDate: z.date().nullable(),
   createdAt: z.date(),
-  updatedAt: z.date()
+  updatedAt: z.date(),
+  category: TicketCategorySchema
 })
 
 export const EventRegistrationSchema = z.object({

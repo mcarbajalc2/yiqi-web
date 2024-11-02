@@ -30,6 +30,13 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog'
+import { useState } from 'react'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '../ui/accordion'
 
 const EventSchema = z.object({
   title: z.string().min(1, 'Title is required'),
@@ -61,201 +68,244 @@ function CreateEventForm() {
     //createEvent()
     console.log(values)
   }
+  const [openSections, setOpenSections] = useState<string>('informacion-basica')
+
+  const handleAccordionChange = (value: string) => {
+    setOpenSections(value)
+  }
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Título del Evento</FormLabel>
-              <FormControl>
-                <Input placeholder="Tech grill..." {...field} />
-              </FormControl>
-              <FormDescription>
-                ¿Cuál es el nombre de tu evento?
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Descripción</FormLabel>
-              <FormControl>
-                <Textarea
-                  placeholder="Describe tu evento..."
-                  className="resize-none"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Proporciona una breve descripción de tu evento (opcional).
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="startDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Inicio</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
-              <FormDescription>¿Cuándo comienza tu evento?</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="endDate"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Fecha de Finalización</FormLabel>
-              <FormControl>
-                <Input type="datetime-local" {...field} />
-              </FormControl>
-              <FormDescription>¿Cuándo termina tu evento?</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="color"
-          render={({ field }) => (
-            <FormItem className="flex flex-col">
-              <FormLabel>Color</FormLabel>
-              <Popover>
-                <PopoverTrigger asChild>
-                  <FormControl>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className={cn(
-                        'w-[200px] justify-between',
-                        !field.value && 'text-muted-foreground'
-                      )}
-                    >
-                      {field.value ? (
-                        <>
-                          <span
-                            className="h-4 w-4 rounded-full mr-2"
-                            style={{ backgroundColor: field.value }}
-                          />
-                          {field.value}
-                        </>
-                      ) : (
-                        'Selecciona un color'
-                      )}
-                      <Paintbrush className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                    </Button>
-                  </FormControl>
-                </PopoverTrigger>
-                <PopoverContent className="w-[280px] p-3">
-                  <div className="flex flex-col space-y-3">
-                    <div className="flex flex-col space-y-2">
-                      <label
-                        htmlFor="color-picker"
-                        className="text-sm font-medium"
-                      >
-                        Selecciona un color
-                      </label>
-                      <input
-                        id="color-picker"
-                        type="color"
-                        value={field.value}
-                        onChange={e => form.setValue('color', e.target.value)}
-                        className="w-full h-10 rounded-md cursor-pointer"
+        <Accordion
+          type="single"
+          value={openSections}
+          onValueChange={handleAccordionChange}
+        >
+          <AccordionItem value="informacion-basica">
+            <AccordionTrigger className="bg-gray-300 px-2">
+              Información Básica
+            </AccordionTrigger>
+            <AccordionContent>
+              <FormField
+                control={form.control}
+                name="title"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Título del Evento</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Tech grill..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      ¿Cuál es el nombre de tu evento?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Descripción</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Describe tu evento..."
+                        className="resize-none"
+                        {...field}
                       />
-                    </div>
-                    <div className="flex items-center space-x-2">
+                    </FormControl>
+                    <FormDescription>
+                      Proporciona una breve descripción de tu evento (opcional).
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="startDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fecha de Inicio</FormLabel>
+                    <FormControl>
+                      <Input type="datetime-local" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      ¿Cuándo comienza tu evento?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="endDate"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Fecha de Finalización</FormLabel>
+                    <FormControl>
+                      <Input type="datetime-local" {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      ¿Cuándo termina tu evento?
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Ubicación</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Dirección del evento..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      ¿Dónde se llevará a cabo tu evento? (opcional)
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="virtualLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Enlace Virtual</FormLabel>
+                    <FormControl>
+                      <Input type="url" placeholder="https://..." {...field} />
+                    </FormControl>
+                    <FormDescription>
+                      Si es un evento virtual, proporciona el enlace (opcional).
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="configuraciones">
+            <AccordionTrigger className="bg-gray-300 px-2">
+              Configuraciones
+            </AccordionTrigger>
+            <AccordionContent>
+              <FormField
+                control={form.control}
+                name="color"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Color</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            className={cn(
+                              'w-[200px] justify-between',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                          >
+                            {field.value ? (
+                              <>
+                                <span
+                                  className="h-4 w-4 rounded-full mr-2"
+                                  style={{ backgroundColor: field.value }}
+                                />
+                                {field.value}
+                              </>
+                            ) : (
+                              'Selecciona un color'
+                            )}
+                            <Paintbrush className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-[280px] p-3">
+                        <div className="flex flex-col space-y-3">
+                          <div className="flex flex-col space-y-2">
+                            <label
+                              htmlFor="color-picker"
+                              className="text-sm font-medium"
+                            >
+                              Selecciona un color
+                            </label>
+                            <input
+                              id="color-picker"
+                              type="color"
+                              value={field.value}
+                              onChange={e =>
+                                form.setValue('color', e.target.value)
+                              }
+                              className="w-full h-10 rounded-md cursor-pointer"
+                            />
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              value={field.value}
+                              onChange={e =>
+                                form.setValue('color', e.target.value)
+                              }
+                              placeholder="#000000"
+                            />
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="px-3"
+                              onClick={() => form.setValue('color', '')}
+                            >
+                              Resetear
+                            </Button>
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    <FormDescription>
+                      Elige un color para tu evento (opcional).
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="maxAttendees"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Máximo de Asistentes</FormLabel>
+                    <FormControl>
                       <Input
-                        value={field.value}
-                        onChange={e => form.setValue('color', e.target.value)}
-                        placeholder="#000000"
+                        type="number"
+                        {...field}
+                        onChange={e => field.onChange(e.target.valueAsNumber)}
                       />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        className="px-3"
-                        onClick={() => form.setValue('color', '')}
-                      >
-                        Resetear
-                      </Button>
-                    </div>
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <FormDescription>
-                Elige un color para tu evento (opcional).
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Ubicación</FormLabel>
-              <FormControl>
-                <Input placeholder="Dirección del evento..." {...field} />
-              </FormControl>
-              <FormDescription>
-                ¿Dónde se llevará a cabo tu evento? (opcional)
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="virtualLink"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Enlace Virtual</FormLabel>
-              <FormControl>
-                <Input type="url" placeholder="https://..." {...field} />
-              </FormControl>
-              <FormDescription>
-                Si es un evento virtual, proporciona el enlace (opcional).
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="maxAttendees"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Máximo de Asistentes</FormLabel>
-              <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={e => field.onChange(e.target.valueAsNumber)}
-                />
-              </FormControl>
-              <FormDescription>
-                Número máximo de asistentes permitidos (opcional).
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Crea tu evento</Button>
+                    </FormControl>
+                    <FormDescription>
+                      Número máximo de asistentes permitidos (opcional).
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="informacion-tickets">
+            <AccordionTrigger className="bg-gray-300 px-2">
+              Información de Tickets
+            </AccordionTrigger>
+            <AccordionContent></AccordionContent>
+          </AccordionItem>
+
+          <Button type="submit">Crea tu evento</Button>
+        </Accordion>
       </form>
     </Form>
   )
@@ -263,13 +313,12 @@ function CreateEventForm() {
 function CreateEventButton() {
   return (
     <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
-      <DialogContent>
+      <DialogTrigger>Crea un nuevo evento</DialogTrigger>
+      <DialogContent className="max-h-[90vh] overflow-auto ">
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>Crea un nuevo evento</DialogTitle>
           <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            Aquí puedes crear un nuevo evento para tu organización.
           </DialogDescription>
         </DialogHeader>
         <CreateEventForm />
