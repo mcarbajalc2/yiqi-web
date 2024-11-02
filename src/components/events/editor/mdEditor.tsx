@@ -85,11 +85,13 @@ Este código insertará el video en el documento Markdown.
                   remarkPlugins={[remarkGfm]}
                   rehypePlugins={[rehypeRaw]} // Enable raw HTML rendering
                   components={{
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     code({ node, inline, className, children, ...props }: any) {
                       const match = /language-(\w+)/.exec(className || '')
+                      console.log(node)
                       return !inline && match ? (
                         <SyntaxHighlighter
-                          style={vscDarkPlus as any}
+                          style={vscDarkPlus as unknown}
                           language={match[1]}
                           PreTag="div"
                           {...props}

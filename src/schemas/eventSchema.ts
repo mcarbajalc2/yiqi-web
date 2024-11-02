@@ -11,16 +11,29 @@ export const CustomFieldSchema = z.object({
     .describe('Comma-separated list of options for select fields')
 })
 
+export const EventTicketInputSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  category: z.enum(['GENERAL', 'VIP', 'BACKSTAGE']),
+  description: z.string().optional(),
+  price: z.number().min(0, 'Price must be positive'),
+  limit: z.number().min(1, 'Limit must be at least 1'),
+  ticketsPerPurchase: z
+    .number()
+    .min(1, 'Must allow at least 1 ticket per purchase')
+})
 export const EventInputSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
   description: z.string().optional(),
-  location: z.string().nullable().optional().default(''),
-  virtualLink: z.string().nullable().optional().default(''),
-  customFields: z.array(CustomFieldSchema),
+  startDate: z.string(),
+  endDate: z.string(),
+  color: z.string().optional(),
+  location: z.string().optional(),
   requiresApproval: z.boolean().optional().default(false),
-  maxAttendees: z.number().optional().nullable()
+  virtualLink: z.string().url().optional(),
+  maxAttendees: z.number().int().positive().optional(),
+  tickets: z
+    .array(EventTicketInputSchema)
+    .min(1, 'At least one ticket type is required')
 })
 
 export const EventSchema = EventInputSchema.extend({
@@ -28,15 +41,7 @@ export const EventSchema = EventInputSchema.extend({
 })
 export const TicketCategorySchema = z.enum(['GENERAL', 'VIP', 'BACKSTAGE'])
 
-export const EventTicketInputSchema = z.object({
-  name: z.string().min(1, 'Ticket name is required'),
-  description: z.string().optional().nullable(),
-  price: z.number().min(0, 'Price must be greater than 0'),
-  limit: z.number().optional().nullable(),
-  ticketsPerPurchase: z.number().optional().nullable(),
-  category: TicketCategorySchema
-})
-
+export type EventTicketInputType = z.infer<typeof EventTicketInputSchema>
 // this is the ticket the user has
 export const TicketSchema = z.object({
   id: z.string(),

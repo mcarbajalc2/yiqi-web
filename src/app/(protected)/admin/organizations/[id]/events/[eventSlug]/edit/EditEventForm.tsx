@@ -64,7 +64,7 @@ export default function EditEventForm({
       </div>
       <div>
         <label htmlFor="startDate" className="block">
-          Start Date {event.startDate.toLocaleDateString()}
+          Start Date {new Date(event.startDate).toLocaleDateString()}
         </label>
         <input
           type="datetime-local"

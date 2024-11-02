@@ -1,5 +1,5 @@
 import { EventPage } from '@/components/lumalike/template1'
-import { DragDropZone } from '@/components/upload/upload'
+// import { DragDropZone } from '@/components/upload/upload'
 const event = {
   title: 'Tech Grill',
   subtitle: 'El Gran Cierre de Lima Tech Week 2024',

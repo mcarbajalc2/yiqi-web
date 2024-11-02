@@ -37,21 +37,15 @@ import {
   AccordionItem,
   AccordionTrigger
 } from '../ui/accordion'
-
-const EventSchema = z.object({
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  startDate: z.string(),
-  endDate: z.string(),
-  color: z.string().optional(),
-  location: z.string().optional(),
-  virtualLink: z.string().url().optional(),
-  maxAttendees: z.number().int().positive().optional()
-})
+import { TicketTypesManager } from './TicketTypesManager'
+import { createEvent } from '@/services/actions/eventActions'
+import { useParams } from 'next/navigation'
+import { EventInputSchema, EventTicketInputType } from '@/schemas/eventSchema'
 
 function CreateEventForm() {
-  const form = useForm<z.infer<typeof EventSchema>>({
-    resolver: zodResolver(EventSchema),
+  const params = useParams()
+  const form = useForm<z.infer<typeof EventInputSchema>>({
+    resolver: zodResolver(EventInputSchema),
     defaultValues: {
       title: '',
       description: '',
@@ -60,14 +54,28 @@ function CreateEventForm() {
       color: '',
       location: '',
       virtualLink: '',
-      maxAttendees: undefined
+      maxAttendees: undefined,
+      tickets: []
     }
   })
 
-  function onSubmit(values: z.infer<typeof EventSchema>) {
-    //createEvent()
-    console.log(values)
+  const [tickets, setTickets] = useState<EventTicketInputType[]>([])
+
+  async function onSubmit(values: z.infer<typeof EventInputSchema>) {
+    try {
+      const finalValues = {
+        ...values,
+        tickets
+      }
+
+      await createEvent(params.id as string, finalValues)
+      // Close dialog or show success message
+    } catch (error) {
+      console.error('Failed to create event:', error)
+      // Show error message to user
+    }
   }
+
   const [openSections, setOpenSections] = useState<string>('informacion-basica')
 
   const handleAccordionChange = (value: string) => {
@@ -301,7 +309,12 @@ function CreateEventForm() {
             <AccordionTrigger className="bg-gray-300 px-2">
               Información de Tickets
             </AccordionTrigger>
-            <AccordionContent></AccordionContent>
+            <AccordionContent>
+              <TicketTypesManager
+                tickets={tickets}
+                onUpdate={newTickets => setTickets(newTickets)}
+              />
+            </AccordionContent>
           </AccordionItem>
 
           <Button type="submit">Crea tu evento</Button>

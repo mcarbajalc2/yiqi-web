@@ -63,7 +63,9 @@ function DragDropZone({ onUploadComplete }: DragDropZoneProps) {
         ) : isDragActive ? (
           <p className="text-primary">Drop the files here ...</p>
         ) : (
-          <p>Drag 'n' drop some files here, or click to select files</p>
+          <p>
+            Drag &apos;n&apos; drop some files here, or click to select files
+          </p>
         )}
       </div>
       {error && <p className="text-destructive mt-2">{error.message}</p>}

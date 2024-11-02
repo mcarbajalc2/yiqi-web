@@ -11,7 +11,6 @@ import {
 import { z } from 'zod'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
-import { GenerateEventOpenGraphJobSchema } from '@/schemas/mediaJobs'
 import { AttendeeStatus } from '@prisma/client'
 type DbEvent = z.infer<typeof DbEventSchema>
 
@@ -34,12 +33,9 @@ export async function getEvent(eventId: string): Promise<DbEvent> {
   return DbEventSchema.parse(event)
 }
 
-export async function createEvent(organizationId: string, eventData: unknown) {
+export async function createEvent(orgId: string, eventData: unknown) {
   const currentUser = await getUser()
-  if (
-    !currentUser ||
-    !(await isOrganizerAdmin(organizationId, currentUser.id))
-  ) {
+  if (!currentUser || !(await isOrganizerAdmin(orgId, currentUser.id))) {
     throw new Error('Unauthorized')
   }
 
@@ -48,24 +44,19 @@ export async function createEvent(organizationId: string, eventData: unknown) {
   const event = await prisma.event.create({
     data: {
       ...validatedData,
-      organizationId
+      organizationId: orgId
     }
   })
 
-  // Create a job for generating the open graph image
-  await prisma.queueJob.create({
-    data: {
-      type: 'GENERATE_EVENT_OPEN_GRAPH',
-      status: 'PENDING',
-      data: GenerateEventOpenGraphJobSchema.parse({ eventId: event.id }),
-      priority: 1,
-      organizationId: organizationId,
+  const tickets = await prisma.ticketOfferings.createMany({
+    data: validatedData.tickets.map(ticket => ({
+      ...ticket,
       eventId: event.id
-    }
+    }))
   })
 
-  revalidatePath(`/admin/organizations/${organizationId}/events`)
-  return DbEventSchema.parse(event)
+  revalidatePath(`/admin/organizations/${orgId}/events`)
+  return DbEventSchema.parse({ ...event, tickets })
 }
 
 export async function updateEvent(eventId: string, eventData: unknown) {
@@ -82,13 +73,28 @@ export async function updateEvent(eventId: string, eventData: unknown) {
 
   const validatedData = EventInputSchema.parse(eventData)
 
+  // Delete existing tickets and create new ones
+  await prisma.ticketOfferings.deleteMany({
+    where: { eventId }
+  })
+
   const updatedEvent = await prisma.event.update({
     where: { id: eventId },
-    data: validatedData
+    data: {
+      ...validatedData,
+      organizationId: event.organizationId
+    }
+  })
+
+  const tickets = await prisma.ticketOfferings.createMany({
+    data: validatedData.tickets.map(ticket => ({
+      ...ticket,
+      eventId: eventId
+    }))
   })
 
   revalidatePath(`/admin/organizations/${event.organizationId}/events`)
-  return DbEventSchema.parse(updatedEvent)
+  return DbEventSchema.parse({ ...updatedEvent, tickets })
 }
 
 export async function deleteEvent(eventId: string) {
@@ -146,18 +152,18 @@ export async function createRegistration(
 
   if (registration.status === AttendeeStatus.APPROVED) {
     // maybe support multiple tickets per registration in the future
-    await prisma.ticket.create({
-      data: {
-        registrationId: registration.id,
-        userId: user.id
-      }
-    })
+    // await prisma.ticket.create({
+    //   data: {
+    //     registrationId: registration.id,
+    //     userId: user.id
+    //   }
+    // })
   }
 
   await setupInitialEventNotifications({
     userId: user.id,
     eventId: event.id,
-    eventStartDate: event.startDate,
+    eventStartDate: new Date(event.startDate),
     orgId: event.organizationId
   })
 
