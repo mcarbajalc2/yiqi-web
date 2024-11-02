@@ -151,7 +151,6 @@ model Event {
   location     String?
   virtualLink  String?
   maxAttendees Int?
-
   organization     Organization        @relation(fields: [organizationId], references: [id])
   organizationId   String
   customFields     Json? // Added to store custom fields for the event
@@ -159,20 +158,33 @@ model Event {
   updatedAt        DateTime            @updatedAt
   requiresApproval Boolean             @default(false)
   registrations    EventRegistration[]
-
   EventBot EventBot[]
-
   Notification Notification[]
-
   Form Form[]
-
   FormSubmission FormSubmission[]
-
   openGraphImage String?
-
-
   GeneratedMedia GeneratedMedia[]
   queueJobs QueueJob[]
+  TicketTypes TicketOfferings[]
+}
+
+enum TicketCategory {
+  GENERAL
+  VIP
+  BACKSTAGE
+}
+
+model TicketOfferings {
+  id String @id @default(cuid())
+  name String
+  category TicketCategory
+  description String?
+  price Decimal
+  limit Int
+  // some tickets are 2 for 1, some are 3 for 1, etc.
+  ticketsPerPurchase Int @default(1)
+  event Event @relation(fields: [eventId], references: [id])
+  eventId String
 }
 
 enum MediaType {
@@ -212,10 +224,12 @@ model EventRegistration {
 
 model Ticket {
   id String @id @default(cuid())
+  description String?
   registration EventRegistration @relation(fields: [registrationId], references: [id])
   registrationId String
   user         User           @relation("ticketOwner", fields: [userId], references: [id])
   userId       String
+  category TicketCategory
   checkedInDate DateTime?
   checkedInBy User? @relation("checkedInByUser", fields: [checkedInByUserId], references: [id])
   checkedInByUserId String?
