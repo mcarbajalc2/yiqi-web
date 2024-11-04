@@ -22,14 +22,6 @@ import {
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
 import { Paintbrush } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
 import { useState } from 'react'
 import {
   Accordion,
@@ -41,9 +33,11 @@ import { TicketTypesManager } from './TicketTypesManager'
 import { createEvent } from '@/services/actions/eventActions'
 import { useParams } from 'next/navigation'
 import { EventInputSchema, EventTicketInputType } from '@/schemas/eventSchema'
+import { useRouter } from 'next/navigation'
 
 function CreateEventForm() {
   const params = useParams()
+  const router = useRouter()
   const form = useForm<z.infer<typeof EventInputSchema>>({
     resolver: zodResolver(EventInputSchema),
     defaultValues: {
@@ -69,7 +63,7 @@ function CreateEventForm() {
       }
 
       await createEvent(params.id as string, finalValues)
-      // Close dialog or show success message
+      router.push(`/admin/organizations/${params.id}/events`)
     } catch (error) {
       console.error('Failed to create event:', error)
       // Show error message to user
@@ -85,6 +79,13 @@ function CreateEventForm() {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <div className="flex justify-between items-center mb-6">
+          <Button type="button" variant="outline" onClick={() => router.back()}>
+            Back
+          </Button>
+          <Button type="submit">Create Event</Button>
+        </div>
+
         <Accordion
           type="single"
           value={openSections}
@@ -316,28 +317,10 @@ function CreateEventForm() {
               />
             </AccordionContent>
           </AccordionItem>
-
-          <Button type="submit">Crea tu evento</Button>
         </Accordion>
       </form>
     </Form>
   )
 }
-function CreateEventButton() {
-  return (
-    <Dialog>
-      <DialogTrigger>Crea un nuevo evento</DialogTrigger>
-      <DialogContent className="max-h-[90vh] overflow-auto ">
-        <DialogHeader>
-          <DialogTitle>Crea un nuevo evento</DialogTitle>
-          <DialogDescription>
-            Aquí puedes crear un nuevo evento para tu organización.
-          </DialogDescription>
-        </DialogHeader>
-        <CreateEventForm />
-      </DialogContent>
-    </Dialog>
-  )
-}
 
-export { CreateEventButton }
+export { CreateEventForm }
