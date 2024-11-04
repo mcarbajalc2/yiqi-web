@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
 
 import Link from 'next/link'
+import { getOrganizationEvents } from '@/services/actions/event/getOrganizationEvents'
 export default async function EventsPage({
   params
 }: {
@@ -12,7 +13,7 @@ export default async function EventsPage({
 }) {
   const organization = await getOrganization(params.id)
   const user = await getUser()
-
+  const events = await getOrganizationEvents(params.id)
   if (!organization) {
     return <div>Organization not found</div>
   }
@@ -39,6 +40,18 @@ export default async function EventsPage({
               >
                 Create New Events
               </Link>
+            </div>
+
+            <div>
+              {events.map(event => (
+                <Link
+                  href={`/admin/organizations/${params.id}/events/${event.id}`}
+                  key={event.id}
+                  className="block p-4 border rounded-md cursor-pointer"
+                >
+                  {event.title} - {new Date(event.startDate).toLocaleString()}
+                </Link>
+              ))}
             </div>
           </section>
         </OrganizationLayout>

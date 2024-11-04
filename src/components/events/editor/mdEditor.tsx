@@ -15,8 +15,7 @@ import rehypeRaw from 'rehype-raw'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
-export default function MarkdownEditor() {
-  const [markdown, setMarkdown] = useState<string>(`
+const defaultValue = `
 
 # Bienvenido al Editor de Markdown
 
@@ -50,7 +49,15 @@ Reemplaza \`VIDEO_ID\` con el ID del video que deseas incrustar.
 <iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Este código insertará el video en el documento Markdown.
-`)
+`
+export default function MarkdownEditor({
+  initialValue,
+  onChange
+}: {
+  initialValue?: string
+  onChange: (markdown: string) => void
+}) {
+  const [markdown, setMarkdown] = useState<string>(initialValue || defaultValue)
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMarkdown(e.target.value)
@@ -59,6 +66,7 @@ Este código insertará el video en el documento Markdown.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Submitted Markdown:', markdown)
+    onChange(markdown)
   }
 
   return (

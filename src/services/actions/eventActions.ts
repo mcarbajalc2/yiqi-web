@@ -15,17 +15,6 @@ import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
 import { AttendeeStatus } from '@prisma/client'
 type DbEvent = z.infer<typeof DbEventSchema>
 
-export async function getOrganizationEvents(
-  organizationId: string
-): Promise<DbEvent[]> {
-  const events = await prisma.event.findMany({
-    where: { organizationId },
-    orderBy: { startDate: 'asc' }
-  })
-
-  return events.map(event => DbEventSchema.parse(event))
-}
-
 export async function getEvent(eventId: string): Promise<DbEvent> {
   const event = await prisma.event.findUniqueOrThrow({
     where: { id: eventId }
