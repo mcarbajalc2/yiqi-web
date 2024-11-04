@@ -29,6 +29,7 @@ import {
 } from '@/components/ui/select'
 import { UploadToS3 } from '@/lib/uploadToS3'
 import Image from 'next/image'
+import { AddressAutocomplete } from '../forms/AddressAutocomplete'
 
 type Props = {
   organizationId: string
@@ -37,7 +38,16 @@ type Props = {
 function CreateEventForm({ organizationId }: Props) {
   const params = useParams()
   const router = useRouter()
-  const [tickets, setTickets] = useState<EventTicketInputType[]>([])
+  const [tickets, setTickets] = useState<EventTicketInputType[]>([
+    {
+      name: 'General',
+      category: 'GENERAL',
+      description: '',
+      price: 0,
+      limit: 100,
+      ticketsPerPurchase: 1
+    }
+  ])
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -106,7 +116,14 @@ function CreateEventForm({ organizationId }: Props) {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={e => {
+          console.log('onSubmit', e)
+          try {
+            form.handleSubmit(onSubmit)(e)
+          } catch (error) {
+            console.error('Failed to create event:', error)
+          }
+        }}
         className="max-w-4xl mx-auto"
       >
         <div className="grid grid-cols-[300px,1fr] gap-6">
@@ -242,7 +259,10 @@ function CreateEventForm({ organizationId }: Props) {
                 render={({ field }) => (
                   <FormItem className="flex-1">
                     <FormControl>
-                      <Input placeholder="Add Event Location" {...field} />
+                      <AddressAutocomplete
+                        fieldName="location"
+                        onSetAddress={field.onChange}
+                      />
                     </FormControl>
                   </FormItem>
                 )}
