@@ -16,7 +16,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { createEvent } from '@/services/actions/eventActions'
 import { EventInputSchema, EventTicketInputType } from '@/schemas/eventSchema'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { MapPin, Clock, Users } from 'lucide-react'
 import { useState } from 'react'
 import { TicketTypesManager } from './TicketTypesManager'
@@ -35,8 +35,14 @@ type Props = {
   organizationId: string
 }
 
+export const EventFormInputSchema = EventInputSchema.extend({
+  startTime: z.string(),
+  endTime: z.string(),
+  startDate: z.string(),
+  endDate: z.string()
+})
+
 function CreateEventForm({ organizationId }: Props) {
-  const params = useParams()
   const router = useRouter()
   const [tickets, setTickets] = useState<EventTicketInputType[]>([
     {
@@ -52,29 +58,20 @@ function CreateEventForm({ organizationId }: Props) {
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
 
-  const form = useForm<z.infer<typeof EventInputSchema>>({
-    resolver: zodResolver(EventInputSchema),
+  const form = useForm<z.infer<typeof EventFormInputSchema>>({
+    resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
-      title: '',
-      startDate: '',
+      title: 'tomsdasd',
+      startDate: '2024-11-05T15:00:00.000Z',
       startTime: '10:00',
-      endDate: '',
+      endDate: '2024-11-05T16:00:00.000Z',
       endTime: '11:00',
-      location: '',
+      location: 'Tomás Ramsey 915, Magdalena del Mar 15076, Peru',
       virtualLink: '',
-      description: '',
-      maxAttendees: undefined,
+      description: 'dasdasdadadasda',
       requiresApproval: false,
-      tickets: [
-        {
-          name: 'General',
-          category: 'GENERAL',
-          description: '',
-          price: 0,
-          limit: 100,
-          ticketsPerPurchase: 1
-        }
-      ]
+      openGraphImage: null,
+      maxAttendees: undefined
     }
   })
 
@@ -88,7 +85,7 @@ function CreateEventForm({ organizationId }: Props) {
     }
   }
 
-  async function onSubmit(values: z.infer<typeof EventInputSchema>) {
+  async function onSubmit(values: z.infer<typeof EventFormInputSchema>) {
     try {
       let imageUrl = null
       if (selectedImage) {
@@ -102,12 +99,11 @@ function CreateEventForm({ organizationId }: Props) {
         ...values,
         startDate: startDateTime.toISOString(),
         endDate: endDateTime.toISOString(),
-        tickets,
         openGraphImage: imageUrl // Add the image URL to the payload
       }
 
-      await createEvent(organizationId, eventData)
-      router.push(`/admin/organizations/${params.id}/events`)
+      await createEvent(organizationId, eventData, tickets)
+      router.push(`/admin/organizations/${organizationId}/events`)
     } catch (error) {
       console.error('Failed to create event:', error)
     }
@@ -117,9 +113,9 @@ function CreateEventForm({ organizationId }: Props) {
     <Form {...form}>
       <form
         onSubmit={e => {
-          console.log('onSubmit', e)
+          e.preventDefault()
           try {
-            form.handleSubmit(onSubmit)(e)
+            onSubmit(form.getValues())
           } catch (error) {
             console.error('Failed to create event:', error)
           }
@@ -322,10 +318,17 @@ function CreateEventForm({ organizationId }: Props) {
                       <FormItem>
                         <FormControl>
                           <Input
-                            type="text"
+                            type="number"
                             placeholder="Unlimited"
                             className="w-32 text-right"
-                            {...field}
+                            value={field.value?.toString()}
+                            onChange={e => {
+                              const value =
+                                e.target.value === ''
+                                  ? null
+                                  : Number(e.target.value)
+                              field.onChange(value)
+                            }}
                           />
                         </FormControl>
                       </FormItem>

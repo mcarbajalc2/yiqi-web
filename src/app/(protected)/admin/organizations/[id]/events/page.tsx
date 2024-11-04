@@ -3,8 +3,8 @@ import { getUser } from '@/lib/auth/lucia'
 import OrganizationLayout from '@/components/orgs/organizationLayout'
 import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
-import { Link } from 'lucide-react'
 
+import Link from 'next/link'
 export default async function EventsPage({
   params
 }: {
@@ -37,7 +37,7 @@ export default async function EventsPage({
                 href={`/admin/organizations/${params.id}/events/new`}
                 className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
               >
-                Create New Event
+                Create New Events
               </Link>
             </div>
           </section>

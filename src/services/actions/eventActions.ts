@@ -6,7 +6,8 @@ import {
   EventInputSchema,
   createAttendeeSchema,
   DbEventSchema,
-  EventRegistrationSchema
+  EventRegistrationSchema,
+  EventTicketInputSchema
 } from '@/schemas/eventSchema'
 import { z } from 'zod'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
@@ -33,33 +34,44 @@ export async function getEvent(eventId: string): Promise<DbEvent> {
   return DbEventSchema.parse(event)
 }
 
-export async function createEvent(orgId: string, eventData: unknown) {
+export async function createEvent(
+  orgId: string,
+  eventData: unknown,
+  rawTickets: unknown[]
+) {
   const currentUser = await getUser()
   if (!currentUser || !(await isOrganizerAdmin(orgId, currentUser.id))) {
     throw new Error('Unauthorized')
   }
 
   const validatedData = EventInputSchema.parse(eventData)
+  const tickets = rawTickets.map(v => EventTicketInputSchema.parse(v))
 
   const event = await prisma.event.create({
     data: {
       ...validatedData,
-      organizationId: orgId
+      organizationId: orgId,
+      startDate: new Date(validatedData.startDate),
+      endDate: new Date(validatedData.endDate)
     }
   })
 
-  const tickets = await prisma.ticketOfferings.createMany({
-    data: validatedData.tickets.map(ticket => ({
+  const createdTickets = await prisma.ticketOfferings.createMany({
+    data: tickets.map(ticket => ({
       ...ticket,
       eventId: event.id
     }))
   })
 
   revalidatePath(`/admin/organizations/${orgId}/events`)
-  return DbEventSchema.parse({ ...event, tickets })
+  return DbEventSchema.parse({ ...event, tickets: createdTickets })
 }
 
-export async function updateEvent(eventId: string, eventData: unknown) {
+export async function updateEvent(
+  eventId: string,
+  eventData: unknown,
+  rawTickets: unknown[]
+) {
   const event = await getEvent(eventId)
   if (!event) throw new Error('Event not found')
 
@@ -72,6 +84,7 @@ export async function updateEvent(eventId: string, eventData: unknown) {
   }
 
   const validatedData = EventInputSchema.parse(eventData)
+  const parsedTickets = rawTickets.map(v => EventTicketInputSchema.parse(v))
 
   // Delete existing tickets and create new ones
   await prisma.ticketOfferings.deleteMany({
@@ -87,7 +100,7 @@ export async function updateEvent(eventId: string, eventData: unknown) {
   })
 
   const tickets = await prisma.ticketOfferings.createMany({
-    data: validatedData.tickets.map(ticket => ({
+    data: parsedTickets.map(ticket => ({
       ...ticket,
       eventId: eventId
     }))

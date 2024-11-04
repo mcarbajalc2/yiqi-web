@@ -21,21 +21,22 @@ export const EventTicketInputSchema = z.object({
     .number()
     .min(1, 'Must allow at least 1 ticket per purchase')
 })
+
 export const EventInputSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  startDate: z.string(),
-  startTime: z.string(),
-  endDate: z.string(),
-  endTime: z.string(),
-  location: z.string().optional(),
-  virtualLink: z.string().url().optional(),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  location: z.string().optional().nullable(),
+  virtualLink: z
+    .string()
+    .transform(val => (val === '' ? null : val))
+    .pipe(z.string().url().nullable())
+    .optional()
+    .nullable(),
   description: z.string().optional(),
-  maxAttendees: z.number().int().positive().optional(),
+  maxAttendees: z.number().int().positive().optional().nullable(),
   requiresApproval: z.boolean().default(false),
-  openGraphImage: z.string().optional(),
-  tickets: z
-    .array(EventTicketInputSchema)
-    .min(1, 'At least one ticket type is required')
+  openGraphImage: z.string().optional().nullable()
 })
 
 export const EventSchema = EventInputSchema.extend({
