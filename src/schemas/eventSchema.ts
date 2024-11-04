@@ -23,14 +23,16 @@ export const EventTicketInputSchema = z.object({
 })
 export const EventInputSchema = z.object({
   title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
   startDate: z.string(),
+  startTime: z.string(),
   endDate: z.string(),
-  color: z.string().optional(),
+  endTime: z.string(),
   location: z.string().optional(),
-  requiresApproval: z.boolean().optional().default(false),
   virtualLink: z.string().url().optional(),
+  description: z.string().optional(),
   maxAttendees: z.number().int().positive().optional(),
+  requiresApproval: z.boolean().default(false),
+  openGraphImage: z.string().optional(),
   tickets: z
     .array(EventTicketInputSchema)
     .min(1, 'At least one ticket type is required')

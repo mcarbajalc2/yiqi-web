@@ -7,317 +7,341 @@ import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-import { Paintbrush } from 'lucide-react'
-import { useState } from 'react'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger
-} from '../ui/accordion'
-import { TicketTypesManager } from './TicketTypesManager'
+import { Switch } from '@/components/ui/switch'
 import { createEvent } from '@/services/actions/eventActions'
-import { useParams } from 'next/navigation'
 import { EventInputSchema, EventTicketInputType } from '@/schemas/eventSchema'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
+import { MapPin, Clock, Users } from 'lucide-react'
+import { useState } from 'react'
+import { TicketTypesManager } from './TicketTypesManager'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
+import { UploadToS3 } from '@/lib/uploadToS3'
+import Image from 'next/image'
 
-function CreateEventForm() {
+type Props = {
+  organizationId: string
+}
+
+function CreateEventForm({ organizationId }: Props) {
   const params = useParams()
   const router = useRouter()
+  const [tickets, setTickets] = useState<EventTicketInputType[]>([])
+  const [showTicketManager, setShowTicketManager] = useState(false)
+  const [selectedImage, setSelectedImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+
   const form = useForm<z.infer<typeof EventInputSchema>>({
     resolver: zodResolver(EventInputSchema),
     defaultValues: {
       title: '',
-      description: '',
       startDate: '',
+      startTime: '10:00',
       endDate: '',
-      color: '',
+      endTime: '11:00',
       location: '',
       virtualLink: '',
+      description: '',
       maxAttendees: undefined,
-      tickets: []
+      requiresApproval: false,
+      tickets: [
+        {
+          name: 'General',
+          category: 'GENERAL',
+          description: '',
+          price: 0,
+          limit: 100,
+          ticketsPerPurchase: 1
+        }
+      ]
     }
   })
 
-  const [tickets, setTickets] = useState<EventTicketInputType[]>([])
-
-  async function onSubmit(values: z.infer<typeof EventInputSchema>) {
-    try {
-      const finalValues = {
-        ...values,
-        tickets
-      }
-
-      await createEvent(params.id as string, finalValues)
-      router.push(`/admin/organizations/${params.id}/events`)
-    } catch (error) {
-      console.error('Failed to create event:', error)
-      // Show error message to user
+  const handleImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setSelectedImage(file)
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file)
+      setImagePreview(previewUrl)
     }
   }
 
-  const [openSections, setOpenSections] = useState<string>('informacion-basica')
+  async function onSubmit(values: z.infer<typeof EventInputSchema>) {
+    try {
+      let imageUrl = null
+      if (selectedImage) {
+        imageUrl = await UploadToS3(selectedImage)
+      }
 
-  const handleAccordionChange = (value: string) => {
-    setOpenSections(value)
+      const startDateTime = new Date(`${values.startDate}T${values.startTime}`)
+      const endDateTime = new Date(`${values.endDate}T${values.endTime}`)
+
+      const eventData = {
+        ...values,
+        startDate: startDateTime.toISOString(),
+        endDate: endDateTime.toISOString(),
+        tickets,
+        openGraphImage: imageUrl // Add the image URL to the payload
+      }
+
+      await createEvent(organizationId, eventData)
+      router.push(`/admin/organizations/${params.id}/events`)
+    } catch (error) {
+      console.error('Failed to create event:', error)
+    }
   }
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex justify-between items-center mb-6">
-          <Button type="button" variant="outline" onClick={() => router.back()}>
-            Back
-          </Button>
-          <Button type="submit">Create Event</Button>
-        </div>
-
-        <Accordion
-          type="single"
-          value={openSections}
-          onValueChange={handleAccordionChange}
-        >
-          <AccordionItem value="informacion-basica">
-            <AccordionTrigger className="bg-gray-300 px-2">
-              Información Básica
-            </AccordionTrigger>
-            <AccordionContent>
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Título del Evento</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Tech grill..." {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      ¿Cuál es el nombre de tu evento?
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="max-w-4xl mx-auto"
+      >
+        <div className="grid grid-cols-[300px,1fr] gap-6">
+          {/* Left Column */}
+          <div className="space-y-4">
+            <div className="border rounded-lg p-4">
+              <label htmlFor="image-upload">
+                <div className="aspect-square bg-gray-100 rounded-md mb-2 relative overflow-hidden">
+                  {imagePreview ? (
+                    <Image
+                      src={imagePreview}
+                      alt="Event preview"
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className="h-full w-full flex items-center justify-center">
+                      <span className="text-sm text-gray-500">
+                        Select an Image
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </label>
+              <input
+                id="image-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageSelect}
               />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Descripción</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="Describe tu evento..."
-                        className="resize-none"
-                        {...field}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="space-y-4">
+            {/* Event Name */}
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder="Event Name"
+                      className="text-xl border-0 px-0 focus-visible:ring-0"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Date and Time */}
+            <div className="flex items-start gap-2">
+              <Clock className="h-5 w-5 mt-2" />
+              <div className="flex-1 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <div className="mb-2">Start</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
                       />
-                    </FormControl>
-                    <FormDescription>
-                      Proporciona una breve descripción de tu evento (opcional).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="startDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Fecha de Inicio</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      ¿Cuándo comienza tu evento?
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="endDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Fecha de Finalización</FormLabel>
-                    <FormControl>
-                      <Input type="datetime-local" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      ¿Cuándo termina tu evento?
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <FormField
+                        control={form.control}
+                        name="startTime"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input type="time" {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <div className="mb-2">End</div>
+                    <div className="grid grid-cols-2 gap-2">
+                      <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input type="date" {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="endTime"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormControl>
+                              <Input type="time" {...field} />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Select defaultValue="GMT-05:00">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select timezone" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="GMT-05:00">GMT-05:00 Lima</SelectItem>
+                    {/* Add more timezones as needed */}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
 
+            {/* Location */}
+            <div className="flex items-center gap-2">
+              <MapPin className="h-5 w-5" />
               <FormField
                 control={form.control}
                 name="location"
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Ubicación</FormLabel>
+                  <FormItem className="flex-1">
                     <FormControl>
-                      <Input placeholder="Dirección del evento..." {...field} />
+                      <Input placeholder="Add Event Location" {...field} />
                     </FormControl>
-                    <FormDescription>
-                      ¿Dónde se llevará a cabo tu evento? (opcional)
-                    </FormDescription>
-                    <FormMessage />
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="virtualLink"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Enlace Virtual</FormLabel>
-                    <FormControl>
-                      <Input type="url" placeholder="https://..." {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      Si es un evento virtual, proporciona el enlace (opcional).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </AccordionContent>
-          </AccordionItem>
+            </div>
 
-          <AccordionItem value="configuraciones">
-            <AccordionTrigger className="bg-gray-300 px-2">
-              Configuraciones
-            </AccordionTrigger>
-            <AccordionContent>
-              <FormField
-                control={form.control}
-                name="color"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Color</FormLabel>
-                    <Popover>
-                      <PopoverTrigger asChild>
+            {/* Description */}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Add Description"
+                      className="resize-none min-h-[100px]"
+                      {...field}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+
+            {/* Event Options */}
+            <div className="space-y-2">
+              <h3 className="text-sm font-medium">Event Options</h3>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    <span>Require Approval</span>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="requiresApproval"
+                    render={({ field }) => (
+                      <FormItem>
                         <FormControl>
-                          <Button
-                            variant="outline"
-                            role="combobox"
-                            className={cn(
-                              'w-[200px] justify-between',
-                              !field.value && 'text-muted-foreground'
-                            )}
-                          >
-                            {field.value ? (
-                              <>
-                                <span
-                                  className="h-4 w-4 rounded-full mr-2"
-                                  style={{ backgroundColor: field.value }}
-                                />
-                                {field.value}
-                              </>
-                            ) : (
-                              'Selecciona un color'
-                            )}
-                            <Paintbrush className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                          </Button>
+                          <Switch
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
                         </FormControl>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-[280px] p-3">
-                        <div className="flex flex-col space-y-3">
-                          <div className="flex flex-col space-y-2">
-                            <label
-                              htmlFor="color-picker"
-                              className="text-sm font-medium"
-                            >
-                              Selecciona un color
-                            </label>
-                            <input
-                              id="color-picker"
-                              type="color"
-                              value={field.value}
-                              onChange={e =>
-                                form.setValue('color', e.target.value)
-                              }
-                              className="w-full h-10 rounded-md cursor-pointer"
-                            />
-                          </div>
-                          <div className="flex items-center space-x-2">
-                            <Input
-                              value={field.value}
-                              onChange={e =>
-                                form.setValue('color', e.target.value)
-                              }
-                              placeholder="#000000"
-                            />
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className="px-3"
-                              onClick={() => form.setValue('color', '')}
-                            >
-                              Resetear
-                            </Button>
-                          </div>
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-                    <FormDescription>
-                      Elige un color para tu evento (opcional).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="maxAttendees"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Máximo de Asistentes</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        {...field}
-                        onChange={e => field.onChange(e.target.valueAsNumber)}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Número máximo de asistentes permitidos (opcional).
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </AccordionContent>
-          </AccordionItem>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Users className="h-5 w-5" />
+                    <span>Capacity</span>
+                  </div>
+                  <FormField
+                    control={form.control}
+                    name="maxAttendees"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            type="text"
+                            placeholder="Unlimited"
+                            className="w-32 text-right"
+                            {...field}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
 
-          <AccordionItem value="informacion-tickets">
-            <AccordionTrigger className="bg-gray-300 px-2">
-              Información de Tickets
-            </AccordionTrigger>
-            <AccordionContent>
+            {/* Tickets */}
+            <div
+              className="flex items-center justify-between cursor-pointer"
+              onClick={() => setShowTicketManager(true)}
+            >
+              <span>Tickets</span>
+              <span className="text-blue-500">Free</span>
+            </div>
+
+            {showTicketManager && (
               <TicketTypesManager
                 tickets={tickets}
-                onUpdate={newTickets => setTickets(newTickets)}
+                onUpdate={newTickets => {
+                  setTickets(newTickets)
+                  setShowTicketManager(false)
+                }}
               />
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+            )}
+
+            {/* Submit Button */}
+            <div className="pt-4">
+              <Button type="submit" className="w-full">
+                Create Event
+              </Button>
+            </div>
+          </div>
+        </div>
       </form>
     </Form>
   )
