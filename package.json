@@ -48,6 +48,7 @@
     "@trpc/server": "^10.0.0",
     "@types/mailparser": "^3.4.5",
     "@types/react-syntax-highlighter": "^15.5.13",
+    "@vis.gl/react-google-maps": "^1.1.0",
     "andino-web": "file:",
     "arctic": "^1.9.2",
     "axios": "^1.7.7",
@@ -79,8 +80,7 @@
     "tailwind-merge": "^2.5.3",
     "tailwindcss-animate": "^1.0.7",
     "tsup": "^8.3.0",
-    "zod": "^3.23.8",
-    "@vis.gl/react-google-maps": "^1.1.0"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/node": "^20",

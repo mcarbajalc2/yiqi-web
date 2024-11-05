@@ -3,7 +3,7 @@ import MarkdownEditor from '@/components/events/editor/mdEditor'
 export default function Page() {
   return (
     <div>
-      <MarkdownEditor />
+      <MarkdownEditor onChange={() => {}} initialValue="" />
     </div>
   )
 }

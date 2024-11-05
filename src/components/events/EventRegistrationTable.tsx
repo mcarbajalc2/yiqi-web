@@ -1,83 +1,69 @@
-'use client'
+import { Check, X } from 'lucide-react'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
+} from '../ui/table'
+import { Button } from '../ui/button'
+import { EventRegistrationsSchemaType } from '@/services/actions/event/getEventAttendees'
+import { updateRegistrationStatus } from '@/services/actions/contactActions'
 
-import { EventRegistrationSchemaType } from '@/schemas/eventSchema'
-import CheckinButton from './CheckinButton'
-import { useState, useMemo } from 'react'
-import { Input } from '@/components/ui/input'
-import { Search } from 'lucide-react'
-import { useDebounce } from '@/hooks/useDebounce'
-
-export default function EventRegistrationTable({
-  eventId,
-  registrations,
-  ticketId
+export default function EventCheckinTable({
+  registrations
 }: {
-  eventId: string
-  registrations: EventRegistrationSchemaType[]
-  ticketId?: string
+  registrations: EventRegistrationsSchemaType[]
 }) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const debouncedSearchQuery = useDebounce(searchQuery, 1500) // 1.5 seconds
-
-  // Memoize the filtered results
-  const filteredRegistrations = useMemo(
-    () =>
-      debouncedSearchQuery.length
-        ? registrations.filter(registration =>
-            registration.tickets.some(ticket =>
-              ticket.user?.name
-                ?.toLowerCase()
-                .includes(debouncedSearchQuery.toLowerCase())
-            )
-          )
-        : registrations,
-    [registrations, debouncedSearchQuery] // Only recompute when these dependencies change
-  )
+  async function handleApproval(
+    registrationId: string,
+    status: 'APPROVED' | 'REJECTED'
+  ) {
+    'use server'
+    await updateRegistrationStatus(registrationId, status)
+  }
 
   return (
-    <div className="space-y-4">
-      <div className="relative">
-        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="pl-8"
-        />
-      </div>
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Action</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {registrations.map(({ user: attendee, status, id }) => (
+          <TableRow key={attendee.id}>
+            <TableCell>{attendee.name}</TableCell>
+            <TableCell>{attendee.email}</TableCell>
+            <TableCell>{status}</TableCell>
+            <TableCell>
+              {status != 'APPROVED' && (
+                <Button
+                  onClick={() => handleApproval(id, 'APPROVED')}
+                  size="sm"
+                  className="bg-green-500 hover:bg-green-600"
+                >
+                  <Check className="w-4 h-4 mr-1" /> Approve
+                </Button>
+              )}
 
-      <table className="min-w-full table-auto">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="px-4 py-2 text-left">Name</th>
-            <th className="px-4 py-2 text-left">Ticket ID</th>
-            <th className="px-4 py-2 text-left">Checked In</th>
-            <th className="px-4 py-2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredRegistrations.map(registration =>
-            registration.tickets.map(ticket => (
-              <tr key={ticket.id} className="border-b">
-                <td className="px-4 py-2">{ticket.user?.name || 'N/A'}</td>
-                <td className="px-4 py-2">{ticket.id}</td>
-                <td className="px-4 py-2">
-                  {ticket.checkedInDate
-                    ? ticket.checkedInDate.toLocaleString()
-                    : 'No'}
-                </td>
-                <td className="px-4 py-2">
-                  <CheckinButton
-                    eventId={eventId}
-                    ticket={ticket}
-                    selected={ticket.id === ticketId}
-                  />
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
-    </div>
+              {status != 'REJECTED' && (
+                <Button
+                  onClick={() => handleApproval(id, 'REJECTED')}
+                  size="sm"
+                  className="bg-red-500 hover:bg-red-600"
+                >
+                  <X className="w-4 h-4 mr-1" /> Reject
+                </Button>
+              )}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
   )
 }

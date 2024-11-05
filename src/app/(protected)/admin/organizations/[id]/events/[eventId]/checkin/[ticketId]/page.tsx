@@ -1,5 +1,5 @@
 import { getEventRegistrations } from '@/services/actions/eventActions'
-import EventRegistrationTable from '@/components/events/EventRegistrationTable'
+import EventCheckinTable from '@/components/events/EventCheckinTable'
 import { getEventData } from '@/lib/event/getEventData'
 
 export default async function CheckinPage({
@@ -31,7 +31,7 @@ export default async function CheckinPage({
         Event registrations: {event.title}
       </h1>
       <div className="overflow-x-auto">
-        <EventRegistrationTable
+        <EventCheckinTable
           eventId={event.id}
           registrations={registrations}
           ticketId={params.ticketId}

@@ -1,7 +1,7 @@
 import { getOrganization } from '@/services/actions/organizationActions'
-import { getEvent } from '@/services/actions/eventActions'
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
-import { DbEventSchema } from '@/schemas/eventSchema'
+import { SavedEventSchema } from '@/schemas/eventSchema'
+import { getEvent } from '@/services/actions/event/getEvent'
 
 export async function getEventData(organizationId: string, eventId: string) {
   const [organization, event, currentUser] = await Promise.all([
@@ -17,5 +17,5 @@ export async function getEventData(organizationId: string, eventId: string) {
   const isAdmin =
     currentUser && (await isOrganizerAdmin(organizationId, currentUser.id))
 
-  return { organization, event: DbEventSchema.parse(event), isAdmin }
+  return { organization, event: SavedEventSchema.parse(event), isAdmin }
 }

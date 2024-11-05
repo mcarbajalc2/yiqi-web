@@ -108,7 +108,7 @@ export const createAttendeeSchema = (customFields: CustomFieldInputType[]) => {
   return baseSchema.merge(customFieldsSchema)
 }
 
-export const DbEventSchema = EventInputSchema.extend({
+export const SavedEventSchema = EventInputSchema.extend({
   id: z.string(),
   organizationId: z.string(),
   createdAt: z.date(),
@@ -124,7 +124,8 @@ export type EventInputType = z.infer<typeof EventInputSchema>
 export type EventType = z.infer<typeof EventSchema>
 
 export type CustomFieldInputType = z.infer<typeof CustomFieldSchema>
-export type EditEventInputType = z.infer<typeof DbEventSchema>
+export type EditEventInputType = z.infer<typeof SavedEventSchema>
 export type EventRegistrationSchemaType = z.infer<
   typeof EventRegistrationSchema
 >
+export type SavedEventType = z.infer<typeof SavedEventSchema>

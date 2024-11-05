@@ -52,40 +52,31 @@ export async function getContactDetails(
   return contact
 }
 
-export async function getEventAttendees(eventId: string) {
-  const attendees = await prisma.eventRegistration.findMany({
-    where: { eventId },
-    include: { user: true }
-  })
-
-  return attendees
-}
-
-export async function updateAttendeeStatus(
-  attendeeId: string,
+export async function updateRegistrationStatus(
+  registrationId: string,
   status: 'APPROVED' | 'REJECTED'
 ) {
   const currentUser = await getUser()
-  const attendee = await prisma.eventRegistration.findUnique({
-    where: { id: attendeeId },
+  const registration = await prisma.eventRegistration.findUnique({
+    where: { id: registrationId },
     include: { event: true }
   })
 
-  if (!attendee) throw new Error('Attendee not found')
+  if (!registration) throw new Error('Registration not found')
 
   if (
     !currentUser ||
-    !(await isOrganizerAdmin(attendee.event.organizationId, currentUser.id))
+    !(await isOrganizerAdmin(registration.event.organizationId, currentUser.id))
   ) {
     throw new Error('Unauthorized')
   }
 
-  const updatedAttendee = await prisma.eventRegistration.update({
-    where: { id: attendeeId },
+  const updatedRegistration = await prisma.eventRegistration.update({
+    where: { id: registrationId },
     data: { status }
   })
 
-  return updatedAttendee
+  return updatedRegistration
 }
 
 export async function isUserOrganizationAdmin(

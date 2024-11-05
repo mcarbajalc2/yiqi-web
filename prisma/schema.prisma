@@ -219,7 +219,7 @@ model EventRegistration {
   paid      Boolean  @default(false)
   paymentId String?
   @@unique([eventId, userId]) // Add this line
-  Ticket Ticket[]
+  tickets Ticket[]
 }
 
 model Ticket {

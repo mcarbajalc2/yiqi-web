@@ -5,23 +5,15 @@ import { revalidatePath } from 'next/cache'
 import {
   EventInputSchema,
   createAttendeeSchema,
-  DbEventSchema,
+  SavedEventSchema as SavedEventSchema,
   EventRegistrationSchema,
-  EventTicketInputSchema
+  EventTicketInputSchema,
+  SavedEventType
 } from '@/schemas/eventSchema'
-import { z } from 'zod'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
 import { AttendeeStatus } from '@prisma/client'
-type DbEvent = z.infer<typeof DbEventSchema>
-
-export async function getEvent(eventId: string): Promise<DbEvent> {
-  const event = await prisma.event.findUniqueOrThrow({
-    where: { id: eventId }
-  })
-
-  return DbEventSchema.parse(event)
-}
+import { getEvent } from './event/getEvent'
 
 export async function createEvent(
   orgId: string,
@@ -53,7 +45,7 @@ export async function createEvent(
   })
 
   revalidatePath(`/admin/organizations/${orgId}/events`)
-  return DbEventSchema.parse({ ...event, tickets: createdTickets })
+  return SavedEventSchema.parse({ ...event, tickets: createdTickets })
 }
 
 export async function updateEvent(
@@ -96,7 +88,7 @@ export async function updateEvent(
   })
 
   revalidatePath(`/admin/organizations/${event.organizationId}/events`)
-  return DbEventSchema.parse({ ...updatedEvent, tickets })
+  return SavedEventSchema.parse({ ...updatedEvent, tickets })
 }
 
 export async function deleteEvent(eventId: string) {
@@ -172,7 +164,7 @@ export async function createRegistration(
   return registration
 }
 
-export async function getPublicEvents(): Promise<DbEvent[]> {
+export async function getPublicEvents(): Promise<SavedEventType[]> {
   const now = new Date()
   const events = await prisma.event.findMany({
     where: {
@@ -181,7 +173,7 @@ export async function getPublicEvents(): Promise<DbEvent[]> {
     orderBy: { startDate: 'asc' }
   })
 
-  return events.map(event => DbEventSchema.parse(event))
+  return events.map(event => SavedEventSchema.parse(event))
 }
 
 export async function getUserRegistrationStatus(
@@ -197,12 +189,6 @@ export async function getUserRegistrationStatus(
     }
   })
   return attendee ? true : false
-}
-
-export async function getEventDetails(eventId: string) {
-  const event = await getEvent(eventId)
-
-  return DbEventSchema.parse(event)
 }
 
 export async function getEventRegistrations(eventId: string) {
