@@ -40,11 +40,6 @@ export async function sendNotificationCron() {
           if (!notification.user) {
             throw new Error('User is missing for payment reminder notification')
           }
-          if (!notification.event) {
-            throw new Error(
-              'Event is missing for payment reminder notification'
-            )
-          }
 
           await sendPaymentReminder({
             user: notification.user,

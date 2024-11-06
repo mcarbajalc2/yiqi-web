@@ -37,7 +37,7 @@ export default async function EventDetailsPage({
       >
         Back to Events
       </Link>
-      <EventAdminView registrations={attendees} />
+      <EventAdminView registrations={attendees} eventId={params.eventId} />
     </div>
   )
 }

@@ -9,9 +9,9 @@ import {
 } from '../ui/table'
 import { Button } from '../ui/button'
 import { EventRegistrationsSchemaType } from '@/services/actions/event/getEventAttendees'
-import { updateRegistrationStatus } from '@/services/actions/contactActions'
+import { updateRegistrationStatus } from '@/services/actions/event/updateRegistrationStatus'
 
-export default function EventCheckinTable({
+export default function EventRegistrationTable({
   registrations
 }: {
   registrations: EventRegistrationsSchemaType[]
@@ -20,7 +20,6 @@ export default function EventCheckinTable({
     registrationId: string,
     status: 'APPROVED' | 'REJECTED'
   ) {
-    'use server'
     await updateRegistrationStatus(registrationId, status)
   }
 

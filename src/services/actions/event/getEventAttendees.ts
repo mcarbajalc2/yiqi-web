@@ -1,3 +1,5 @@
+'use server'
+
 import prisma from '@/lib/prisma'
 import { userSchema } from '@/schemas/userSchema'
 import { z } from 'zod'

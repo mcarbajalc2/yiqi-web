@@ -1,3 +1,5 @@
+'use server'
+
 import { SavedEventType } from '@/schemas/eventSchema'
 import prisma from '@/lib/prisma'
 import { SavedEventSchema } from '@/schemas/eventSchema'

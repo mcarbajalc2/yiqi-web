@@ -44,12 +44,13 @@ export default async function sendPaymentReminder({
       })
     }
     if (threadType === 'whatsapp') {
-      return sendUserWhatsappMessage({
+      sendUserWhatsappMessage({
         destinationUserId: user.id,
         threadId: thread.id,
         content: ''
       })
     }
   })
+
   await Promise.allSettled(results)
 }
