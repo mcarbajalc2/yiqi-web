@@ -2,7 +2,8 @@ import { MoveUpRight } from 'lucide-react'
 import { Button } from './ui/button'
 import Link from 'next/link'
 import { getUser } from '@/lib/auth/lucia'
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+import { AccountDropdown } from './AccountDropdown'
+import { logOut } from '@/services/auth/auth'
 
 export default async function Header() {
   const user = await getUser()
@@ -45,12 +46,7 @@ export default async function Header() {
               </Button>
             </Link>
           ) : (
-            <Link href={'/admin'}>
-              <Avatar className="w-8 h-8">
-                <AvatarImage alt={user?.name ?? ''} src={user?.picture ?? ''} />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
-            </Link>
+            <AccountDropdown user={user} signOut={logOut} />
           )}
         </nav>
       </div>
