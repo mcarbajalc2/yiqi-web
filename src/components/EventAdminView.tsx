@@ -5,8 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Send } from 'lucide-react'
 
 import EventRegistrationTable from './events/EventRegistrationTable'
-import { EventRegistrationsSchemaType } from '@/services/actions/event/getEventAttendees'
 import EventCommunicationsTable from './events/EventCommunicationsTable'
+import { EventRegistrationsSchemaType } from '@/schemas/eventSchema'
 
 type Props = {
   registrations: EventRegistrationsSchemaType[]

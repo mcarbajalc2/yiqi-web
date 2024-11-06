@@ -1,14 +1,10 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-import { EventInputSchema } from '@/schemas/eventSchema'
-import { z } from 'zod'
-
-export const organizationEventSchema = EventInputSchema.extend({
-  id: z.string()
-})
-
-type OrganizationEventSchemaType = z.infer<typeof organizationEventSchema>
+import {
+  organizationEventSchema,
+  OrganizationEventSchemaType
+} from '@/schemas/eventSchema'
 
 export async function getOrganizationEvents(
   organizationId: string

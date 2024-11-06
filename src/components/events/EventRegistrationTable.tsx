@@ -8,8 +8,11 @@ import {
   TableRow
 } from '../ui/table'
 import { Button } from '../ui/button'
-import { EventRegistrationsSchemaType } from '@/services/actions/event/getEventAttendees'
 import { updateRegistrationStatus } from '@/services/actions/event/updateRegistrationStatus'
+import {
+  AttendeeStatus,
+  EventRegistrationsSchemaType
+} from '@/schemas/eventSchema'
 
 export default function EventRegistrationTable({
   registrations
@@ -40,7 +43,7 @@ export default function EventRegistrationTable({
             <TableCell>{attendee.email}</TableCell>
             <TableCell>{status}</TableCell>
             <TableCell>
-              {status != 'APPROVED' && (
+              {status != AttendeeStatus.APPROVED && (
                 <Button
                   onClick={() => handleApproval(id, 'APPROVED')}
                   size="sm"
@@ -50,7 +53,7 @@ export default function EventRegistrationTable({
                 </Button>
               )}
 
-              {status != 'REJECTED' && (
+              {status != AttendeeStatus.REJECTED && (
                 <Button
                   onClick={() => handleApproval(id, 'REJECTED')}
                   size="sm"

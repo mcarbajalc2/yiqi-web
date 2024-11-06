@@ -1,6 +1,12 @@
 import { z } from 'zod'
 import { userSchema } from './userSchema'
 
+export enum AttendeeStatus {
+  PENDING,
+  APPROVED,
+  REJECTED
+}
+
 export const CustomFieldSchema = z.object({
   name: z.string().min(1, 'Field name is required'),
   type: z.enum(['text', 'number', 'select', 'date']),
@@ -129,3 +135,25 @@ export type EventRegistrationSchemaType = z.infer<
   typeof EventRegistrationSchema
 >
 export type SavedEventType = z.infer<typeof SavedEventSchema>
+
+export const eventRegistrationsSchema = z.object({
+  id: z.string(),
+  user: userSchema,
+  status: z.nativeEnum(AttendeeStatus),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+  paid: z.boolean(),
+  paymentId: z.string().optional()
+})
+
+export type EventRegistrationsSchemaType = z.infer<
+  typeof eventRegistrationsSchema
+>
+
+export const organizationEventSchema = EventInputSchema.extend({
+  id: z.string()
+})
+
+export type OrganizationEventSchemaType = z.infer<
+  typeof organizationEventSchema
+>
