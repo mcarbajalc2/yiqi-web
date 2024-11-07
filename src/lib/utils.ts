@@ -20,7 +20,7 @@ export const getLocationDetails = (
     } else if (component.types.includes('administrative_area_level_1')) {
       state = component.long_name
     } else if (component.types.includes('country')) {
-      country = component.long_name
+      country = component.short_name
     }
   })
 
