@@ -1,7 +1,7 @@
 import { getUser } from '@/lib/auth/lucia'
 import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
-import AdminLayout from '@/components/chat/adminLayout'
+import AdminLayout from '@/components/chat/AdminLayout'
 
 export default async function Page() {
   const user = await getUser()

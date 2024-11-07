@@ -1,7 +1,7 @@
 import { getUser } from '@/lib/auth/lucia'
 import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
-import AdminLayout from '@/components/chat/adminLayout'
+import AdminLayout from '@/components/chat/AdminLayout'
 import ChatComponent from '@/components/chat/chat'
 import { getOrganizationMessageThreads } from '@/services/actions/messagesActions'
 import { BulkSendModal } from '@/components/chat/BulkSendModal'

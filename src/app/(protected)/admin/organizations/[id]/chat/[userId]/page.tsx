@@ -1,7 +1,7 @@
 import { getUser } from '@/lib/auth/lucia'
 import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
-import AdminLayout from '@/components/chat/adminLayout'
+import AdminLayout from '@/components/chat/AdminLayout'
 import ActiveChatComponent from '@/components/chat/activeChat'
 import ConnectedChat from '@/components/chat/connectedChat'
 import {

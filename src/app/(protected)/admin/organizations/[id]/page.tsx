@@ -21,6 +21,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         <OrganizationLayout
           orgId={params.id}
           userProps={{
+            id: user.id,
             picture: user.picture!,
             email: user.email,
             name: user.name

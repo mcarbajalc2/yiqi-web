@@ -26,6 +26,7 @@ export default async function EventsPage({
         <OrganizationLayout
           orgId={params.id}
           userProps={{
+            id: user.id,
             picture: user.picture!,
             email: user.email,
             name: user.name

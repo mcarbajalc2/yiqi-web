@@ -1,11 +1,11 @@
-import { getAllOrganizations } from '@/services/actions/organizationActions'
+import { getAllOrganizationsForCurrentUser } from '@/services/actions/organizationActions'
 import Link from 'next/link'
 import Image from 'next/image'
 import { AddOrgButton } from './AddOrgButton'
 import { getUser } from '@/lib/auth/lucia'
 import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
-import AdminLayout from '@/components/chat/adminLayout'
+import AdminLayout from '@/components/chat/AdminLayout'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -24,7 +24,7 @@ export default async function Page() {
   }
 
   if (user.role === Roles.ADMIN) {
-    const organizations = await getAllOrganizations()
+    const organizations = await getAllOrganizationsForCurrentUser()
     return (
       <main className="flex flex-col items-center justify-center">
         <AdminLayout
@@ -36,7 +36,7 @@ export default async function Page() {
         >
           <h1 className="text-3xl font-bold mb-6">Mis organizaciones</h1>
           <div className="mb-6">
-            <AddOrgButton value={user.id} />
+            <AddOrgButton userId={user.id} />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {organizations.map(org => (

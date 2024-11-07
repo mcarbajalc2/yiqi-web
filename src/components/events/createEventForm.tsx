@@ -42,7 +42,7 @@ export const EventFormInputSchema = EventInputSchema.extend({
   endDate: z.string()
 })
 
-function CreateEventForm({ organizationId }: Props) {
+export function CreateEventForm({ organizationId }: Props) {
   const router = useRouter()
   const [tickets, setTickets] = useState<EventTicketInputType[]>([
     {
@@ -369,5 +369,3 @@ function CreateEventForm({ organizationId }: Props) {
     </Form>
   )
 }
-
-export { CreateEventForm }
