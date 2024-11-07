@@ -4,8 +4,8 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { Roles } from '@prisma/client'
 import { getUser } from '@/lib/auth/lucia'
-import { ProfileDataValues ,profileDataSchema, } from '@/schemas/userSchema'
-import { UserDataCollected } from '@/types/user'
+import { ProfileDataValues ,UserDataCollected,profileDataSchema, } from '@/schemas/userSchema'
+
 import { z } from 'zod'
 export async function searchUsers(query: string) {
   return prisma.user.findMany({
@@ -39,9 +39,9 @@ export async function makeRegularUser(user: { userId: string }) {
 export async function updateUserProfile(
   data: ProfileDataValues,
 ) {
+  const validatedData = profileDataSchema.parse(data)
    try {
-    const {id,picture, name, phoneNumber, stopCommunication,...socialData } = data
-    
+    const {id,picture, name, phoneNumber, stopCommunication,...socialData } = validatedData
     return await prisma.$transaction(async (tx) => {
       const currentUser = await tx.user.findUnique({
         where: { id: id },
@@ -61,8 +61,7 @@ export async function updateUserProfile(
           }
         }
       });
-
-      revalidatePath('/settings');
+      revalidatePath('/user/edit');
       return { success: true, user: updatedUser };
     });
   } catch (error) {
@@ -74,8 +73,6 @@ export async function getUserProfile() {
   try {
     const userCurrent = await getUser()
     if (!userCurrent?.id) return null
-
-    // Optimizar la consulta para seleccionar solo los campos necesarios
     const user = await prisma.user.findUnique({
       where: { id: userCurrent.id },
       select: {
@@ -89,7 +86,7 @@ export async function getUserProfile() {
       }
     })
     if (!user) return null 
-    const dataCollected = user.dataCollected as UserDataCollected  
+    const dataCollected = user.dataCollected as UserDataCollected
     const cleanUserData = {
       id: user.id,
       name: user.name ?? '',
@@ -117,8 +114,6 @@ export async function getUserProfile() {
   }
 }
 
-
-
 export async function deleteUserAccount() {
   try {
     const userCurrent = await getUser()
@@ -133,7 +128,6 @@ export async function deleteUserAccount() {
     await prisma.user.delete({
       where: { id: userCurrent.id }
     })
-    revalidatePath('/auth')
     return { success: true }
   } catch (error) {
     console.error('Error deleting user:', error)

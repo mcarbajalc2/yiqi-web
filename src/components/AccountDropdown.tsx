@@ -13,7 +13,8 @@ import {
   TooltipProvider,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { UserType } from '@/types/user'
+import { UserType } from '@/schemas/userSchema'
+
 import {
   LayoutDashboard,
   LogOut,

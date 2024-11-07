@@ -1,6 +1,5 @@
 'use client'
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useCallback, useState } from 'react'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,12 +19,11 @@ import { useRouter } from 'next/navigation'
 import { deleteUserAccount } from '@/services/actions/userActions'
 
 export default function DeleteAccountDialog() {
-  const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { toast } = useToast()
   const router = useRouter()
 
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     try {
       setIsLoading(true)
       const result = await deleteUserAccount()
@@ -52,44 +50,32 @@ export default function DeleteAccountDialog() {
       })
     } finally {
       setIsLoading(false)
-      setIsOpen(false)
     }
-  }
+  }, [router, toast])
 
   return (
-    <AlertDialog open={isOpen} onOpenChange={setIsOpen}>
+    <AlertDialog>
       <AlertDialogTrigger asChild>
         <Button variant="destructive" className="flex items-center space-x-2">
           <TriangleAlert className="h-4 w-4" />
           <span>Delete Account</span>
         </Button>
       </AlertDialogTrigger>
-      <AnimatePresence>
-        {isOpen && (
-          <AlertDialogContent asChild forceMount>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.2 }}
-            >
-              <AlertDialogHeader>
-                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                <AlertDialogDescription>
-                  This action cannot be undone. This will permanently delete
-                  your account and remove your data from our servers.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction onClick={handleDelete} disabled={isLoading}>
-                  {isLoading ? 'Deleting...' : 'Delete Account'}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </motion.div>
-          </AlertDialogContent>
-        )}
-      </AnimatePresence>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleDelete} disabled={isLoading}>
+            {isLoading ? 'Deleting...' : 'Delete Account'}
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
     </AlertDialog>
   )
 }

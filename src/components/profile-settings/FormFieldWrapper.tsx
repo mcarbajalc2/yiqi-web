@@ -9,8 +9,6 @@ import {
 import { Input } from '@/components/ui/input'
 import { UseFormReturn } from 'react-hook-form'
 import { ProfileFormValues } from '@/schemas/userSchema'
-// import { ProfileFormValues } from './schema'
-
 interface FormFieldWrapperProps {
   form: UseFormReturn<ProfileFormValues>
   name: keyof ProfileFormValues
@@ -20,7 +18,6 @@ interface FormFieldWrapperProps {
   disabled?: boolean
   type?: string
 }
-
 export default function FormFieldWrapper({
   form,
   name,
