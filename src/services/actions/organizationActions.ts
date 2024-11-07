@@ -54,8 +54,6 @@ export async function getAllOrganizationsForCurrentUser() {
     include: { organization: true }
   })
 
-  console.log(results)
-
   return results.map(org => OrganizationSchema.parse(org.organization))
 }
 

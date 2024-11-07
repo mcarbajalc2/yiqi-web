@@ -1,7 +1,15 @@
 'use client'
 
 import Link from 'next/link'
-import { MessageSquare, Users, LogOut, Calendar, BookUser } from 'lucide-react'
+import {
+  MessageSquare,
+  Users,
+  LogOut,
+  Calendar,
+  BookUser,
+  ChevronDown,
+  Building2
+} from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -26,8 +34,8 @@ import {
 import { getAllOrganizationsForCurrentUser } from '@/services/actions/organizationActions'
 import { useEffect, useMemo, useState } from 'react'
 import { OrganizationType } from '@/schemas/organizerSchema'
-import { Button } from '../ui/button'
 import { AddOrgButton } from './AddOrgButton'
+
 interface UserProps {
   name: string
   email: string
@@ -91,13 +99,15 @@ export default function OrganizationLayout({
   return (
     <SidebarProvider>
       <div className="flex h-screen w-full">
-        <Sidebar>
+        <Sidebar collapsible="icon">
           <SidebarHeader>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="mt-2">
+                <SidebarMenuButton>
+                  <Building2 />
                   {currentOrg?.name}
-                </Button>
+                  <ChevronDown className="ml-auto" />
+                </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 {organizations.map(org => (
