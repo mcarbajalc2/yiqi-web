@@ -27,8 +27,7 @@ import { getAllOrganizationsForCurrentUser } from '@/services/actions/organizati
 import { useEffect, useMemo, useState } from 'react'
 import { OrganizationType } from '@/schemas/organizerSchema'
 import { Button } from '../ui/button'
-import { AddOrgButton } from '@/app/(protected)/admin/organizations/AddOrgButton'
-
+import { AddOrgButton } from './AddOrgButton'
 interface UserProps {
   name: string
   email: string

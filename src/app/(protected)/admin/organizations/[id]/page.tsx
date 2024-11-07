@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
 import { getOrganization } from '@/services/actions/organizationActions'
 import Link from 'next/link'
-import OrganizationLayout from '@/components/orgs/organizationLayout'
+import OrganizationLayout from '@/components/orgs/OrganizationLayout'
 
 export default async function Page({ params }: { params: { id: string } }) {
   const organization = await getOrganization(params.id)
