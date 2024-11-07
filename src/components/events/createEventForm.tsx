@@ -15,7 +15,11 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { createEvent } from '@/services/actions/eventActions'
-import { EventInputSchema, EventTicketInputType } from '@/schemas/eventSchema'
+import {
+  EventInputSchema,
+  EventInputType,
+  EventTicketInputType
+} from '@/schemas/eventSchema'
 import { useRouter } from 'next/navigation'
 import { MapPin, Clock, Users } from 'lucide-react'
 import { useState } from 'react'
@@ -30,6 +34,7 @@ import {
 import { UploadToS3 } from '@/lib/uploadToS3'
 import Image from 'next/image'
 import { AddressAutocomplete } from '../forms/AddressAutocomplete'
+import { getLocationDetails } from '@/lib/utils'
 
 type Props = {
   organizationId: string
@@ -41,6 +46,12 @@ export const EventFormInputSchema = EventInputSchema.extend({
   startDate: z.string(),
   endDate: z.string()
 })
+
+type LocationDetails = {
+  city: string
+  state: string
+  country: string
+}
 
 export function CreateEventForm({ organizationId }: Props) {
   const router = useRouter()
@@ -57,7 +68,8 @@ export function CreateEventForm({ organizationId }: Props) {
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-
+  const [locationDetails, setLocationDetails] =
+    useState<LocationDetails | null>(null)
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
     resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
@@ -95,10 +107,11 @@ export function CreateEventForm({ organizationId }: Props) {
       const startDateTime = new Date(`${values.startDate}T${values.startTime}`)
       const endDateTime = new Date(`${values.endDate}T${values.endTime}`)
 
-      const eventData = {
+      const eventData: EventInputType = {
         ...values,
-        startDate: startDateTime.toISOString(),
-        endDate: endDateTime.toISOString(),
+        ...locationDetails,
+        startDate: startDateTime,
+        endDate: endDateTime,
         openGraphImage: imageUrl // Add the image URL to the payload
       }
 
@@ -258,6 +271,13 @@ export function CreateEventForm({ organizationId }: Props) {
                       <AddressAutocomplete
                         fieldName="location"
                         onSetAddress={field.onChange}
+                        onAfterSelection={value => {
+                          if (value) {
+                            setLocationDetails(
+                              getLocationDetails(value.address_components)
+                            )
+                          }
+                        }}
                       />
                     </FormControl>
                   </FormItem>

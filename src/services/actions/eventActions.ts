@@ -21,6 +21,7 @@ export async function createEvent(
   rawTickets: unknown[]
 ) {
   const currentUser = await getUser()
+
   if (!currentUser || !(await isOrganizerAdmin(orgId, currentUser.id))) {
     throw new Error('Unauthorized')
   }
@@ -44,7 +45,6 @@ export async function createEvent(
     }))
   })
 
-  revalidatePath(`/admin/organizations/${orgId}/events`)
   return SavedEventSchema.parse({ ...event, tickets: createdTickets })
 }
 
@@ -87,7 +87,6 @@ export async function updateEvent(
     }))
   })
 
-  revalidatePath(`/admin/organizations/${event.organizationId}/events`)
   return SavedEventSchema.parse({ ...updatedEvent, tickets })
 }
 

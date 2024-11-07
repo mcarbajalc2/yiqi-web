@@ -34,7 +34,6 @@ import {
 import { getAllOrganizationsForCurrentUser } from '@/services/actions/organizationActions'
 import { useEffect, useMemo, useState } from 'react'
 import { OrganizationType } from '@/schemas/organizerSchema'
-import { AddOrgButton } from './AddOrgButton'
 
 interface UserProps {
   name: string
@@ -117,9 +116,6 @@ export default function OrganizationLayout({
                     </Link>
                   </DropdownMenuItem>
                 ))}
-                <DropdownMenuItem>
-                  <AddOrgButton userId={userProps.id} />
-                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarHeader>

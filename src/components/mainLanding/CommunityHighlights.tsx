@@ -37,9 +37,6 @@ const CommunityHighlights = () => {
                       className="rounded-lg object-cover"
                     />
                   </div>
-                  <button className="px-4 py-1.5 text-sm font-medium text-gray-300 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors duration-200">
-                    Subscribe
-                  </button>
                 </div>
 
                 <Link href={community.link} className="block">

@@ -33,6 +33,9 @@ export const EventInputSchema = z.object({
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
   location: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  state: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
   virtualLink: z
     .string()
     .transform(val => (val === '' ? null : val))
