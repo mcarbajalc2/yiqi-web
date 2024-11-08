@@ -53,7 +53,7 @@ type LocationDetails = {
   country: string
 }
 
-export function CreateEventForm({ organizationId }: Props) {
+export function EventForm({ organizationId }: Props) {
   const router = useRouter()
   const [tickets, setTickets] = useState<EventTicketInputType[]>([
     {
