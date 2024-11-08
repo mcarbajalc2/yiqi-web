@@ -1,21 +1,24 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
+import { Card, CardContent } from '@/components/ui/card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import rehypeRaw from 'rehype-raw'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog'
 
-const defaultValue = `
+export const defaultValue = `
 
 # Bienvenido al Editor de Markdown
 
@@ -50,81 +53,81 @@ Reemplaza \`VIDEO_ID\` con el ID del video que deseas incrustar.
 
 Este código insertará el video en el documento Markdown.
 `
-export default function MarkdownEditor({
-  initialValue,
-  onChange
-}: {
-  initialValue?: string
-  onChange: (markdown: string) => void
-}) {
-  const [markdown, setMarkdown] = useState<string>(initialValue || defaultValue)
+export function MarkdownEditor(props: { initialValue?: string; name: string }) {
+  const initialValue = props.initialValue || defaultValue
+  const name = props.name
+  const [markdown, setMarkdown] = useState<string>(initialValue)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
-  const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  useEffect(
+    function () {
+      if (textareaRef.current) {
+        textareaRef.current.value = markdown
+      }
+    },
+    [markdown]
+  )
+
+  function handleInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
     setMarkdown(e.target.value)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Submitted Markdown:', markdown)
-    onChange(markdown)
-  }
-
   return (
-    <Card className="w-full max-w-4xl mx-auto">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
-          Edita La descripción del evento
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="relative border border-input rounded-md overflow-hidden bg-background">
+    <Card className="mx-auto max-w-[550px]">
+      <CardContent className="p-6">
+        <div className="prose prose-sm max-w-none mb-4">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
+            components={{
+              code: function ({
+                node,
+                inline,
+                className,
+                children,
+                ...props
+              }: any) {
+                const match = /language-(\w+)/.exec(className || '')
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    style={vscDarkPlus as unknown}
+                    language={match[1]}
+                    PreTag="div"
+                    {...props}
+                  >
+                    {String(children).replace(/\n$/, '')}
+                  </SyntaxHighlighter>
+                ) : (
+                  <code className={className} {...props}>
+                    {children}
+                  </code>
+                )
+              }
+            }}
+          >
+            {markdown}
+          </ReactMarkdown>
+        </div>
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline">Editar contenido</Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[800px]">
+            <DialogHeader>
+              <DialogTitle>Edit Markdown Content</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
               <textarea
-                value={markdown}
+                ref={textareaRef}
+                name={name}
                 onChange={handleInput}
-                className="w-full h-[400px] p-4 outline-none font-mono resize-none bg-transparent"
+                className="w-full h-[400px] p-4 border rounded-md font-mono resize-none"
                 aria-label="Markdown input"
+                defaultValue={initialValue}
               />
             </div>
-            <div className="border border-input rounded-md overflow-hidden bg-white">
-              <div className="h-[400px] p-4 overflow-auto prose prose-sm max-w-none">
-                <ReactMarkdown
-                  remarkPlugins={[remarkGfm]}
-                  rehypePlugins={[rehypeRaw]} // Enable raw HTML rendering
-                  components={{
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    code({ node, inline, className, children, ...props }: any) {
-                      const match = /language-(\w+)/.exec(className || '')
-                      console.log(node)
-                      return !inline && match ? (
-                        <SyntaxHighlighter
-                          style={vscDarkPlus as unknown}
-                          language={match[1]}
-                          PreTag="div"
-                          {...props}
-                        >
-                          {String(children).replace(/\n$/, '')}
-                        </SyntaxHighlighter>
-                      ) : (
-                        <code className={className} {...props}>
-                          {children}
-                        </code>
-                      )
-                    }
-                  }}
-                >
-                  {markdown}
-                </ReactMarkdown>
-              </div>
-            </div>
-          </div>
-          <CardFooter className="px-0">
-            <Button type="submit" className="w-full">
-              Submit
-            </Button>
-          </CardFooter>
-        </form>
+          </DialogContent>
+        </Dialog>
       </CardContent>
     </Card>
   )

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client'
 
 import Image from 'next/image'
@@ -7,8 +9,12 @@ import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Card, CardContent } from '@/components/ui/card'
-import Markdown from 'react-markdown'
 import { motion } from 'framer-motion'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeRaw from 'rehype-raw'
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 export interface Host {
   name: string
@@ -237,36 +243,37 @@ function EventDescription({ description }: EventDescriptionProps) {
       <Card className="bg-secondary/10 backdrop-blur-sm text-white">
         <CardContent className="p-6 text-white">
           <div className="prose prose-sm dark:prose-invert text-white max-w-none">
-            <Markdown
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeRaw]}
               components={{
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                h1: ({ node, ...props }) => (
-                  <h1 style={{ color: 'white' }} {...props} />
-                ),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                h2: ({ node, ...props }) => (
-                  <h2 style={{ color: 'white' }} {...props} />
-                ),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                h3: ({ node, ...props }) => (
-                  <h3 style={{ color: 'white' }} {...props} />
-                ),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                h4: ({ node, ...props }) => (
-                  <h4 style={{ color: 'white' }} {...props} />
-                ),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                h5: ({ node, ...props }) => (
-                  <h5 style={{ color: 'white' }} {...props} />
-                ),
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                h6: ({ node, ...props }) => (
-                  <h6 style={{ color: 'white' }} {...props} />
-                )
+                code: function ({
+                  node,
+                  inline,
+                  className,
+                  children,
+                  ...props
+                }: any) {
+                  const match = /language-(\w+)/.exec(className || '')
+                  return !inline && match ? (
+                    <SyntaxHighlighter
+                      style={vscDarkPlus as unknown}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </SyntaxHighlighter>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  )
+                }
               }}
             >
               {description}
-            </Markdown>
+            </ReactMarkdown>
           </div>
         </CardContent>
       </Card>

@@ -12,7 +12,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { createEvent } from '@/services/actions/eventActions'
 import {
@@ -37,7 +36,11 @@ import { UploadToS3 } from '@/lib/uploadToS3'
 import Image from 'next/image'
 import { AddressAutocomplete } from '../forms/AddressAutocomplete'
 import { getLocationDetails } from '@/lib/utils'
+<<<<<<< HEAD
 import { updateEvent } from '@/services/actions/event/updateEvent'
+=======
+import { MarkdownEditor } from './editor/mdEditor'
+>>>>>>> 335b79a (markdown editor working)
 
 type Props = {
   organizationId: string
@@ -82,6 +85,7 @@ export function EventForm({ organizationId, event }: Props) {
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
     resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
+<<<<<<< HEAD
       title: event?.title ?? '',
       startDate: event?.startDate.toISOString() ?? '',
       startTime: event?.startDate.toISOString().split('T')[1] ?? '',
@@ -93,6 +97,19 @@ export function EventForm({ organizationId, event }: Props) {
       requiresApproval: event?.requiresApproval ?? false,
       openGraphImage: event?.openGraphImage ?? null,
       maxAttendees: event?.maxAttendees ?? undefined
+=======
+      title: '',
+      startDate: '',
+      startTime: '',
+      endDate: '',
+      endTime: '',
+      location: '',
+      virtualLink: '',
+      description: '',
+      requiresApproval: false,
+      openGraphImage: null,
+      maxAttendees: undefined
+>>>>>>> 335b79a (markdown editor working)
     }
   })
 
@@ -141,14 +158,7 @@ export function EventForm({ organizationId, event }: Props) {
   return (
     <Form {...form}>
       <form
-        onSubmit={e => {
-          e.preventDefault()
-          try {
-            onSubmit(form.getValues())
-          } catch (error) {
-            console.error('Failed to create event:', error)
-          }
-        }}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="max-w-4xl mx-auto"
       >
         <div className="grid grid-cols-[300px,1fr] gap-6">
@@ -308,10 +318,9 @@ export function EventForm({ organizationId, event }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      placeholder="Add Description"
-                      className="resize-none min-h-[100px]"
-                      {...field}
+                    <MarkdownEditor
+                      initialValue={field.value}
+                      name={field.name}
                     />
                   </FormControl>
                 </FormItem>
@@ -356,6 +365,7 @@ export function EventForm({ organizationId, event }: Props) {
                           <Input
                             type="number"
                             placeholder="Unlimited"
+                            min={1}
                             className="w-32 text-right"
                             value={field.value?.toString()}
                             onChange={e => {
