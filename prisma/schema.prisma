@@ -168,7 +168,7 @@ model Event {
   openGraphImage String?
   GeneratedMedia GeneratedMedia[]
   queueJobs QueueJob[]
-  TicketTypes TicketOfferings[]
+  tickets TicketOfferings[]
 }
 
 enum TicketCategory {

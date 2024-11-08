@@ -1,9 +1,21 @@
-import MarkdownEditor from '@/components/events/editor/mdEditor'
+import { EventForm } from '@/components/events/EventForm'
+import { getEvent } from '@/services/actions/event/getEvent'
+import { notFound } from 'next/navigation'
 
-export default function Page() {
+export default async function Page({
+  params
+}: {
+  params: { eventId: string }
+}) {
+  const event = await getEvent(params.eventId)
+
+  if (!event) {
+    notFound()
+  }
+
   return (
     <div>
-      <MarkdownEditor onChange={() => {}} initialValue="" />
+      <EventForm organizationId={event.organizationId} event={event} />
     </div>
   )
 }

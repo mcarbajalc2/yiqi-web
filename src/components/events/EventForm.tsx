@@ -18,7 +18,9 @@ import { createEvent } from '@/services/actions/eventActions'
 import {
   EventInputSchema,
   EventInputType,
-  EventTicketInputType
+  EventTicketInputType,
+  SavedEventType,
+  SavedTicketType
 } from '@/schemas/eventSchema'
 import { useRouter } from 'next/navigation'
 import { MapPin, Clock, Users } from 'lucide-react'
@@ -38,6 +40,7 @@ import { getLocationDetails } from '@/lib/utils'
 
 type Props = {
   organizationId: string
+  event?: SavedEventType
 }
 
 export const EventFormInputSchema = EventInputSchema.extend({
@@ -53,18 +56,23 @@ type LocationDetails = {
   country: string
 }
 
-export function EventForm({ organizationId }: Props) {
+export function EventForm({ organizationId, event }: Props) {
   const router = useRouter()
-  const [tickets, setTickets] = useState<EventTicketInputType[]>([
-    {
-      name: 'General',
-      category: 'GENERAL',
-      description: '',
-      price: 0,
-      limit: 100,
-      ticketsPerPurchase: 1
-    }
-  ])
+  const [tickets, setTickets] = useState<
+    EventTicketInputType[] | SavedTicketType[]
+  >(
+    event?.tickets ?? [
+      {
+        name: 'General',
+        category: 'GENERAL',
+        description: '',
+        price: 0,
+        limit: 100,
+        ticketsPerPurchase: 1
+      }
+    ]
+  )
+
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -73,17 +81,17 @@ export function EventForm({ organizationId }: Props) {
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
     resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
-      title: 'tomsdasd',
-      startDate: '2024-11-05T15:00:00.000Z',
-      startTime: '10:00',
-      endDate: '2024-11-05T16:00:00.000Z',
-      endTime: '11:00',
-      location: 'Tomás Ramsey 915, Magdalena del Mar 15076, Peru',
-      virtualLink: '',
-      description: 'dasdasdadadasda',
-      requiresApproval: false,
-      openGraphImage: null,
-      maxAttendees: undefined
+      title: event?.title ?? '',
+      startDate: event?.startDate.toISOString() ?? '',
+      startTime: event?.startDate.toISOString().split('T')[1] ?? '',
+      endDate: event?.endDate.toISOString() ?? '',
+      endTime: event?.endDate.toISOString().split('T')[1] ?? '',
+      location: event?.location ?? '',
+      virtualLink: event?.virtualLink ?? '',
+      description: event?.description ?? '',
+      requiresApproval: event?.requiresApproval ?? false,
+      openGraphImage: event?.openGraphImage ?? null,
+      maxAttendees: event?.maxAttendees ?? undefined
     }
   })
 
