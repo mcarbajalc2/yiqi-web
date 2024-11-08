@@ -36,11 +36,8 @@ import { UploadToS3 } from '@/lib/uploadToS3'
 import Image from 'next/image'
 import { AddressAutocomplete } from '../forms/AddressAutocomplete'
 import { getLocationDetails } from '@/lib/utils'
-<<<<<<< HEAD
 import { updateEvent } from '@/services/actions/event/updateEvent'
-=======
 import { MarkdownEditor } from './editor/mdEditor'
->>>>>>> 335b79a (markdown editor working)
 
 type Props = {
   organizationId: string
@@ -85,7 +82,6 @@ export function EventForm({ organizationId, event }: Props) {
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
     resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
-<<<<<<< HEAD
       title: event?.title ?? '',
       startDate: event?.startDate.toISOString() ?? '',
       startTime: event?.startDate.toISOString().split('T')[1] ?? '',
@@ -97,19 +93,6 @@ export function EventForm({ organizationId, event }: Props) {
       requiresApproval: event?.requiresApproval ?? false,
       openGraphImage: event?.openGraphImage ?? null,
       maxAttendees: event?.maxAttendees ?? undefined
-=======
-      title: '',
-      startDate: '',
-      startTime: '',
-      endDate: '',
-      endTime: '',
-      location: '',
-      virtualLink: '',
-      description: '',
-      requiresApproval: false,
-      openGraphImage: null,
-      maxAttendees: undefined
->>>>>>> 335b79a (markdown editor working)
     }
   })
 
