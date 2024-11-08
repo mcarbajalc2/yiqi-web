@@ -188,6 +188,8 @@ model TicketOfferings {
   ticketsPerPurchase Int @default(1)
   event Event @relation(fields: [eventId], references: [id])
   eventId String
+
+  Ticket Ticket[]
 }
 
 enum MediaType {
@@ -236,6 +238,8 @@ model Ticket {
   checkedInDate DateTime?
   checkedInBy User? @relation("checkedInByUser", fields: [checkedInByUserId], references: [id])
   checkedInByUserId String?
+  ticketType TicketOfferings @relation(fields: [ticketTypeId], references: [id])
+  ticketTypeId String
 }
 
 enum AttendeeStatus {

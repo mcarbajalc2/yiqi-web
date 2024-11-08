@@ -37,6 +37,7 @@ import { UploadToS3 } from '@/lib/uploadToS3'
 import Image from 'next/image'
 import { AddressAutocomplete } from '../forms/AddressAutocomplete'
 import { getLocationDetails } from '@/lib/utils'
+import { updateEvent } from '@/services/actions/event/updateEvent'
 
 type Props = {
   organizationId: string
@@ -123,10 +124,17 @@ export function EventForm({ organizationId, event }: Props) {
         openGraphImage: imageUrl // Add the image URL to the payload
       }
 
-      await createEvent(organizationId, eventData, tickets)
+      if (event) {
+        // Update existing event
+        await updateEvent(event.id, eventData, tickets)
+      } else {
+        // Create new event
+        await createEvent(organizationId, eventData, tickets)
+      }
+
       router.push(`/admin/organizations/${organizationId}/events`)
     } catch (error) {
-      console.error('Failed to create event:', error)
+      console.error('Failed to save event:', error)
     }
   }
 
