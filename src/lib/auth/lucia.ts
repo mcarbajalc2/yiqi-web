@@ -8,8 +8,8 @@ import { Google } from 'arctic'
 export const googleOAuthClient = new Google(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!,
-  (`https://${process.env.VERCEL_URL}` || process.env.NEXT_PUBLIC_URL) +
-    '/api/auth/google/callback'
+  (`https://${process.env.VERCEL_URL || process.env.NEXT_PUBLIC_VERCEL_URL}` ||
+    process.env.NEXT_PUBLIC_URL) + '/api/auth/google/callback'
 )
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user)
