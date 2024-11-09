@@ -9,19 +9,25 @@ import {
   Phone,
   User,
   Briefcase,
-  Twitter,
   Linkedin,
   Instagram,
   Globe,
-  AtSign,
   FileText,
   BellOff,
   Shield,
   Loader2,
-  Save
+  Save,
+  X
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Form } from '@/components/ui/form'
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+  Form
+} from '@/components/ui/form'
 import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { Badge } from '@/components/ui/badge'
@@ -36,19 +42,9 @@ import {
 } from '@/schemas/userSchema'
 import { updateUserProfile } from '@/services/actions/userActions'
 import { UploadToS3 } from '@/lib/uploadToS3'
-import FormFieldWrapper from './FormFieldWrapper'
 import ProfilePictureUpload from './UpdatePictureUpload'
 import DeleteAccountDialog from './DeleteAccountDialog'
-
-const FORM_SECTIONS = {
-  basic: ['name', 'email', 'phoneNumber', 'company'] as const,
-  professional: ['position'] as const,
-  social: ['x', 'linkedin', 'instagram', 'website'] as const
-} as const
-type FormField =
-  | (typeof FORM_SECTIONS.basic)[number]
-  | (typeof FORM_SECTIONS.professional)[number]
-  | (typeof FORM_SECTIONS.social)[number]
+import { Input } from '../ui/input'
 
 function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
   const [isLoading, setIsLoading] = useState(false)
@@ -134,18 +130,6 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
     }
   }
 
-  const renderFormField = (field: FormField) => (
-    <FormFieldWrapper
-      key={field}
-      form={form}
-      name={field}
-      label={field.charAt(0).toUpperCase() + field.slice(1)}
-      placeholder={`Enter your ${field}`}
-      icon={socialIcons[field]}
-      disabled={field === 'email'}
-      type={field === 'website' ? 'url' : 'text'}
-    />
-  )
   const handleProfilePictureChange = useCallback(
     (file: File) => {
       form.setValue('picture', file, { shouldDirty: true })
@@ -182,7 +166,100 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
                 animate="visible"
                 className="grid gap-6 md:grid-cols-2"
               >
-                {FORM_SECTIONS.basic.map(renderFormField)}
+                {/* {FORM_SECTIONS.basic.map(renderFormField)} */}
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'name'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Name</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your name"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'email'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your Email"
+                              disabled
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'phoneNumber'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your Phone Number"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'company'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Company</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your Company"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </motion.div>
 
               <Separator />
@@ -194,7 +271,30 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
                 animate="visible"
                 className="space-y-6"
               >
-                {FORM_SECTIONS.professional.map(renderFormField)}
+                {/* {FORM_SECTIONS.professional.map(renderFormField)} */}
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'position'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Position</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Briefcase className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your Position"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
                 <div className="space-y-2">
                   <label
@@ -223,7 +323,98 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
                 animate="visible"
                 className="grid gap-6 md:grid-cols-2"
               >
-                {FORM_SECTIONS.social.map(renderFormField)}
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'x'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>X</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <X className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your x"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'linkedin'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Linkedin</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Linkedin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your linkedin"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'instagram'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Instagram</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Instagram className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your instagram"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div>
+                  <FormField
+                    control={form.control}
+                    name={'website'}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Website</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Globe className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <Input
+                              type="text"
+                              className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
+                              placeholder="Enter your website"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
               </motion.div>
 
               <Separator />
@@ -292,16 +483,4 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
   )
 }
 
-export const socialIcons = {
-  name: User,
-  email: Mail,
-  phoneNumber: Phone,
-  company: Building2,
-  position: Briefcase,
-  x: Twitter,
-  linkedin: Linkedin,
-  instagram: Instagram,
-  website: Globe,
-  username: AtSign
-} as const
 export default UpdateProfileForm
