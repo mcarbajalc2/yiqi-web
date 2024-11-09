@@ -54,9 +54,10 @@ Reemplaza \`VIDEO_ID\` con el ID del video que deseas incrustar.
 Este código insertará el video en el documento Markdown.
 `
 export function MarkdownEditor(props: { initialValue?: string; name: string }) {
-  const initialValue = props.initialValue || defaultValue
   const name = props.name
-  const [markdown, setMarkdown] = useState<string>(initialValue)
+  const [markdown, setMarkdown] = useState<string>(
+    props.initialValue || defaultValue
+  )
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   useEffect(
@@ -123,7 +124,7 @@ export function MarkdownEditor(props: { initialValue?: string; name: string }) {
                 onChange={handleInput}
                 className="w-full h-[400px] p-4 border rounded-md font-mono resize-none"
                 aria-label="Markdown input"
-                defaultValue={initialValue}
+                defaultValue={markdown}
               />
             </div>
           </DialogContent>

@@ -3,50 +3,15 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import {
-  EventInputSchema,
   createAttendeeSchema,
   SavedEventSchema as SavedEventSchema,
   EventRegistrationSchema,
-  EventTicketInputSchema,
   SavedEventType
 } from '@/schemas/eventSchema'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
 import { AttendeeStatus } from '@prisma/client'
 import { getEvent } from './event/getEvent'
-
-export async function createEvent(
-  orgId: string,
-  eventData: unknown,
-  rawTickets: unknown[]
-) {
-  const currentUser = await getUser()
-
-  if (!currentUser || !(await isOrganizerAdmin(orgId, currentUser.id))) {
-    throw new Error('Unauthorized')
-  }
-
-  const validatedData = EventInputSchema.parse(eventData)
-  const tickets = rawTickets.map(v => EventTicketInputSchema.parse(v))
-
-  const event = await prisma.event.create({
-    data: {
-      ...validatedData,
-      organizationId: orgId,
-      startDate: new Date(validatedData.startDate),
-      endDate: new Date(validatedData.endDate)
-    }
-  })
-
-  const createdTickets = await prisma.ticketOfferings.createMany({
-    data: tickets.map(ticket => ({
-      ...ticket,
-      eventId: event.id
-    }))
-  })
-
-  return SavedEventSchema.parse({ ...event, tickets: createdTickets })
-}
 
 export async function deleteEvent(eventId: string) {
   const event = await getEvent(eventId)
