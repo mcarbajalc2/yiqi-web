@@ -12,10 +12,15 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
 import { Switch } from '@/components/ui/switch'
 import { createEvent } from '@/services/actions/eventActions'
-import { EventInputSchema, EventTicketInputType } from '@/schemas/eventSchema'
+import {
+  EventInputSchema,
+  EventInputType,
+  EventTicketInputType,
+  SavedEventType,
+  SavedTicketType
+} from '@/schemas/eventSchema'
 import { useRouter } from 'next/navigation'
 import { MapPin, Clock, Users } from 'lucide-react'
 import { useState } from 'react'
@@ -30,9 +35,13 @@ import {
 import { UploadToS3 } from '@/lib/uploadToS3'
 import Image from 'next/image'
 import { AddressAutocomplete } from '../forms/AddressAutocomplete'
+import { getLocationDetails } from '@/lib/utils'
+import { updateEvent } from '@/services/actions/event/updateEvent'
+import { MarkdownEditor } from './editor/mdEditor'
 
 type Props = {
   organizationId: string
+  event?: SavedEventType
 }
 
 export const EventFormInputSchema = EventInputSchema.extend({
@@ -42,36 +51,48 @@ export const EventFormInputSchema = EventInputSchema.extend({
   endDate: z.string()
 })
 
-function CreateEventForm({ organizationId }: Props) {
+type LocationDetails = {
+  city: string
+  state: string
+  country: string
+}
+
+export function EventForm({ organizationId, event }: Props) {
   const router = useRouter()
-  const [tickets, setTickets] = useState<EventTicketInputType[]>([
-    {
-      name: 'General',
-      category: 'GENERAL',
-      description: '',
-      price: 0,
-      limit: 100,
-      ticketsPerPurchase: 1
-    }
-  ])
+  const [tickets, setTickets] = useState<
+    EventTicketInputType[] | SavedTicketType[]
+  >(
+    event?.tickets ?? [
+      {
+        name: 'General',
+        category: 'GENERAL',
+        description: '',
+        price: 0,
+        limit: 100,
+        ticketsPerPurchase: 1
+      }
+    ]
+  )
+
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-
+  const [locationDetails, setLocationDetails] =
+    useState<LocationDetails | null>(null)
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
     resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
-      title: 'tomsdasd',
-      startDate: '2024-11-05T15:00:00.000Z',
-      startTime: '10:00',
-      endDate: '2024-11-05T16:00:00.000Z',
-      endTime: '11:00',
-      location: 'Tomás Ramsey 915, Magdalena del Mar 15076, Peru',
-      virtualLink: '',
-      description: 'dasdasdadadasda',
-      requiresApproval: false,
-      openGraphImage: null,
-      maxAttendees: undefined
+      title: event?.title ?? '',
+      startDate: event?.startDate.toISOString() ?? '',
+      startTime: event?.startDate.toISOString().split('T')[1] ?? '',
+      endDate: event?.endDate.toISOString() ?? '',
+      endTime: event?.endDate.toISOString().split('T')[1] ?? '',
+      location: event?.location ?? '',
+      virtualLink: event?.virtualLink ?? '',
+      description: event?.description ?? '',
+      requiresApproval: event?.requiresApproval ?? false,
+      openGraphImage: event?.openGraphImage ?? null,
+      maxAttendees: event?.maxAttendees ?? undefined
     }
   })
 
@@ -95,31 +116,32 @@ function CreateEventForm({ organizationId }: Props) {
       const startDateTime = new Date(`${values.startDate}T${values.startTime}`)
       const endDateTime = new Date(`${values.endDate}T${values.endTime}`)
 
-      const eventData = {
+      const eventData: EventInputType = {
         ...values,
-        startDate: startDateTime.toISOString(),
-        endDate: endDateTime.toISOString(),
+        ...locationDetails,
+        startDate: startDateTime,
+        endDate: endDateTime,
         openGraphImage: imageUrl // Add the image URL to the payload
       }
 
-      await createEvent(organizationId, eventData, tickets)
+      if (event) {
+        // Update existing event
+        await updateEvent(event.id, eventData, tickets)
+      } else {
+        // Create new event
+        await createEvent(organizationId, eventData, tickets)
+      }
+
       router.push(`/admin/organizations/${organizationId}/events`)
     } catch (error) {
-      console.error('Failed to create event:', error)
+      console.error('Failed to save event:', error)
     }
   }
 
   return (
     <Form {...form}>
       <form
-        onSubmit={e => {
-          e.preventDefault()
-          try {
-            onSubmit(form.getValues())
-          } catch (error) {
-            console.error('Failed to create event:', error)
-          }
-        }}
+        onSubmit={form.handleSubmit(onSubmit)}
         className="max-w-4xl mx-auto"
       >
         <div className="grid grid-cols-[300px,1fr] gap-6">
@@ -258,6 +280,13 @@ function CreateEventForm({ organizationId }: Props) {
                       <AddressAutocomplete
                         fieldName="location"
                         onSetAddress={field.onChange}
+                        onAfterSelection={value => {
+                          if (value) {
+                            setLocationDetails(
+                              getLocationDetails(value.address_components)
+                            )
+                          }
+                        }}
                       />
                     </FormControl>
                   </FormItem>
@@ -272,10 +301,9 @@ function CreateEventForm({ organizationId }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Textarea
-                      placeholder="Add Description"
-                      className="resize-none min-h-[100px]"
-                      {...field}
+                    <MarkdownEditor
+                      initialValue={field.value}
+                      name={field.name}
                     />
                   </FormControl>
                 </FormItem>
@@ -320,6 +348,7 @@ function CreateEventForm({ organizationId }: Props) {
                           <Input
                             type="number"
                             placeholder="Unlimited"
+                            min={1}
                             className="w-32 text-right"
                             value={field.value?.toString()}
                             onChange={e => {
@@ -369,5 +398,3 @@ function CreateEventForm({ organizationId }: Props) {
     </Form>
   )
 }
-
-export { CreateEventForm }

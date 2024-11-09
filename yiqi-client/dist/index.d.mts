@@ -60,8 +60,20 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
             options?: string | undefined;
         }[];
         organizationId: string;
+        tickets?: {
+            id: string;
+            name: string;
+            category: "GENERAL" | "VIP" | "BACKSTAGE";
+            price: number;
+            limit: number;
+            ticketsPerPurchase: number;
+            description?: string | undefined;
+        }[] | null | undefined;
         description?: string | undefined;
         location?: string | null | undefined;
+        city?: string | null | undefined;
+        state?: string | null | undefined;
+        country?: string | null | undefined;
         virtualLink?: string | null | undefined;
         maxAttendees?: number | null | undefined;
         openGraphImage?: string | null | undefined;
@@ -94,8 +106,20 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
             options?: string | undefined;
         }[];
         organizationId: string;
+        tickets?: {
+            id: string;
+            name: string;
+            category: "GENERAL" | "VIP" | "BACKSTAGE";
+            price: number;
+            limit: number;
+            ticketsPerPurchase: number;
+            description?: string | undefined;
+        }[] | null | undefined;
         description?: string | undefined;
         location?: string | null | undefined;
+        city?: string | null | undefined;
+        state?: string | null | undefined;
+        country?: string | null | undefined;
         virtualLink?: string | null | undefined;
         maxAttendees?: number | null | undefined;
         openGraphImage?: string | null | undefined;

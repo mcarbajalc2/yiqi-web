@@ -57,7 +57,7 @@ function ColorPicker({
 
 const formSchema = OrganizationSchema
 
-function AddOrgButtonForm({ userId }: { userId: { value: string } }) {
+function AddOrgButtonForm({ userId }: { userId: string }) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -72,7 +72,7 @@ function AddOrgButtonForm({ userId }: { userId: { value: string } }) {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      await createOrganization(values, userId.value)
+      await createOrganization(values, userId)
       toast({
         description: 'Organización creada exitosamente!',
         variant: 'default'
@@ -170,7 +170,7 @@ function AddOrgButtonForm({ userId }: { userId: { value: string } }) {
   )
 }
 
-function AddOrgButton(userId: { value: string }) {
+function AddOrgButton({ userId }: { userId: string }) {
   return (
     <Dialog>
       <DialogTrigger asChild className="w-fit">

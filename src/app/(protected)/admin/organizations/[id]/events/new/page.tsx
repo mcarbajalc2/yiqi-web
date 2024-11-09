@@ -1,4 +1,4 @@
-import { CreateEventForm } from '@/components/events/createEventForm'
+import { EventForm } from '@/components/events/EventForm'
 import Link from 'next/link'
 
 export default function NewEventPage({ params }: { params: { id: string } }) {
@@ -14,7 +14,7 @@ export default function NewEventPage({ params }: { params: { id: string } }) {
             Cancel
           </Link>
         </div>
-        <CreateEventForm organizationId={params.id} />
+        <EventForm organizationId={params.id} />
       </div>
     </div>
   )

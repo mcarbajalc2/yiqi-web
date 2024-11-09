@@ -33,6 +33,9 @@ export const EventInputSchema = z.object({
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
   location: z.string().optional().nullable(),
+  city: z.string().optional().nullable(),
+  state: z.string().optional().nullable(),
+  country: z.string().optional().nullable(),
   virtualLink: z
     .string()
     .transform(val => (val === '' ? null : val))
@@ -50,7 +53,13 @@ export const EventSchema = EventInputSchema.extend({
 })
 export const TicketCategorySchema = z.enum(['GENERAL', 'VIP', 'BACKSTAGE'])
 
+export const SavedTicketSchema = EventTicketInputSchema.extend({
+  id: z.string()
+})
+
 export type EventTicketInputType = z.infer<typeof EventTicketInputSchema>
+export type SavedTicketType = z.infer<typeof SavedTicketSchema>
+
 // this is the ticket the user has
 export const TicketSchema = z.object({
   id: z.string(),
@@ -123,7 +132,8 @@ export const SavedEventSchema = EventInputSchema.extend({
     .array(CustomFieldSchema)
     .optional()
     .nullable()
-    .transform(val => val ?? [])
+    .transform(val => val ?? []),
+  tickets: z.array(SavedTicketSchema).optional().nullable()
 })
 
 export type EventInputType = z.infer<typeof EventInputSchema>

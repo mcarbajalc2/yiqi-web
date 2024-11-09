@@ -21,6 +21,7 @@ export async function createEvent(
   rawTickets: unknown[]
 ) {
   const currentUser = await getUser()
+
   if (!currentUser || !(await isOrganizerAdmin(orgId, currentUser.id))) {
     throw new Error('Unauthorized')
   }
@@ -44,51 +45,7 @@ export async function createEvent(
     }))
   })
 
-  revalidatePath(`/admin/organizations/${orgId}/events`)
   return SavedEventSchema.parse({ ...event, tickets: createdTickets })
-}
-
-export async function updateEvent(
-  eventId: string,
-  eventData: unknown,
-  rawTickets: unknown[]
-) {
-  const event = await getEvent(eventId)
-  if (!event) throw new Error('Event not found')
-
-  const currentUser = await getUser()
-  if (
-    !currentUser ||
-    !(await isOrganizerAdmin(event.organizationId, currentUser.id))
-  ) {
-    throw new Error('Unauthorized')
-  }
-
-  const validatedData = EventInputSchema.parse(eventData)
-  const parsedTickets = rawTickets.map(v => EventTicketInputSchema.parse(v))
-
-  // Delete existing tickets and create new ones
-  await prisma.ticketOfferings.deleteMany({
-    where: { eventId }
-  })
-
-  const updatedEvent = await prisma.event.update({
-    where: { id: eventId },
-    data: {
-      ...validatedData,
-      organizationId: event.organizationId
-    }
-  })
-
-  const tickets = await prisma.ticketOfferings.createMany({
-    data: parsedTickets.map(ticket => ({
-      ...ticket,
-      eventId: eventId
-    }))
-  })
-
-  revalidatePath(`/admin/organizations/${event.organizationId}/events`)
-  return SavedEventSchema.parse({ ...updatedEvent, tickets })
 }
 
 export async function deleteEvent(eventId: string) {

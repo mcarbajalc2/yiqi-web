@@ -149,6 +149,9 @@ model Event {
   startDate    DateTime
   endDate      DateTime
   location     String?
+  city         String?
+  state        String?
+  country      String?
   virtualLink  String?
   maxAttendees Int?
   organization     Organization        @relation(fields: [organizationId], references: [id])
@@ -165,7 +168,7 @@ model Event {
   openGraphImage String?
   GeneratedMedia GeneratedMedia[]
   queueJobs QueueJob[]
-  TicketTypes TicketOfferings[]
+  tickets TicketOfferings[]
 }
 
 enum TicketCategory {
@@ -185,6 +188,8 @@ model TicketOfferings {
   ticketsPerPurchase Int @default(1)
   event Event @relation(fields: [eventId], references: [id])
   eventId String
+
+  Ticket Ticket[]
 }
 
 enum MediaType {
@@ -233,6 +238,8 @@ model Ticket {
   checkedInDate DateTime?
   checkedInBy User? @relation("checkedInByUser", fields: [checkedInByUserId], references: [id])
   checkedInByUserId String?
+  ticketType TicketOfferings @relation(fields: [ticketTypeId], references: [id])
+  ticketTypeId String
 }
 
 enum AttendeeStatus {

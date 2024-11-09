@@ -1,6 +1,6 @@
 import { getOrganization } from '@/services/actions/organizationActions'
 import { getUser } from '@/lib/auth/lucia'
-import OrganizationLayout from '@/components/orgs/organizationLayout'
+import OrganizationLayout from '@/components/orgs/OrganizationLayout'
 import { redirect } from 'next/navigation'
 import { Roles } from '@prisma/client'
 
@@ -26,6 +26,7 @@ export default async function EventsPage({
         <OrganizationLayout
           orgId={params.id}
           userProps={{
+            id: user.id,
             picture: user.picture!,
             email: user.email,
             name: user.name

@@ -1,4 +1,4 @@
-import { Instagram, Mail, Search, X } from 'lucide-react'
+import { Mail } from 'lucide-react'
 import Link from 'next/link'
 
 export default function Footer() {
@@ -9,7 +9,7 @@ export default function Footer() {
         {/* Izquierda: Logo y Links */}
         <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-6 items-center">
           <span className="font-bold text-lg">Yiki</span>
-          <Link href="#" className="hover:underline">
+          {/* <Link href="#" className="hover:underline">
             Whats New
           </Link>
           <Link href="#" className="hover:underline">
@@ -20,23 +20,23 @@ export default function Footer() {
           </Link>
           <Link href="#" className="hover:underline">
             Help
-          </Link>
+          </Link> */}
         </div>
 
         {/* Derecha: Iconos sociales */}
         <div className="flex space-x-4 mt-4 md:mt-0">
-          <button className="p-2 rounded-full hover:bg-white hover:text-black">
+          {/* <button className="p-2 rounded-full hover:bg-white hover:text-black">
             <Search className="w-5 h-5" />
-          </button>
+          </button> */}
           <button className="p-2 rounded-full hover:bg-white hover:text-black">
             <Mail className="w-5 h-5" />
           </button>
-          <button className="p-2 rounded-full hover:bg-white hover:text-black">
+          {/* <button className="p-2 rounded-full hover:bg-white hover:text-black">
             <X className="w-5 h-5" />
           </button>
           <button className="p-2 rounded-full hover:bg-white hover:text-black">
             <Instagram className="w-5 h-5" />
-          </button>
+          </button> */}
         </div>
       </div>
 
