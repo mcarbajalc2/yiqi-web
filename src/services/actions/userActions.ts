@@ -3,10 +3,7 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { Roles } from '@prisma/client'
-import { getUser } from '@/lib/auth/lucia'
-import { ProfileDataValues ,UserDataCollected,profileDataSchema, } from '@/schemas/userSchema'
 
-import { z } from 'zod'
 export async function searchUsers(query: string) {
   return prisma.user.findMany({
     where: {

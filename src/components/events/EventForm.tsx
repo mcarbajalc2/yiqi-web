@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Switch } from '@/components/ui/switch'
-import { createEvent } from '@/services/actions/eventActions'
+import { createEvent } from '@/services/actions/event/createEvent'
 import {
   EventInputSchema,
   EventInputType,
