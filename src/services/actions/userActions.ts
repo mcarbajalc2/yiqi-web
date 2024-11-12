@@ -3,7 +3,10 @@
 import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { Roles } from '@prisma/client'
+import { getUser } from '@/lib/auth/lucia'
+import { ProfileDataValues ,UserDataCollected,profileDataSchema, } from '@/schemas/userSchema'
 
+import { z } from 'zod'
 export async function searchUsers(query: string) {
   return prisma.user.findMany({
     where: {
@@ -38,7 +41,7 @@ export async function updateUserProfile(
 ) {
   const validatedData = profileDataSchema.parse(data)
    try {
-    const {id,picture, name, phoneNumber, stopCommunication,email,...socialData } = validatedData
+    const {id,picture, name, phoneNumber, stopCommunication,...socialData } = validatedData
     return await prisma.$transaction(async (tx) => {
       const currentUser = await tx.user.findUnique({
         where: { id: id },
@@ -52,7 +55,6 @@ export async function updateUserProfile(
           phoneNumber,
           stopCommunication,
           picture,
-          email,
           dataCollected: {
             ...(currentUser?.dataCollected as Record<string, unknown>),
             ...socialData
@@ -89,16 +91,16 @@ export async function getUserProfile() {
       id: user.id,
       name: user.name ?? '',
       email: user.email ?? '',
-      picture: user.picture ?? '',
-      phoneNumber: user.phoneNumber ?? '',
+      picture: user.picture ?? null,
+      phoneNumber: user.phoneNumber ?? null,
       stopCommunication: user.stopCommunication ?? false,   
-      company: dataCollected?.company ?? '',
-      position: dataCollected?.position ?? '',
-      shortDescription: dataCollected?.shortDescription ?? '',
-      linkedin: dataCollected?.linkedin ?? '',
-      x: dataCollected?.x ?? '',
-      instagram: dataCollected?.instagram ?? '',
-      website: dataCollected?.website ?? ''
+      company: dataCollected?.company ?? null,
+      position: dataCollected?.position ?? null,
+      shortDescription: dataCollected?.shortDescription ?? null,
+      linkedin: dataCollected?.linkedin ?? null,
+      twitter: dataCollected?.x ?? null,
+      instagram: dataCollected?.instagram ?? null,
+      website: dataCollected?.website ?? null
     }
 
  
