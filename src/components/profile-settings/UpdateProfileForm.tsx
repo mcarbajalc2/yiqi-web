@@ -82,7 +82,6 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
 
   async function onSubmit(data: ProfileFormValues) {
     setIsLoading(true)
-    console.log(data)
     try {
       let imageUrl: string | null = null
       if (data.picture instanceof File) {
@@ -227,7 +226,7 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
                             <Input
                               type="text"
                               className="pl-9 focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0"
-                              placeholder="Enter your Phone Number"
+                              placeholder="+1234567890"
                               {...field}
                             />
                           </div>

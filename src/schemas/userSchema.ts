@@ -7,9 +7,9 @@ export const userSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
-  emailVerified: z.date().nullable(),
+  emailVerified: z.date().nullable().optional(),
   picture: z.string().nullable(),
-  phoneNumber: z.string().nullable()
+  phoneNumber: z.string().nullable().optional()
 })
 
 export const userDataCollectedShema = z.object({
@@ -37,7 +37,7 @@ export type UserType = z.infer<typeof userSchema>
 export const baseProfileSchema = userDataCollectedShema.extend({
   name: z.string().min(4, 'Name must be at least 4 characters'),
   email: z.string().email('Invalid email address'),
-  phoneNumber: z.string().optional(),
+  phoneNumber: z.string().optional(), /* !TODO: VALIDATION PHONENUMBER*/ 
   stopCommunication: z.boolean().default(false)
 })
 export const profileFormSchema = baseProfileSchema.extend({
