@@ -90,6 +90,7 @@ function DragDropZone({ onUploadComplete }: DragDropZoneProps) {
                   </a>
                 </div>
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => handleDelete(index)}
@@ -129,13 +130,22 @@ function SingleFileUpload({ onUploadComplete }: SingleFileUploadProps) {
 
   function handleDelete() {
     setUploadedFile(null)
+    onUploadComplete('')
   }
 
   return (
     <Card className="w-full max-w-md mx-auto p-6">
       <div className="flex items-center justify-center w-full">
-        <label htmlFor="single-file-upload" className="w-full">
-          <Button variant="outline" className="w-full" disabled={isUploading}>
+        <div className="w-full">
+          <Button
+            variant="outline"
+            type="button"
+            className="w-full"
+            disabled={isUploading}
+            onClick={() =>
+              document.getElementById('single-file-upload')?.click()
+            }
+          >
             {isUploading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
             ) : (
@@ -150,7 +160,7 @@ function SingleFileUpload({ onUploadComplete }: SingleFileUploadProps) {
             onChange={handleFileChange}
             disabled={isUploading}
           />
-        </label>
+        </div>
       </div>
       {error && <p className="text-destructive mt-2">{error.message}</p>}
       {uploadedFile && (
@@ -169,6 +179,7 @@ function SingleFileUpload({ onUploadComplete }: SingleFileUploadProps) {
               </a>
             </div>
             <Button
+              type="button"
               variant="ghost"
               size="sm"
               onClick={handleDelete}
@@ -182,5 +193,4 @@ function SingleFileUpload({ onUploadComplete }: SingleFileUploadProps) {
     </Card>
   )
 }
-
 export { SingleFileUpload, DragDropZone }
