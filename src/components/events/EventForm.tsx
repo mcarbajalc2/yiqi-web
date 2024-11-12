@@ -22,7 +22,7 @@ import {
   SavedTicketType
 } from '@/schemas/eventSchema'
 import { useRouter } from 'next/navigation'
-import { MapPin, Clock, Users } from 'lucide-react'
+import { MapPin, Clock, Users, Pencil } from 'lucide-react'
 import { useState } from 'react'
 import { TicketTypesManager } from './TicketTypesManager'
 import {
@@ -57,6 +57,8 @@ type LocationDetails = {
   country: string
 }
 
+const currentDateStr = new Date().toISOString().split('T')[0];
+
 export function EventForm({ organizationId, event }: Props) {
   const router = useRouter()
   const [tickets, setTickets] = useState<
@@ -77,6 +79,7 @@ export function EventForm({ organizationId, event }: Props) {
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [minEndDate, setMinEndDate] = useState<string | null>(null)
   const [locationDetails, setLocationDetails] =
     useState<LocationDetails | null>(null)
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
@@ -104,6 +107,13 @@ export function EventForm({ organizationId, event }: Props) {
       const previewUrl = URL.createObjectURL(file)
       setImagePreview(previewUrl)
     }
+  }
+
+  const handleOnStartDateChange= (event: React.ChangeEvent<HTMLInputElement>) => {
+    const startDate = event.target.value
+    console.log('startDate', startDate)
+    form.setValue('startDate', startDate)
+    setMinEndDate(startDate)
   }
 
   async function onSubmit(values: z.infer<typeof EventFormInputSchema>) {
@@ -148,7 +158,7 @@ export function EventForm({ organizationId, event }: Props) {
           {/* Left Column */}
           <div className="space-y-4">
             <div className="border rounded-lg p-4">
-              <label htmlFor="image-upload">
+              <label htmlFor="image-upload cursor-pointer hover:outline-gray-600">
                 <div className="aspect-square bg-gray-100 rounded-md mb-2 relative overflow-hidden">
                   {imagePreview ? (
                     <Image
@@ -185,11 +195,17 @@ export function EventForm({ organizationId, event }: Props) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input
-                      placeholder="Event Name"
-                      className="text-xl border-0 px-0 focus-visible:ring-0"
-                      {...field}
-                    />
+                    <div className="relative">
+                      <Input
+                        id="event-name"
+                        placeholder="Event Name"
+                        className="text-xl border-0 px-0 focus-visible:ring-0"
+                        {...field}
+                      />
+                      <label htmlFor="event-name" className="absolute top-2 right-2 cursor-pointer">
+                        <Pencil />
+                      </label>
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -210,7 +226,7 @@ export function EventForm({ organizationId, event }: Props) {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Input type="date" {...field} />
+                              <Input type="date" {...field} min={currentDateStr} onChange={handleOnStartDateChange}/>
                             </FormControl>
                           </FormItem>
                         )}
@@ -237,7 +253,7 @@ export function EventForm({ organizationId, event }: Props) {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Input type="date" {...field} />
+                              <Input type="date" {...field} min={minEndDate} />
                             </FormControl>
                           </FormItem>
                         )}
