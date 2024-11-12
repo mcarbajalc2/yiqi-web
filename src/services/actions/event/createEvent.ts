@@ -1,3 +1,5 @@
+'use server'
+
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
 import prisma from '@/lib/prisma'
 import {

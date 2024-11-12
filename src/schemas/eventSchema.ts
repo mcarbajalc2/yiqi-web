@@ -54,7 +54,8 @@ export const EventSchema = EventInputSchema.extend({
 export const TicketCategorySchema = z.enum(['GENERAL', 'VIP', 'BACKSTAGE'])
 
 export const SavedTicketSchema = EventTicketInputSchema.extend({
-  id: z.string()
+  id: z.string(),
+  price: z.coerce.number()
 })
 
 export type EventTicketInputType = z.infer<typeof EventTicketInputSchema>
