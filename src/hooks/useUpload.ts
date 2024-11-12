@@ -9,7 +9,7 @@ interface UploadHookResult {
 }
 
 export function useUpload(): UploadHookResult {
-  const [isUploading, setIsUploading] = useState(false)
+  const [isUploading, setIsUploading] = useState<boolean>(false)
   const [error, setError] = useState<Error | null>(null)
 
   const uploadSingle = async (file: File): Promise<string> => {
@@ -19,12 +19,12 @@ export function useUpload(): UploadHookResult {
       const url = await UploadToS3(file)
       return url
     } catch (err) {
-      setError(
+      const uploadError =
         err instanceof Error
           ? err
           : new Error('An error occurred during upload')
-      )
-      throw err
+      setError(uploadError)
+      throw uploadError
     } finally {
       setIsUploading(false)
     }
@@ -37,12 +37,12 @@ export function useUpload(): UploadHookResult {
       const urls = await UploadManyToS3(files)
       return urls
     } catch (err) {
-      setError(
+      const uploadError =
         err instanceof Error
           ? err
           : new Error('An error occurred during upload')
-      )
-      throw err
+      setError(uploadError)
+      throw uploadError
     } finally {
       setIsUploading(false)
     }
