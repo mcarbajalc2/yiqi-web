@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { MoveUpRight, Menu } from 'lucide-react'
+import { Menu, TicketSlash, Users } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
@@ -37,7 +37,9 @@ export default function MainLandingNav({ user }: HeaderProps) {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/80 dark:bg-black/80 shadow-md' : 'bg-transparent'
+        isScrolled
+          ? ' dark:bg-black/80 shadow-md backdrop-blur-lg'
+          : 'bg-transparent'
       } backdrop-blur-xl`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -58,8 +60,15 @@ export default function MainLandingNav({ user }: HeaderProps) {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-4">
-            <NavLink href="#events">Explore Events</NavLink>
-            {!user ? (
+            <NavLink href="#events">
+              <TicketSlash size={16} />
+              <span>Events</span>
+            </NavLink>
+            <NavLink href="/communities">
+              <Users size={16} />
+              <span>communities</span>
+            </NavLink>
+            {!user || Object.keys(user).length === 0 ? (
               <Link href={'/user'}>
                 <Button size="sm" variant="default" className="font-semibold">
                   Log in
@@ -79,9 +88,13 @@ export default function MainLandingNav({ user }: HeaderProps) {
 
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">Open menu</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="md:hidden hover:bg-transparent"
+              >
+                <Menu className="h-6 w-6 text-white " />
+                <span className="sr-only ">Open menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px] sm:w-[400px]">
@@ -90,7 +103,10 @@ export default function MainLandingNav({ user }: HeaderProps) {
               </SheetHeader>
               <div className="mt-6 flex flex-col space-y-4">
                 <NavLink href="/events" mobile>
-                  Explore Events
+                  communities
+                </NavLink>
+                <NavLink href="/events" mobile>
+                  Events
                 </NavLink>
                 {!user ? (
                   <Link href={'/user'}>
@@ -139,10 +155,9 @@ function NavLink({
       <Button
         variant="ghost"
         size={mobile ? 'default' : 'sm'}
-        className={`font-semibold text-sm space-x-1 ${mobile ? 'w-full justify-start' : ''}`}
+        className={` text-[hsla(0,0%,100%,.79)] hover:text-white hover:bg-transparent text-sm font-medium space-x-0 ${mobile ? 'w-full justify-start' : ''}`}
       >
-        <span>{children}</span>
-        <MoveUpRight size={16} />
+        {children}
       </Button>
     </Link>
   )
