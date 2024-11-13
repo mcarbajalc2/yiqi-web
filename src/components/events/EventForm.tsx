@@ -457,6 +457,7 @@ export function EventForm({ organizationId, event }: Props) {
                             value={'ONLINE'}
                             checked={field.value === 'ONLINE'}
                             onChange={() => field.onChange('ONLINE')}
+                            className="mr-2"
                           />
                           Online
                         </label>
@@ -466,6 +467,7 @@ export function EventForm({ organizationId, event }: Props) {
                             value={'IN_PERSON'}
                             checked={field.value === 'IN_PERSON'}
                             onChange={() => field.onChange('IN_PERSON')}
+                            className="mr-2"
                           />
                           In Person
                         </label>
