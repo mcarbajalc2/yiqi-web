@@ -1,3 +1,5 @@
+'use server'
+
 import prisma from '@/lib/prisma'
 import { PublicEventSchema } from '@/schemas/eventSchema'
 

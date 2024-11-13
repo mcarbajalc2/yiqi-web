@@ -47,6 +47,8 @@ model User {
   tickets Ticket[] @relation("ticketOwner")
 
   OrganizationContact OrganizationContact[]
+
+  deletedAt DateTime?
 }
 
 enum Roles {
@@ -108,7 +110,7 @@ model Organization {
   MessageThread MessageThread[]
 
   Notification Notification[]
-
+  deletedAt DateTime?
   Form   Form[]
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
@@ -169,6 +171,7 @@ model Event {
   GeneratedMedia GeneratedMedia[]
   queueJobs QueueJob[]
   tickets TicketOfferings[]
+  deletedAt DateTime?
 }
 
 enum TicketCategory {
@@ -359,7 +362,7 @@ model Form {
   submissions    FormSubmission[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
-
+  deletedAt DateTime?
   Notification Notification[]
 }
 

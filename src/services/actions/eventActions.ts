@@ -23,7 +23,10 @@ export async function deleteEvent(eventId: string) {
     throw new Error('Unauthorized')
   }
 
-  await prisma.event.delete({ where: { id: eventId } })
+  await prisma.event.update({
+    where: { id: eventId },
+    data: { deletedAt: new Date() }
+  })
 
   revalidatePath(`/admin/organizations/${event.organizationId}/events`)
 }
