@@ -3,7 +3,7 @@ import Features from '@/components/mainLanding/Features'
 import Footer from '@/components/mainLanding/Footer'
 import Hero from '@/components/mainLanding/hero'
 import MainLandingNav from '@/components/mainLanding/mainNav'
-import UpcomingEvents from '@/components/mainLanding/UpcomingEvents'
+import PublicEventsList from '@/components/events/PublicEventsList'
 import { getUser } from '@/lib/auth/lucia'
 import { getPublicEvents } from '@/services/actions/event/getPublicEvents'
 
@@ -25,7 +25,7 @@ export default async function Home() {
         {/* Community Highlights */}
         <CommunityHighlights />
         {/* Upcoming Events Section */}
-        <UpcomingEvents events={events} />
+        <PublicEventsList events={events} />
       </div>
       <Footer />
     </>

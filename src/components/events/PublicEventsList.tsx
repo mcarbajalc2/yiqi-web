@@ -1,6 +1,6 @@
 // import Link from 'next/link'
 // import { ChevronRight, Edit2 } from 'lucide-react'
-import EventCard from './EventCard'
+import EventCard from '../mainLanding/EventCard'
 import { PublicEventType } from '@/schemas/eventSchema'
 
 // EventHeader Component
@@ -24,13 +24,19 @@ const EventHeader = () => (
   </div>
 )
 
+type Props = {
+  events: PublicEventType[]
+  showHeader?: boolean
+  isSearchable?: boolean
+}
+
 // Main UpcomingEvents Component
-const UpcomingEvents = ({ events }: { events: PublicEventType[] }) => {
+const PublicEventsList = ({ events, showHeader = true }: Props) => {
   return (
     <section id="events" className="w-full bg-black min-h-screen relative">
       <div className="relative w-full py-16">
         <div className="max-w-7xl mx-auto">
-          <EventHeader />
+          {showHeader && <EventHeader />}
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {events.map(event => (
               <EventCard key={event.id} event={event} />
@@ -42,4 +48,4 @@ const UpcomingEvents = ({ events }: { events: PublicEventType[] }) => {
   )
 }
 
-export default UpcomingEvents
+export default PublicEventsList
