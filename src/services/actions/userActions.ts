@@ -4,7 +4,11 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import { Roles } from '@prisma/client'
 import { getUser } from '@/lib/auth/lucia'
-import { ProfileDataValues ,UserDataCollected,profileDataSchema, } from '@/schemas/userSchema'
+import {
+  ProfileDataValues,
+  UserDataCollected,
+  profileDataSchema
+} from '@/schemas/userSchema'
 
 import { z } from 'zod'
 export async function searchUsers(query: string) {
@@ -36,38 +40,42 @@ export async function makeRegularUser(user: { userId: string }) {
   }
 }
 
-export async function updateUserProfile(
-  data: ProfileDataValues,
-) {
+export async function updateUserProfile(data: ProfileDataValues) {
   const validatedData = profileDataSchema.parse(data)
-   try {
-    const {id,picture, name, phoneNumber, stopCommunication,email,...socialData } = validatedData
-    return await prisma.$transaction(async (tx) => {
-      const currentUser = await tx.user.findUnique({
-        where: { id: id },
-        select: { dataCollected: true }
-      });
+  try {
+    const {
+      id,
+      picture,
+      name,
+      phoneNumber,
+      stopCommunication,
+      email,
+      ...socialData
+    } = validatedData
 
-      const updatedUser = await tx.user.update({
-        where: { id: id },
-        data: {
-          name,
-          phoneNumber,
-          stopCommunication,
-          picture,
-          email,
-          dataCollected: {
-            ...(currentUser?.dataCollected as Record<string, unknown>),
-            ...socialData
-          }
+    const currentUser = await prisma.user.findUnique({
+      where: { id: id },
+      select: { dataCollected: true }
+    })
+
+    const updatedUser = await prisma.user.update({
+      where: { id: id },
+      data: {
+        name,
+        phoneNumber,
+        stopCommunication,
+        picture,
+        email,
+        dataCollected: {
+          ...(currentUser?.dataCollected as Record<string, unknown>),
+          ...socialData
         }
-      });
-      revalidatePath('/user/edit');
-      return { success: true, user: updatedUser };
-    });
+      }
+    })
+    return { success: true, user: updatedUser }
   } catch (error) {
-    console.error('Error updating profile:', error);
-    throw new Error('Failed to update profile');
+    console.error('Error updating profile:', error)
+    throw new Error('Failed to update profile')
   }
 }
 export async function getUserProfile() {
@@ -86,7 +94,7 @@ export async function getUserProfile() {
         dataCollected: true
       }
     })
-    if (!user) return null 
+    if (!user) return null
     const dataCollected = user.dataCollected as UserDataCollected
     const cleanUserData = {
       id: user.id,
@@ -94,7 +102,7 @@ export async function getUserProfile() {
       email: user.email ?? '',
       picture: user.picture ?? '',
       phoneNumber: user.phoneNumber ?? '',
-      stopCommunication: user.stopCommunication ?? false,   
+      stopCommunication: user.stopCommunication ?? false,
       company: dataCollected?.company ?? '',
       position: dataCollected?.position ?? '',
       shortDescription: dataCollected?.shortDescription ?? '',
@@ -103,7 +111,6 @@ export async function getUserProfile() {
       instagram: dataCollected?.instagram ?? '',
       website: dataCollected?.website ?? ''
     }
-
 
     return profileDataSchema.parse(cleanUserData)
   } catch (error) {

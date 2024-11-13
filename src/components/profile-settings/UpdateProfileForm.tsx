@@ -1,5 +1,5 @@
 'use client'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { motion } from 'framer-motion'
@@ -51,34 +51,23 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
   const { toast } = useToast()
   const router = useRouter()
 
-  const initialFormState = useRef<ProfileFormValues>({
-    name: user.name ?? '',
-    email: user.email ?? '',
-    phoneNumber: user.phoneNumber ?? '',
-    company: user.company ?? '',
-    position: user.position ?? '',
-    shortDescription: user.shortDescription ?? '',
-    linkedin: user.linkedin ?? '',
-    x: user.x ?? '',
-    instagram: user.instagram ?? '',
-    website: user.website ?? '',
-    stopCommunication: user.stopCommunication ?? false,
-    picture: null
-  })
-
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
-    defaultValues: initialFormState.current
+    defaultValues: {
+      name: user.name ?? '',
+      email: user.email ?? '',
+      phoneNumber: user.phoneNumber ?? '',
+      company: user.company ?? '',
+      position: user.position ?? '',
+      shortDescription: user.shortDescription ?? '',
+      linkedin: user.linkedin ?? '',
+      x: user.x ?? '',
+      instagram: user.instagram ?? '',
+      website: user.website ?? '',
+      stopCommunication: user.stopCommunication ?? false,
+      picture: null
+    }
   })
-
-  const formValues = form.watch()
-  const isFormDirty = useMemo(() => {
-    return Object.keys(initialFormState.current).some(
-      key =>
-        initialFormState.current[key as keyof ProfileFormValues] !==
-        formValues[key as keyof ProfileFormValues]
-    )
-  }, [formValues])
 
   async function onSubmit(data: ProfileFormValues) {
     setIsLoading(true)
@@ -100,7 +89,6 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
       }
       const result = await updateUserProfile(profileData)
       if (result.success) {
-        initialFormState.current = data
         router.refresh()
         toast({
           description: 'Profile updated successfully',
@@ -458,7 +446,7 @@ function UpdateProfileForm({ user }: { user: ProfileDataValues }) {
                 <DeleteAccountDialog />
                 <Button
                   type="submit"
-                  disabled={isLoading || !isFormDirty}
+                  disabled={isLoading}
                   className="flex items-center space-x-2"
                 >
                   {isLoading ? (
