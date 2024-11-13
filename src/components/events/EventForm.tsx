@@ -57,7 +57,21 @@ type LocationDetails = {
   country: string
 }
 
-const currentDateStr = new Date().toISOString().split('T')[0]
+const currentDate = new Date()
+const localCurrentDate = new Date(
+  currentDate.getTime() - currentDate.getTimezoneOffset() * 60000
+)
+const defaultStartDateStr = localCurrentDate.toISOString().split('T')[0]
+const defaultStartTimeStr = localCurrentDate
+  .toISOString()
+  .split('T')[1]
+  .slice(0, 5)
+const defaultEndDate = new Date(localCurrentDate.getTime() + 10 * 60 * 1000)
+const defaultMinEndDateStr = defaultEndDate.toISOString().split('T')[0]
+const defaultMinEndTimeStr = defaultEndDate
+  .toISOString()
+  .split('T')[1]
+  .slice(0, 5)
 
 export function EventForm({ organizationId, event }: Props) {
   const router = useRouter()
@@ -79,9 +93,16 @@ export function EventForm({ organizationId, event }: Props) {
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [minEndDate, setMinEndDate] = useState<string | number | undefined>(
-    undefined
+  const [minStartTime, setMinStartTime] = useState<string | number>(
+    defaultStartTimeStr
   )
+  const [minEndDate, setMinEndDate] = useState<string | number>(
+    defaultMinEndDateStr
+  )
+  const [minEndTime, setMinEndTime] = useState<string | number>(
+    defaultMinEndTimeStr
+  )
+
   const [locationDetails, setLocationDetails] =
     useState<LocationDetails | null>(null)
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
@@ -115,9 +136,73 @@ export function EventForm({ organizationId, event }: Props) {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const startDate = event.target.value
-    console.log('startDate', startDate)
     form.setValue('startDate', startDate)
+
+    const selectedDate = new Date(startDate)
+    const today = new Date(defaultStartDateStr)
+
+    if (selectedDate > today) {
+      setMinStartTime('00:00')
+    } else {
+      const currentTime = new Date()
+      const currentHours = currentTime.getHours().toString().padStart(2, '0')
+      const currentMinutes = currentTime
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')
+      setMinStartTime(`${currentHours}:${currentMinutes}`)
+
+      // If the start date is today and the start time is less than the current time, set start time to ''
+      const startTime = form.getValues('startTime')
+      if (startTime && `${currentHours}:${currentMinutes}` > startTime) {
+        form.setValue('startTime', '')
+      }
+    }
+
     setMinEndDate(startDate)
+  }
+
+  const handleOnStartTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.validity.valid) {
+      const startTime = event.target.value
+      form.setValue('startTime', startTime)
+      setMinEndTime(startTime)
+    }
+  }
+
+  const handleOnEndDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const endDate = event.target.value
+    form.setValue('endDate', endDate)
+
+    const startDate = form.getValues('startDate')
+
+    if (new Date(endDate) > new Date(startDate)) {
+      setMinEndTime('00:00')
+    } else {
+      setMinEndTime(minStartTime)
+    }
+    const startTime = form.getValues('startTime')
+    if (startTime) {
+      const [hours, minutes] = startTime.split(':').map(Number)
+      const endTime = new Date()
+      endTime.setHours(hours)
+      endTime.setMinutes(minutes + 10)
+      const endHours = endTime.getHours().toString().padStart(2, '0')
+      const endMinutes = endTime.getMinutes().toString().padStart(2, '0')
+      setMinEndTime(`${endHours}:${endMinutes}`)
+    }
+  }
+
+  const handleOnEndTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.validity.valid) {
+      form.setValue('endTime', event.target.value)
+    }
   }
 
   async function onSubmit(values: z.infer<typeof EventFormInputSchema>) {
@@ -162,7 +247,10 @@ export function EventForm({ organizationId, event }: Props) {
           {/* Left Column */}
           <div className="space-y-4">
             <div className="border rounded-lg p-4">
-              <label htmlFor="image-upload cursor-pointer hover:outline-gray-600">
+              <label
+                htmlFor="image-upload"
+                className="cursor-pointer hover:outline-gray-600"
+              >
                 <div className="aspect-square bg-gray-100 rounded-md mb-2 relative overflow-hidden">
                   {imagePreview ? (
                     <Image
@@ -236,7 +324,7 @@ export function EventForm({ organizationId, event }: Props) {
                               <Input
                                 type="date"
                                 {...field}
-                                min={currentDateStr}
+                                min={defaultStartDateStr}
                                 onChange={handleOnStartDateChange}
                               />
                             </FormControl>
@@ -249,7 +337,12 @@ export function EventForm({ organizationId, event }: Props) {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Input type="time" {...field} />
+                              <Input
+                                type="time"
+                                {...field}
+                                min={minStartTime}
+                                onChange={handleOnStartTimeChange}
+                              />
                             </FormControl>
                           </FormItem>
                         )}
@@ -265,7 +358,12 @@ export function EventForm({ organizationId, event }: Props) {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Input type="date" {...field} min={minEndDate} />
+                              <Input
+                                type="date"
+                                {...field}
+                                min={minEndDate}
+                                onChange={handleOnEndDateChange}
+                              />
                             </FormControl>
                           </FormItem>
                         )}
@@ -276,7 +374,12 @@ export function EventForm({ organizationId, event }: Props) {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Input type="time" {...field} />
+                              <Input
+                                type="time"
+                                {...field}
+                                min={minEndTime}
+                                onChange={handleOnEndTimeChange}
+                              />
                             </FormControl>
                           </FormItem>
                         )}
