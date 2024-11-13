@@ -2,7 +2,6 @@ import { z } from 'zod'
 import { searchUsers } from '../actions/userActions'
 import { publicProcedure, router } from './util'
 import {
-  getPublicEvents,
   createRegistration,
   getUserRegistrationStatus
 } from '../actions/eventActions'
@@ -16,6 +15,7 @@ import {
   OrganizationSchema
 } from '@/schemas/apiSchemas'
 import { getEvent } from '../actions/event/getEvent'
+import { getPublicEvents } from '../actions/event/getPublicEvents'
 
 export const appRouter = router({
   searchUsers: publicProcedure

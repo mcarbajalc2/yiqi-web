@@ -4,11 +4,13 @@ import Footer from '@/components/mainLanding/Footer'
 import Hero from '@/components/mainLanding/hero'
 import MainLandingNav from '@/components/mainLanding/mainNav'
 import UpcomingEvents from '@/components/mainLanding/UpcomingEvents'
-import { eventListItem } from '@/data/events'
 import { getUser } from '@/lib/auth/lucia'
+import { getPublicEvents } from '@/services/actions/event/getPublicEvents'
 
 export default async function Home() {
   const user = await getUser()
+  const events = await getPublicEvents()
+
   return (
     <>
       <div className="fixed inset-0 h-screen w-screen -z-10 bg-black"></div>
@@ -23,7 +25,7 @@ export default async function Home() {
         {/* Community Highlights */}
         <CommunityHighlights />
         {/* Upcoming Events Section */}
-        <UpcomingEvents events={eventListItem} />
+        <UpcomingEvents events={events} />
       </div>
       <Footer />
     </>

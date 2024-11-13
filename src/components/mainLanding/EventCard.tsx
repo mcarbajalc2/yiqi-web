@@ -1,20 +1,22 @@
-import { EventListItem } from '@/data/events'
 import { Calendar, MapPin, Users } from 'lucide-react'
 import Image from 'next/image'
 import { format } from 'date-fns'
+import { PublicEventType } from '@/schemas/eventSchema'
 
-const EventCard = ({ event }: { event: EventListItem }) => (
+const EventCard = ({ event }: { event: PublicEventType }) => (
   <div className="group relative bg-gray-900/80 backdrop-blur-sm rounded-xl overflow-hidden hover:transform hover:scale-[1.02] transition-all duration-300">
     <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl -z-10" />
     <div className="absolute inset-[1px] bg-gray-900 rounded-xl -z-5" />
 
     <div className="relative h-48 w-full">
-      <Image
-        src={event.image}
-        alt={event.title}
-        fill
-        className="object-cover"
-      />
+      {!!event.openGraphImage && (
+        <Image
+          src={event.openGraphImage}
+          alt={event.title}
+          fill
+          className="object-cover"
+        />
+      )}
       <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-60" />
     </div>
 
@@ -44,12 +46,14 @@ const EventCard = ({ event }: { event: EventListItem }) => (
         <div className="flex items-center justify-between pt-4 border-t border-gray-800">
           <div className="flex items-center gap-2">
             <div className="relative w-8 h-8">
-              <Image
-                src={event.organization.logo}
-                alt={event.organization.name}
-                fill
-                className="rounded-full object-cover"
-              />
+              {!!event.organization.logo && (
+                <Image
+                  src={event.organization.logo}
+                  alt={event.organization.name}
+                  fill
+                  className="rounded-full object-cover"
+                />
+              )}
             </div>
             <span className="text-sm text-gray-300">
               {event.organization.name}

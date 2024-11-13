@@ -137,6 +137,16 @@ export const SavedEventSchema = EventInputSchema.extend({
   tickets: z.array(SavedTicketSchema).optional().nullable()
 })
 
+export const PublicEventSchema = SavedEventSchema.extend({
+  id: z.string(),
+  registrations: z.number(),
+  organization: z.object({
+    logo: z.string().nullable(),
+    name: z.string()
+  })
+})
+
+export type PublicEventType = z.infer<typeof PublicEventSchema>
 export type EventInputType = z.infer<typeof EventInputSchema>
 export type EventType = z.infer<typeof EventSchema>
 

@@ -4,9 +4,7 @@ import prisma from '@/lib/prisma'
 import { revalidatePath } from 'next/cache'
 import {
   createAttendeeSchema,
-  SavedEventSchema as SavedEventSchema,
-  EventRegistrationSchema,
-  SavedEventType
+  EventRegistrationSchema
 } from '@/schemas/eventSchema'
 import setupInitialEventNotifications from '../notifications/setupInitialNotifications'
 import { getUser, isOrganizerAdmin } from '@/lib/auth/lucia'
@@ -84,18 +82,6 @@ export async function createRegistration(
   })
 
   return registration
-}
-
-export async function getPublicEvents(): Promise<SavedEventType[]> {
-  const now = new Date()
-  const events = await prisma.event.findMany({
-    where: {
-      endDate: { gte: now }
-    },
-    orderBy: { startDate: 'asc' }
-  })
-
-  return events.map(event => SavedEventSchema.parse(event))
 }
 
 export async function getUserRegistrationStatus(

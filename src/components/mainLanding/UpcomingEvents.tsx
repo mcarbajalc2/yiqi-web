@@ -1,7 +1,7 @@
 // import Link from 'next/link'
 // import { ChevronRight, Edit2 } from 'lucide-react'
-import { EventListItem } from '@/data/events'
 import EventCard from './EventCard'
+import { PublicEventType } from '@/schemas/eventSchema'
 
 // EventHeader Component
 const EventHeader = () => (
@@ -25,7 +25,7 @@ const EventHeader = () => (
 )
 
 // Main UpcomingEvents Component
-const UpcomingEvents = ({ events }: { events: EventListItem[] }) => {
+const UpcomingEvents = ({ events }: { events: PublicEventType[] }) => {
   return (
     <section id="events" className="w-full bg-black min-h-screen relative">
       <div className="relative w-full py-16">

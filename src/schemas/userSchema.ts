@@ -1,7 +1,7 @@
 import { z } from 'zod'
 
 // inputs and output must always be zod based so that we can export
-// Todo: Update this shema , delete userSchema 
+// Todo: Update this shema , delete userSchema
 //  role: 'USER' | 'ADMIN' | 'ANDINO_ADMIN' | 'NEW_USER';
 export const userSchema = z.object({
   id: z.string(),
@@ -37,7 +37,7 @@ export type UserType = z.infer<typeof userSchema>
 export const baseProfileSchema = userDataCollectedShema.extend({
   name: z.string().min(4, 'Name must be at least 4 characters'),
   email: z.string().email('Invalid email address'),
-  phoneNumber: z.string().optional(), /* !TODO: VALIDATION PHONENUMBER*/ 
+  phoneNumber: z.string().optional() /* !TODO: VALIDATION PHONENUMBER*/,
   stopCommunication: z.boolean().default(false)
 })
 export const profileFormSchema = baseProfileSchema.extend({
@@ -50,6 +50,3 @@ export const profileDataSchema = baseProfileSchema.extend({
 export type UserDataCollected = z.infer<typeof userDataCollectedShema>
 export type ProfileDataValues = z.infer<typeof profileDataSchema>
 export type ProfileFormValues = z.infer<typeof profileFormSchema>
-
-
-
