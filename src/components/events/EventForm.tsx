@@ -57,7 +57,7 @@ type LocationDetails = {
   country: string
 }
 
-const currentDateStr = new Date().toISOString().split('T')[0];
+const currentDateStr = new Date().toISOString().split('T')[0]
 
 export function EventForm({ organizationId, event }: Props) {
   const router = useRouter()
@@ -79,7 +79,9 @@ export function EventForm({ organizationId, event }: Props) {
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [minEndDate, setMinEndDate] = useState<string | null>(null)
+  const [minEndDate, setMinEndDate] = useState<string | number | undefined>(
+    undefined
+  )
   const [locationDetails, setLocationDetails] =
     useState<LocationDetails | null>(null)
   const form = useForm<z.infer<typeof EventFormInputSchema>>({
@@ -109,7 +111,9 @@ export function EventForm({ organizationId, event }: Props) {
     }
   }
 
-  const handleOnStartDateChange= (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleOnStartDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const startDate = event.target.value
     console.log('startDate', startDate)
     form.setValue('startDate', startDate)
@@ -202,7 +206,10 @@ export function EventForm({ organizationId, event }: Props) {
                         className="text-xl border-0 px-0 focus-visible:ring-0"
                         {...field}
                       />
-                      <label htmlFor="event-name" className="absolute top-2 right-2 cursor-pointer">
+                      <label
+                        htmlFor="event-name"
+                        className="absolute top-2 right-2 cursor-pointer"
+                      >
                         <Pencil />
                       </label>
                     </div>
@@ -226,7 +233,12 @@ export function EventForm({ organizationId, event }: Props) {
                         render={({ field }) => (
                           <FormItem>
                             <FormControl>
-                              <Input type="date" {...field} min={currentDateStr} onChange={handleOnStartDateChange}/>
+                              <Input
+                                type="date"
+                                {...field}
+                                min={currentDateStr}
+                                onChange={handleOnStartDateChange}
+                              />
                             </FormControl>
                           </FormItem>
                         )}
