@@ -47,6 +47,8 @@ model User {
   tickets Ticket[] @relation("ticketOwner")
 
   OrganizationContact OrganizationContact[]
+
+  deletedAt DateTime?
 }
 
 enum Roles {
@@ -108,7 +110,7 @@ model Organization {
   MessageThread MessageThread[]
 
   Notification Notification[]
-
+  deletedAt DateTime?
   Form   Form[]
   User   User?   @relation(fields: [userId], references: [id])
   userId String?
@@ -164,7 +166,6 @@ model Event {
   customFields     Json? // Added to store custom fields for the event
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
-  deletedAt  DateTime?
   requiresApproval Boolean             @default(false)
   registrations    EventRegistration[]
   EventBot EventBot[]
@@ -176,6 +177,7 @@ model Event {
   queueJobs QueueJob[]
   tickets TicketOfferings[]
   type EventTypes @default(IN_PERSON)
+  deletedAt DateTime?
 }
 
 enum TicketCategory {
@@ -366,7 +368,7 @@ model Form {
   submissions    FormSubmission[]
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
-
+  deletedAt DateTime?
   Notification Notification[]
 }
 

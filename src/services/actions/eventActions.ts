@@ -1,7 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
-import { revalidatePath } from 'next/cache'
+
 import {
   createAttendeeSchema,
   EventRegistrationSchema
@@ -23,9 +23,10 @@ export async function deleteEvent(eventId: string) {
     throw new Error('Unauthorized')
   }
 
-  await prisma.event.delete({ where: { id: eventId } })
-
-  revalidatePath(`/admin/organizations/${event.organizationId}/events`)
+  await prisma.event.update({
+    where: { id: eventId },
+    data: { deletedAt: new Date() }
+  })
 }
 
 export async function createRegistration(

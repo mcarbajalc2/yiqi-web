@@ -78,12 +78,13 @@ export async function updateUserProfile(data: ProfileDataValues) {
     throw new Error('Failed to update profile')
   }
 }
-export async function getUserProfile() {
+
+export async function getUserProfile(currentUserId: string) {
   try {
     const userCurrent = await getUser()
     if (!userCurrent?.id) return null
     const user = await prisma.user.findUnique({
-      where: { id: userCurrent.id },
+      where: { id: currentUserId },
       select: {
         id: true,
         name: true,
@@ -133,8 +134,9 @@ export async function deleteUserAccount() {
     })
 
     // Eliminar la cuenta del usuario
-    await prisma.user.delete({
-      where: { id: userCurrent.id }
+    await prisma.user.update({
+      where: { id: userCurrent.id },
+      data: { deletedAt: new Date() }
     })
     return { success: true }
   } catch (error) {

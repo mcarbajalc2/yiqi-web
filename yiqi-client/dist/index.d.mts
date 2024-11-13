@@ -25,12 +25,12 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         _output_in: typeof _trpc_server.unsetMarker;
         _output_out: typeof _trpc_server.unsetMarker;
     }, {
-        id: string;
         name: string;
+        id: string;
         email: string;
-        emailVerified: Date | null;
         picture: string | null;
-        phoneNumber: string | null;
+        emailVerified?: Date | null | undefined;
+        phoneNumber?: string | null | undefined;
     }[]>;
     getPublicEvents: _trpc_server.BuildProcedure<"query", {
         _config: _trpc_server.RootConfig<{
@@ -50,25 +50,16 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         title: string;
         startDate: Date;
         endDate: Date;
-        requiresApproval: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        organizationId: string;
         customFields: {
             name: string;
             type: "number" | "select" | "date" | "text";
             required: boolean;
             options?: string | undefined;
         }[];
-        organizationId: string;
-        tickets?: {
-            id: string;
-            name: string;
-            category: "GENERAL" | "VIP" | "BACKSTAGE";
-            price: number;
-            limit: number;
-            ticketsPerPurchase: number;
-            description?: string | undefined;
-        }[] | null | undefined;
+        createdAt: Date;
+        updatedAt: Date;
+        requiresApproval: boolean;
         description?: string | undefined;
         location?: string | null | undefined;
         city?: string | null | undefined;
@@ -77,6 +68,15 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         virtualLink?: string | null | undefined;
         maxAttendees?: number | null | undefined;
         openGraphImage?: string | null | undefined;
+        tickets?: {
+            name: string;
+            id: string;
+            category: "GENERAL" | "VIP" | "BACKSTAGE";
+            price: number;
+            limit: number;
+            ticketsPerPurchase: number;
+            description?: string | undefined;
+        }[] | null | undefined;
     }[]>;
     getEvent: _trpc_server.BuildProcedure<"query", {
         _config: _trpc_server.RootConfig<{
@@ -96,25 +96,16 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         title: string;
         startDate: Date;
         endDate: Date;
-        requiresApproval: boolean;
-        createdAt: Date;
-        updatedAt: Date;
+        organizationId: string;
         customFields: {
             name: string;
             type: "number" | "select" | "date" | "text";
             required: boolean;
             options?: string | undefined;
         }[];
-        organizationId: string;
-        tickets?: {
-            id: string;
-            name: string;
-            category: "GENERAL" | "VIP" | "BACKSTAGE";
-            price: number;
-            limit: number;
-            ticketsPerPurchase: number;
-            description?: string | undefined;
-        }[] | null | undefined;
+        createdAt: Date;
+        updatedAt: Date;
+        requiresApproval: boolean;
         description?: string | undefined;
         location?: string | null | undefined;
         city?: string | null | undefined;
@@ -123,6 +114,15 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         virtualLink?: string | null | undefined;
         maxAttendees?: number | null | undefined;
         openGraphImage?: string | null | undefined;
+        tickets?: {
+            name: string;
+            id: string;
+            category: "GENERAL" | "VIP" | "BACKSTAGE";
+            price: number;
+            limit: number;
+            ticketsPerPurchase: number;
+            description?: string | undefined;
+        }[] | null | undefined;
     }>;
     createRegistration: _trpc_server.BuildProcedure<"mutation", {
         _config: _trpc_server.RootConfig<{
@@ -145,12 +145,12 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         _output_out: typeof _trpc_server.unsetMarker;
     }, {
         id: string;
-        status: "PENDING" | "APPROVED" | "REJECTED";
-        eventId: string;
+        customFields: Record<string, unknown>;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        customFields: Record<string, unknown>;
+        status: "PENDING" | "APPROVED" | "REJECTED";
+        eventId: string;
     }>;
     getUserRegistrationStatus: _trpc_server.BuildProcedure<"query", {
         _config: _trpc_server.RootConfig<{
@@ -162,12 +162,12 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         _meta: object;
         _ctx_out: object;
         _input_in: {
-            eventId: string;
             userId: string;
+            eventId: string;
         };
         _input_out: {
-            eventId: string;
             userId: string;
+            eventId: string;
         };
         _output_in: typeof _trpc_server.unsetMarker;
         _output_out: typeof _trpc_server.unsetMarker;
@@ -186,8 +186,8 @@ declare const appRouter: _trpc_server.CreateRouterInner<_trpc_server.RootConfig<
         _output_in: typeof _trpc_server.unsetMarker;
         _output_out: typeof _trpc_server.unsetMarker;
     }, {
-        id: string;
         name: string;
+        id: string;
         description: string | null;
         createdAt: Date;
         updatedAt: Date;
