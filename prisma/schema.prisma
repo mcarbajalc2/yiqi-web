@@ -142,6 +142,11 @@ enum OrganizerRole {
   VIEWER
 }
 
+enum EventTypes {
+  ONLINE
+  IN_PERSON
+}
+
 model Event {
   id           String   @id @default(cuid())
   title        String
@@ -159,6 +164,7 @@ model Event {
   customFields     Json? // Added to store custom fields for the event
   createdAt        DateTime            @default(now())
   updatedAt        DateTime            @updatedAt
+  deletedAt  DateTime?
   requiresApproval Boolean             @default(false)
   registrations    EventRegistration[]
   EventBot EventBot[]
@@ -169,6 +175,7 @@ model Event {
   GeneratedMedia GeneratedMedia[]
   queueJobs QueueJob[]
   tickets TicketOfferings[]
+  type EventTypes @default(IN_PERSON)
 }
 
 enum TicketCategory {

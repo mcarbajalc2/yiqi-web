@@ -10,8 +10,10 @@ export async function getOrganizationEvents(
   organizationId: string
 ): Promise<OrganizationEventSchemaType[]> {
   const events = await prisma.event.findMany({
-    where: { organizationId },
-
+    where: {
+      organizationId,
+      deletedAt: null
+    },
     orderBy: { startDate: 'asc' }
   })
 
