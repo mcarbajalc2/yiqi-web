@@ -81,14 +81,14 @@ export function TicketTypesManager({
   return (
     <div className="space-y-4">
       {ticketList.map((ticket, index) => (
-        <div key={index} className="p-4 border rounded-lg relative">
-          <Badge className="absolute right-2 top-2">{ticket.category}</Badge>
+        <div key={index} className="p-4 border rounded-lg relative pt-14">
+          <Badge className="absolute left-2 top-2">{ticket.category}</Badge>
 
           <Button
             type="button"
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-10"
+            className="absolute right-2 top-2 bg-red-500 text-white hover:bg-red-600 focus:ring-2 focus:ring-red-400"
             onClick={() => removeTicket(index)}
           >
             <Trash2 className="h-4 w-4" />

@@ -3,7 +3,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -49,11 +49,15 @@ Para incrustar un video de YouTube, usa el siguiente formato:
 Reemplaza \`VIDEO_ID\` con el ID del video que deseas incrustar.
 
 ### Ejemplo de un video de YouTube incrustado:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="480" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Este código insertará el video en el documento Markdown.
 `
-export function MarkdownEditor(props: { initialValue?: string; name: string }) {
+export function MarkdownEditor(props: {
+  initialValue?: string
+  name: string
+  onChange: (value: string) => void
+}) {
   const name = props.name
   const [markdown, setMarkdown] = useState<string>(
     props.initialValue || defaultValue
@@ -70,50 +74,53 @@ export function MarkdownEditor(props: { initialValue?: string; name: string }) {
   )
 
   function handleInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    props.onChange(e.target.value)
     setMarkdown(e.target.value)
   }
 
   return (
-    <Card className="mx-auto max-w-[550px]">
+    <Card className="mx-auto max-w-[580px]">
       <CardContent className="p-6">
-        <div className="prose prose-sm max-w-none mb-4">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
-            components={{
-              code: function ({
-                node,
-                inline,
-                className,
-                children,
-                ...props
-              }: any) {
-                const match = /language-(\w+)/.exec(className || '')
-                return !inline && match ? (
-                  <SyntaxHighlighter
-                    style={vscDarkPlus as unknown}
-                    language={match[1]}
-                    PreTag="div"
-                    {...props}
-                  >
-                    {String(children).replace(/\n$/, '')}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                )
-              }
-            }}
-          >
-            {markdown}
-          </ReactMarkdown>
-        </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">Editar contenido</Button>
+            <div className="prose prose-sm max-w-none mb-4 cursor-pointer">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={{
+                  code: function ({
+                    node,
+                    inline,
+                    className,
+                    children,
+                    ...props
+                  }: any) {
+                    const match = /language-(\w+)/.exec(className || '')
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        style={vscDarkPlus as unknown}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    )
+                  }
+                }}
+              >
+                {markdown}
+              </ReactMarkdown>
+            </div>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[800px]">
+          <DialogContent
+            className="sm:max-w-[800px]"
+            closeIcon={<Check className="h-8 w-8" />}
+          >
             <DialogHeader>
               <DialogTitle>Edit Markdown Content</DialogTitle>
             </DialogHeader>
