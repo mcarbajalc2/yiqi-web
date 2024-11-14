@@ -90,6 +90,7 @@ export function EventForm({ organizationId, event }: Props) {
     ]
   )
 
+  const [loading, setLoading] = useState(false)
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
@@ -207,34 +208,40 @@ export function EventForm({ organizationId, event }: Props) {
   }
 
   async function onSubmit(values: z.infer<typeof EventFormInputSchema>) {
-    try {
-      let imageUrl = null
-      if (selectedImage) {
-        imageUrl = await UploadToS3(selectedImage)
+    if (!loading) {
+      setLoading(true)
+      try {
+        let imageUrl = null
+        if (selectedImage) {
+          imageUrl = await UploadToS3(selectedImage)
+        }
+
+        const startDateTime = new Date(
+          `${values.startDate}T${values.startTime}`
+        )
+        const endDateTime = new Date(`${values.endDate}T${values.endTime}`)
+
+        const eventData: EventInputType = {
+          ...values,
+          ...locationDetails,
+          startDate: startDateTime,
+          endDate: endDateTime,
+          openGraphImage: imageUrl // Add the image URL to the payload
+        }
+
+        if (event) {
+          // Update existing event
+          await updateEvent(event.id, eventData, tickets)
+        } else {
+          // Create new event
+          await createEvent(organizationId, eventData, tickets)
+        }
+
+        router.push(`/admin/organizations/${organizationId}/events`)
+      } catch (error) {
+        setLoading(false)
+        console.error('Failed to save event:', error)
       }
-
-      const startDateTime = new Date(`${values.startDate}T${values.startTime}`)
-      const endDateTime = new Date(`${values.endDate}T${values.endTime}`)
-
-      const eventData: EventInputType = {
-        ...values,
-        ...locationDetails,
-        startDate: startDateTime,
-        endDate: endDateTime,
-        openGraphImage: imageUrl // Add the image URL to the payload
-      }
-
-      if (event) {
-        // Update existing event
-        await updateEvent(event.id, eventData, tickets)
-      } else {
-        // Create new event
-        await createEvent(organizationId, eventData, tickets)
-      }
-
-      router.push(`/admin/organizations/${organizationId}/events`)
-    } catch (error) {
-      console.error('Failed to save event:', error)
     }
   }
 
@@ -555,7 +562,7 @@ export function EventForm({ organizationId, event }: Props) {
             {/* Submit Button */}
             <div className="pt-4">
               <Button type="submit" className="w-full">
-                Create Event
+                {loading ? 'Creando Evento...' : 'Crear Evento'}
               </Button>
             </div>
           </div>
