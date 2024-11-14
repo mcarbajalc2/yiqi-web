@@ -144,6 +144,11 @@ enum OrganizerRole {
   VIEWER
 }
 
+enum EventTypes {
+  ONLINE
+  IN_PERSON
+}
+
 model Event {
   id           String   @id @default(cuid())
   title        String
@@ -171,6 +176,7 @@ model Event {
   GeneratedMedia GeneratedMedia[]
   queueJobs QueueJob[]
   tickets TicketOfferings[]
+  type EventTypes @default(IN_PERSON)
   deletedAt DateTime?
 }
 

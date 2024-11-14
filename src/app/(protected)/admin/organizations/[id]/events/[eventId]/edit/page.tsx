@@ -7,7 +7,7 @@ export default async function Page({
 }: {
   params: { eventId: string }
 }) {
-  const event = await getEvent(params.eventId)
+  const event = await getEvent(params.eventId, true)
 
   if (!event) {
     notFound()

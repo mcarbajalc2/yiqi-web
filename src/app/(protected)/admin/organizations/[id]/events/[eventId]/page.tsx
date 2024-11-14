@@ -4,6 +4,7 @@ import { getEventRegistrations } from '@/services/actions/event/getEventAttendee
 import { getEvent } from '@/services/actions/event/getEvent'
 import { Edit } from 'lucide-react'
 import { EventAdminView } from '@/components/EventAdminView'
+import { DeleteButton } from '@/components/events/DeleteButton'
 
 export default async function EventDetailsPage({
   params
@@ -30,6 +31,7 @@ export default async function EventDetailsPage({
       <p>Start: {new Date(event.startDate).toLocaleString()}</p>
       <p>End: {new Date(event.endDate).toLocaleString()}</p>
       <p>Description: {event.description}</p>
+      <DeleteButton eventId={event.id} organizationId={params.id} />
       <h2 className="text-xl font-bold mt-4 mb-2">Attendees:</h2>
       <Link
         href={`/admin/organizations/${params.id}/events`}

@@ -45,7 +45,8 @@ export const EventInputSchema = z.object({
   description: z.string().optional(),
   maxAttendees: z.number().int().positive().optional().nullable(),
   requiresApproval: z.boolean().default(false),
-  openGraphImage: z.string().optional().nullable()
+  openGraphImage: z.string().optional().nullable(),
+  eventType: z.string().optional().nullable()
 })
 
 export const EventSchema = EventInputSchema.extend({

@@ -12,7 +12,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
 import { createEvent } from '@/services/actions/event/createEvent'
 import {
   EventInputSchema,
@@ -48,7 +47,8 @@ export const EventFormInputSchema = EventInputSchema.extend({
   startTime: z.string(),
   endTime: z.string(),
   startDate: z.string(),
-  endDate: z.string()
+  endDate: z.string(),
+  eventType: z.string()
 })
 
 type LocationDetails = {
@@ -118,7 +118,8 @@ export function EventForm({ organizationId, event }: Props) {
       description: event?.description ?? '',
       requiresApproval: event?.requiresApproval ?? false,
       openGraphImage: event?.openGraphImage ?? null,
-      maxAttendees: event?.maxAttendees ?? undefined
+      maxAttendees: event?.maxAttendees ?? undefined,
+      eventType: event?.eventType ?? 'IN_PERSON'
     }
   })
 
@@ -241,7 +242,7 @@ export function EventForm({ organizationId, event }: Props) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-4xl mx-auto"
+        className="max-w-4xl mx-auto md:max-w-5xl"
       >
         <div className="grid grid-cols-[300px,1fr] gap-6">
           {/* Left Column */}
@@ -441,71 +442,105 @@ export function EventForm({ organizationId, event }: Props) {
               )}
             />
 
-            {/* Event Options */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-medium">Event Options</h3>
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5" />
-                    <span>Require Approval</span>
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="requiresApproval"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Switch
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
+            {/* Event Type */}
+            <div className="flex items-center gap-2">
+              <FormField
+                control={form.control}
+                name="eventType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <div className="flex items-center gap-4">
+                        <label>
+                          <input
+                            type="radio"
+                            value={'ONLINE'}
+                            checked={field.value === 'ONLINE'}
+                            onChange={() => field.onChange('ONLINE')}
+                            className="mr-2"
                           />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5" />
-                    <span>Capacity</span>
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="maxAttendees"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            placeholder="Unlimited"
-                            min={1}
-                            className="w-32 text-right"
-                            value={field.value?.toString()}
-                            onChange={e => {
-                              const value =
-                                e.target.value === ''
-                                  ? null
-                                  : Number(e.target.value)
-                              field.onChange(value)
-                            }}
+                          Online
+                        </label>
+                        <label>
+                          <input
+                            type="radio"
+                            value={'IN_PERSON'}
+                            checked={field.value === 'IN_PERSON'}
+                            onChange={() => field.onChange('IN_PERSON')}
+                            className="mr-2"
                           />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                </div>
+                          In Person
+                        </label>
+                      </div>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Users className="h-5 w-5" />
+                <span>Capacity</span>
               </div>
+              <FormField
+                control={form.control}
+                name="maxAttendees"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        placeholder="Unlimited"
+                        min={1}
+                        className="w-32 text-right"
+                        value={field.value?.toString()}
+                        onChange={e => {
+                          const value =
+                            e.target.value === ''
+                              ? null
+                              : Number(e.target.value)
+                          field.onChange(value)
+                        }}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
 
             {/* Tickets */}
             <div
               className="flex items-center justify-between cursor-pointer"
-              onClick={() => setShowTicketManager(true)}
+              onClick={() => setShowTicketManager(!showTicketManager)}
             >
               <span>Tickets</span>
-              <span className="text-blue-500">Free</span>
+              {!tickets.some(ticket => ticket.price > 0) && (
+                <span className="text-blue-500">Free</span>
+              )}
             </div>
+
+            {tickets.length > 0 && !showTicketManager && (
+              <div className="space-y-2">
+                {tickets.map((ticket, index) => (
+                  <div key={index} className="flex justify-between">
+                    <div>
+                      <span>{ticket.name}</span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-500">
+                        {ticket.price > 0 ? `$${ticket.price}` : 'Free'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-sm text-gray-500">
+                        {ticket.limit} Tickets
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {showTicketManager && (
               <TicketTypesManager
