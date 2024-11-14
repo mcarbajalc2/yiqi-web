@@ -17,6 +17,7 @@ import {
   EventInputSchema,
   EventInputType,
   EventTicketInputType,
+  EventTypeEnum,
   SavedEventType,
   SavedTicketType
 } from '@/schemas/eventSchema'
@@ -36,7 +37,7 @@ import Image from 'next/image'
 import { AddressAutocomplete } from '../forms/AddressAutocomplete'
 import { getLocationDetails } from '@/lib/utils'
 import { updateEvent } from '@/services/actions/event/updateEvent'
-import { MarkdownEditor } from './editor/mdEditor'
+import { defaultValue, MarkdownEditor } from './editor/mdEditor'
 
 type Props = {
   organizationId: string
@@ -47,8 +48,7 @@ export const EventFormInputSchema = EventInputSchema.extend({
   startTime: z.string(),
   endTime: z.string(),
   startDate: z.string(),
-  endDate: z.string(),
-  eventType: z.string()
+  endDate: z.string()
 })
 
 type LocationDetails = {
@@ -89,19 +89,23 @@ export function EventForm({ organizationId, event }: Props) {
       }
     ]
   )
+  console.log('EventxD:', event)
 
   const [loading, setLoading] = useState(false)
   const [showTicketManager, setShowTicketManager] = useState(false)
   const [selectedImage, setSelectedImage] = useState<File | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [minStartTime, setMinStartTime] = useState<string | number>(
-    defaultStartTimeStr
+    event ? '00:00' : defaultStartTimeStr
   )
   const [minEndDate, setMinEndDate] = useState<string | number>(
     defaultMinEndDateStr
   )
   const [minEndTime, setMinEndTime] = useState<string | number>(
-    defaultMinEndTimeStr
+    event ? '00:00' : defaultMinEndTimeStr
+  )
+  const [description, setDescription] = useState<string>(
+    event?.description ?? defaultValue
   )
 
   const [locationDetails, setLocationDetails] =
@@ -110,17 +114,17 @@ export function EventForm({ organizationId, event }: Props) {
     resolver: zodResolver(EventFormInputSchema),
     defaultValues: {
       title: event?.title ?? '',
-      startDate: event?.startDate.toISOString() ?? '',
-      startTime: event?.startDate.toISOString().split('T')[1] ?? '',
-      endDate: event?.endDate.toISOString() ?? '',
-      endTime: event?.endDate.toISOString().split('T')[1] ?? '',
+      startDate: event?.startDate.toISOString().split('T')[0] ?? '',
+      startTime: event?.startDate.toISOString().split('T')[1].slice(0, 5) ?? '',
+      endDate: event?.endDate.toISOString().split('T')[0] ?? '',
+      endTime: event?.endDate.toISOString().split('T')[1].slice(0, 5) ?? '',
       location: event?.location ?? '',
       virtualLink: event?.virtualLink ?? '',
-      description: event?.description ?? '',
+      description: event?.description ?? 'XYZMON',
       requiresApproval: event?.requiresApproval ?? false,
       openGraphImage: event?.openGraphImage ?? null,
       maxAttendees: event?.maxAttendees ?? undefined,
-      eventType: event?.eventType ?? 'IN_PERSON'
+      type: event?.type ?? EventTypeEnum.IN_PERSON
     }
   })
 
@@ -226,7 +230,8 @@ export function EventForm({ organizationId, event }: Props) {
           ...locationDetails,
           startDate: startDateTime,
           endDate: endDateTime,
-          openGraphImage: imageUrl // Add the image URL to the payload
+          openGraphImage: imageUrl, // Add the image URL to the payload
+          description
         }
 
         if (event) {
@@ -238,6 +243,7 @@ export function EventForm({ organizationId, event }: Props) {
         }
 
         router.push(`/admin/organizations/${organizationId}/events`)
+        setLoading(false)
       } catch (error) {
         setLoading(false)
         console.error('Failed to save event:', error)
@@ -249,7 +255,7 @@ export function EventForm({ organizationId, event }: Props) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-4xl mx-auto md:max-w-5xl"
+        className="max-w-4xl mx-auto md:max-w-3xl"
       >
         <div className="grid grid-cols-[300px,1fr] gap-6">
           {/* Left Column */}
@@ -417,6 +423,7 @@ export function EventForm({ organizationId, event }: Props) {
                   <FormItem className="flex-1">
                     <FormControl>
                       <AddressAutocomplete
+                        defaultValue={field.value ?? ''}
                         fieldName="location"
                         onSetAddress={field.onChange}
                         onAfterSelection={value => {
@@ -441,50 +448,16 @@ export function EventForm({ organizationId, event }: Props) {
                 <FormItem>
                   <FormControl>
                     <MarkdownEditor
-                      initialValue={field.value}
+                      initialValue={description}
                       name={field.name}
+                      onChange={val => {
+                        setDescription(val)
+                      }}
                     />
                   </FormControl>
                 </FormItem>
               )}
             />
-
-            {/* Event Type */}
-            <div className="flex items-center gap-2">
-              <FormField
-                control={form.control}
-                name="eventType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <div className="flex items-center gap-4">
-                        <label>
-                          <input
-                            type="radio"
-                            value={'ONLINE'}
-                            checked={field.value === 'ONLINE'}
-                            onChange={() => field.onChange('ONLINE')}
-                            className="mr-2"
-                          />
-                          Online
-                        </label>
-                        <label>
-                          <input
-                            type="radio"
-                            value={'IN_PERSON'}
-                            checked={field.value === 'IN_PERSON'}
-                            onChange={() => field.onChange('IN_PERSON')}
-                            className="mr-2"
-                          />
-                          In Person
-                        </label>
-                      </div>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-            </div>
-
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Users className="h-5 w-5" />
@@ -522,24 +495,25 @@ export function EventForm({ organizationId, event }: Props) {
               onClick={() => setShowTicketManager(!showTicketManager)}
             >
               <span>Tickets</span>
-              {!tickets.some(ticket => ticket.price > 0) && (
-                <span className="text-blue-500">Free</span>
-              )}
+              <span>{showTicketManager ? 'Ocultar' : 'Editar'}</span>
             </div>
 
             {tickets.length > 0 && !showTicketManager && (
               <div className="space-y-2">
                 {tickets.map((ticket, index) => (
-                  <div key={index} className="flex justify-between">
+                  <div
+                    key={index}
+                    className="grid grid-cols-3 gap-4 border-b py-2"
+                  >
                     <div>
                       <span>{ticket.name}</span>
                     </div>
-                    <div>
+                    <div className="text-center">
                       <span className="text-sm text-gray-500">
                         {ticket.price > 0 ? `$${ticket.price}` : 'Free'}
                       </span>
                     </div>
-                    <div>
+                    <div className="text-right">
                       <span className="text-sm text-gray-500">
                         {ticket.limit} Tickets
                       </span>
@@ -562,7 +536,13 @@ export function EventForm({ organizationId, event }: Props) {
             {/* Submit Button */}
             <div className="pt-4">
               <Button type="submit" className="w-full">
-                {loading ? 'Creando Evento...' : 'Crear Evento'}
+                {loading
+                  ? event
+                    ? 'Actualizando Evento...'
+                    : 'Creando Evento...'
+                  : event
+                    ? 'Actualizar Evento'
+                    : 'Crear Evento'}
               </Button>
             </div>
           </div>

@@ -49,11 +49,15 @@ Para incrustar un video de YouTube, usa el siguiente formato:
 Reemplaza \`VIDEO_ID\` con el ID del video que deseas incrustar.
 
 ### Ejemplo de un video de YouTube incrustado:
-<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<iframe width="480" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 Este código insertará el video en el documento Markdown.
 `
-export function MarkdownEditor(props: { initialValue?: string; name: string }) {
+export function MarkdownEditor(props: {
+  initialValue?: string
+  name: string
+  onChange: (value: string) => void
+}) {
   const name = props.name
   const [markdown, setMarkdown] = useState<string>(
     props.initialValue || defaultValue
@@ -70,6 +74,7 @@ export function MarkdownEditor(props: { initialValue?: string; name: string }) {
   )
 
   function handleInput(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    props.onChange(e.target.value)
     setMarkdown(e.target.value)
   }
 

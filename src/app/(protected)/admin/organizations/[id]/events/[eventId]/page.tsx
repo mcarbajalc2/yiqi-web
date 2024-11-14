@@ -42,4 +42,6 @@ export default async function EventDetailsPage({
       <EventAdminView registrations={attendees} eventId={params.eventId} />
     </div>
   )
+
+  return <div>EJEMPLO</div>
 }

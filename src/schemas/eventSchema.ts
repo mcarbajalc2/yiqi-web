@@ -2,9 +2,14 @@ import { z } from 'zod'
 import { userSchema } from './userSchema'
 
 export enum AttendeeStatus {
-  PENDING,
-  APPROVED,
-  REJECTED
+  PENDING = 'PENDING',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED'
+}
+
+export enum EventTypeEnum {
+  ONLINE = 'ONLINE',
+  IN_PERSON = 'IN_PERSON'
 }
 
 export const CustomFieldSchema = z.object({
@@ -46,7 +51,7 @@ export const EventInputSchema = z.object({
   maxAttendees: z.number().int().positive().optional().nullable(),
   requiresApproval: z.boolean().default(false),
   openGraphImage: z.string().optional().nullable(),
-  eventType: z.string().optional().nullable()
+  type: z.nativeEnum(EventTypeEnum)
 })
 
 export const EventSchema = EventInputSchema.extend({
