@@ -3,7 +3,7 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { Check } from 'lucide-react'
 import { Card, CardContent } from '@/components/ui/card'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -79,46 +79,48 @@ export function MarkdownEditor(props: {
   }
 
   return (
-    <Card className="mx-auto max-w-[550px]">
+    <Card className="mx-auto max-w-[580px]">
       <CardContent className="p-6">
-        <div className="prose prose-sm max-w-none mb-4">
-          <ReactMarkdown
-            remarkPlugins={[remarkGfm]}
-            rehypePlugins={[rehypeRaw]}
-            components={{
-              code: function ({
-                node,
-                inline,
-                className,
-                children,
-                ...props
-              }: any) {
-                const match = /language-(\w+)/.exec(className || '')
-                return !inline && match ? (
-                  <SyntaxHighlighter
-                    style={vscDarkPlus as unknown}
-                    language={match[1]}
-                    PreTag="div"
-                    {...props}
-                  >
-                    {String(children).replace(/\n$/, '')}
-                  </SyntaxHighlighter>
-                ) : (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
-                )
-              }
-            }}
-          >
-            {markdown}
-          </ReactMarkdown>
-        </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button variant="outline">Editar contenido</Button>
+            <div className="prose prose-sm max-w-none mb-4 cursor-pointer">
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
+                rehypePlugins={[rehypeRaw]}
+                components={{
+                  code: function ({
+                    node,
+                    inline,
+                    className,
+                    children,
+                    ...props
+                  }: any) {
+                    const match = /language-(\w+)/.exec(className || '')
+                    return !inline && match ? (
+                      <SyntaxHighlighter
+                        style={vscDarkPlus as unknown}
+                        language={match[1]}
+                        PreTag="div"
+                        {...props}
+                      >
+                        {String(children).replace(/\n$/, '')}
+                      </SyntaxHighlighter>
+                    ) : (
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    )
+                  }
+                }}
+              >
+                {markdown}
+              </ReactMarkdown>
+            </div>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[800px]">
+          <DialogContent
+            className="sm:max-w-[800px]"
+            closeIcon={<Check className="h-8 w-8" />}
+          >
             <DialogHeader>
               <DialogTitle>Edit Markdown Content</DialogTitle>
             </DialogHeader>

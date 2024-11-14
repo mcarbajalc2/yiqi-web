@@ -255,7 +255,7 @@ export function EventForm({ organizationId, event }: Props) {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="max-w-4xl mx-auto md:max-w-3xl"
+        className="max-w-4xl mx-auto md:max-w-5xl"
       >
         <div className="grid grid-cols-[300px,1fr] gap-6">
           {/* Left Column */}
