@@ -27,7 +27,10 @@ export async function updateEvent(
     throw new Error('Unauthorized')
   }
 
-  const validatedData = SavedEventSchema.parse(eventData)
+  const validatedData = SavedEventSchema.parse({
+    ...event,
+    ...(eventData as object)
+  })
 
   // Parse tickets with either SavedTicketSchema or EventTicketInputSchema
   const parsedTickets: (SavedTicketType | EventTicketInputType)[] =

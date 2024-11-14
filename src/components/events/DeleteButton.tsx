@@ -11,9 +11,8 @@ export function DeleteButton(params: {
 
   async function handleOnDelete() {
     await deleteEvent(params.eventId)
+    router.push(`/admin/organizations/${params.organizationId}/events`)
   }
-
-  router.push(`/admin/organizations/${params.organizationId}/events`)
 
   return (
     <Button
