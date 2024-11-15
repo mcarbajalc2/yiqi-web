@@ -4,9 +4,13 @@ import {
   ConnectComponentsProvider
 } from '@stripe/react-connect-js'
 import useStripeConnect from '@/hooks/useStripeConnect'
-import { createAccount } from '@/services/actions/billing/createAccount'
+import { createConnectAccount } from '@/services/actions/billing/createAccount'
 
-export default function OrganizationBillingPage() {
+export default function OrganizationBillingPage({
+  params
+}: {
+  params: { id: string }
+}) {
   const [accountCreatePending, setAccountCreatePending] = useState(false)
   const [onboardingExited, setOnboardingExited] = useState(false)
   const [error, setError] = useState(false)
@@ -35,7 +39,7 @@ export default function OrganizationBillingPage() {
               onClick={async () => {
                 setAccountCreatePending(true)
                 setError(false)
-                const account = await createAccount()
+                const account = await createConnectAccount(params.id)
                 setConnectedAccountId(account.id)
                 setAccountCreatePending(false)
 

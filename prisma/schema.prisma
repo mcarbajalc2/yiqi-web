@@ -104,6 +104,7 @@ model Organization {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
   queueJobs   QueueJob[]
+  stripeAccountId String? // This is where you store the Stripe account ID
 
   integration Integration[]
 
