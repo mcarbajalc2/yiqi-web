@@ -8,7 +8,8 @@ import {
   Calendar,
   BookUser,
   ChevronDown,
-  Building2
+  Building2,
+  Banknote
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
@@ -87,6 +88,11 @@ export default function OrganizationLayout({
       name: 'Organizadores',
       icon: Users,
       href: `/admin/organizations/${orgId}/organizers`
+    },
+    {
+      name: 'Billing',
+      icon: Banknote,
+      href: `/admin/organizations/${orgId}/billing`
     }
   ]
 
