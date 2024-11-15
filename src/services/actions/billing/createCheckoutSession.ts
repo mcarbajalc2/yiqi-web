@@ -45,7 +45,7 @@ export const createCheckoutSession = async (offerings: Props[]) => {
             name: `${ticketOffering.event.title} - ${ticketOffering.name}`,
             description: ticketOffering.description ?? undefined
           },
-          unit_amount: ticketOffering.price.toNumber()
+          unit_amount: ticketOffering.price.toNumber() * 100
         },
         quantity: amount
       }
@@ -59,7 +59,9 @@ export const createCheckoutSession = async (offerings: Props[]) => {
   const application_fee_amount =
     line_items.reduce((acc, item) => {
       return acc + item.price_data.unit_amount * item.quantity
-    }, 0) * commission
+    }, 0) *
+    commission *
+    100
 
   const session = await stripe.checkout.sessions.create(
     {
@@ -69,13 +71,18 @@ export const createCheckoutSession = async (offerings: Props[]) => {
       },
       mode: 'payment',
       ui_mode: 'embedded',
-      return_url:
-        'https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}'
+      return_url: `${process.env.NEXT_PUBLIC_APP_URL}/api/checkout/return?session_id={CHECKOUT_SESSION_ID}`
     },
     {
       stripeAccount: stripeAccountId
     }
   )
+  if (!session.client_secret) {
+    throw new Error('Checkout session not created')
+  }
 
-  return session
+  return {
+    clientSecret: session.client_secret,
+    connectAccountId: stripeAccountId
+  }
 }
