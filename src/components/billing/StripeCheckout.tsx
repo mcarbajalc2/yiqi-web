@@ -38,10 +38,15 @@ export default function StripeCheckout({
     })
   }, [stripeAccountId])
 
-  const options = { clientSecret }
+  function onComplete() {
+    console.log('onComplete')
+  }
 
   return (
-    <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
+    <EmbeddedCheckoutProvider
+      stripe={stripePromise}
+      options={{ clientSecret, onComplete }}
+    >
       <EmbeddedCheckout />
     </EmbeddedCheckoutProvider>
   )
