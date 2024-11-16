@@ -22,9 +22,20 @@ export async function importUsersAction(formData: FormData) {
     const buffer = Buffer.from(await file.arrayBuffer())
     const text = buffer.toString('utf-8')
 
-    await importUsers(orgId, text)
-
-    return { success: true }
+    const results = await importUsers(orgId, text)
+    return {
+      success: true,
+      data: {
+        ...results,
+        results: results.results.map(
+          ({
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            error,
+            ...result
+          }) => result
+        )
+      }
+    }
   } catch (error) {
     return {
       success: false,
