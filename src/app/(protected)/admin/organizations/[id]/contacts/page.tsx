@@ -4,6 +4,7 @@ import Link from 'next/link'
 import OrganizationLayout from '@/components/orgs/OrganizationLayout'
 import { getUser } from '@/lib/auth/lucia'
 import { ImportContactButton } from './ImportContactButton'
+import { ImportContactTemplateButton } from './ImportContactTemplateButton'
 
 export default async function ContactsPage({
   params
@@ -35,6 +36,9 @@ export default async function ContactsPage({
             Contacts for {organization.name}
           </h1>
           <ImportContactButton organizationId={organization.id} />
+        </div>
+        <div className="mb-4">
+          <ImportContactTemplateButton />
         </div>
         <ul className="space-y-2">
           {contacts.map(user => (
