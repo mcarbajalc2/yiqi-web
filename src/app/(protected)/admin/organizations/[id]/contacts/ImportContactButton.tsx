@@ -22,27 +22,39 @@ export function ImportContactButton(params: { organizationId: string }) {
         formData.append('file', file)
         formData.append('orgId', params.organizationId)
         const result = await importUsersAction(formData)
-        if (result.data?.total === result.data?.successful) {
-          toast({
-            description: 'All contacts imported',
-            variant: 'default'
-          })
-        } else if ((result.data?.successful ?? 0) > 0) {
-          toast({
-            description: 'Some contacts imported successfully',
-            variant: 'default'
-          })
+        if (!result.success || result.errors?.length > 0) {
+          showErrorsToast(result.errors)
         } else {
-          toast({
-            description: 'Failed to import contacts',
-            variant: 'destructive'
-          })
+          showSuccessToast()
         }
         router.refresh()
       }
       setIsLoading(false)
     }
+    input.oncancel = () => setIsLoading(false)
     input.click()
+  }
+
+  const showErrorsToast = (errors: { message: string }[]) => {
+    const errorMessages = errors.reduce(
+      (acc: string, error: { message: string }, index: number) => {
+        return acc + error.message + (index < errors.length - 1 ? '<br />' : '')
+      },
+      ''
+    )
+    toast({
+      title: 'ERROR:',
+      description: <span dangerouslySetInnerHTML={{ __html: errorMessages }} />,
+      variant: 'default'
+    })
+  }
+
+  const showSuccessToast = () => {
+    toast({
+      title: 'SUCCESS:',
+      description: 'Contacts imported successfully',
+      variant: 'default'
+    })
   }
 
   return (
